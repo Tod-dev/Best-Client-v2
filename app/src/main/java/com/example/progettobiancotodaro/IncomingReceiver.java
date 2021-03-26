@@ -19,10 +19,10 @@ public class IncomingReceiver extends BroadcastReceiver {
     }
 
     private class CallListener extends PhoneStateListener{
-        public void onCallStateChanged(int state, String incomingNumber){
-            String stato;
 
-            switch(state){
+        public void onCallStateChanged(int state, String incomingNumber){
+            //String stato;
+             /*      switch(state){
                 case TelephonyManager.CALL_STATE_IDLE: {
                     stato = "The phone is idle";
                     break;
@@ -38,9 +38,14 @@ public class IncomingReceiver extends BroadcastReceiver {
                 default: stato="null";
                     break;
             }
-            Toast.makeText(context, stato+" "+incomingNumber, Toast.LENGTH_SHORT).show();
-
-            //MainActivity.tv.setText(stato+" "+incomingNumber);
+            */
+            if(incomingNumber.length()>0){
+                String onlyNumber = incomingNumber.substring(incomingNumber.length()-10);
+                String feedBack = "⭐";
+                if(onlyNumber.equals("3312511781"))  feedBack = "⭐⭐⭐⭐⭐";
+                Toast.makeText(context,onlyNumber+" "+feedBack, Toast.LENGTH_SHORT).show();
+                //MainActivity.tv.setText(stato+" "+incomingNumber);
+            }
         }
     }
 }
