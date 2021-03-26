@@ -42,7 +42,7 @@ public class IncomingReceiver extends BroadcastReceiver {
             if(incomingNumber.length()>0){
                 String onlyNumber = incomingNumber.substring(incomingNumber.length()-10);
                 String feedBack = "⭐";
-                if(onlyNumber.equals("3312511783"))  feedBack = "⭐⭐⭐⭐⭐";
+                if(onlyNumber.equals("3312511781"))  feedBack = "⭐⭐⭐⭐⭐";
                 Toast.makeText(context,onlyNumber+" "+feedBack, Toast.LENGTH_SHORT).show();
                 //MainActivity.tv.setText(stato+" "+incomingNumber);
             }
