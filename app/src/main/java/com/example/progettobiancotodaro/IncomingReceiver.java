@@ -13,6 +13,7 @@ public class IncomingReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
+
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         CallListener cl = new CallListener();
         tm.listen(cl, PhoneStateListener.LISTEN_CALL_STATE);
@@ -39,13 +40,15 @@ public class IncomingReceiver extends BroadcastReceiver {
                     break;
             }
             */
-            if(incomingNumber.length()>0){
+
+            if(incomingNumber.length()>=10){
                 String onlyNumber = incomingNumber.substring(incomingNumber.length()-10);
                 String feedBack = "⭐";
                 if(onlyNumber.equals("3312511781"))  feedBack = "⭐⭐⭐⭐⭐";
                 Toast.makeText(context,onlyNumber+" "+feedBack, Toast.LENGTH_SHORT).show();
                 //MainActivity.tv.setText(stato+" "+incomingNumber);
             }
+
         }
     }
 }
