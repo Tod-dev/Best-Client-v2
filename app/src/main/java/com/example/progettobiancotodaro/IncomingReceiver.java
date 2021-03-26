@@ -5,10 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.widget.Toast;
 
 public class IncomingReceiver extends BroadcastReceiver {
+
+    Context context;
     @Override
     public void onReceive(Context context, Intent intent) {
+        this.context = context;
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         CallListener cl = new CallListener();
         tm.listen(cl, PhoneStateListener.LISTEN_CALL_STATE);
@@ -34,8 +38,9 @@ public class IncomingReceiver extends BroadcastReceiver {
                 default: stato="null";
                     break;
             }
+            Toast.makeText(context, stato+" "+incomingNumber, Toast.LENGTH_SHORT).show();
 
-            MainActivity.tv.setText(stato+" "+incomingNumber);
+            //MainActivity.tv.setText(stato+" "+incomingNumber);
         }
     }
 }
