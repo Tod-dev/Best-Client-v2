@@ -5,17 +5,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
 
 public class IncomingReceiver extends BroadcastReceiver {
-
+    final String OUR_ACTION = "android.intent.action.PHONE_STATE";
     Context context;
     @Override
     public void onReceive(Context context, Intent intent) {
-        this.context = context;
-        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        CallListener cl = new CallListener();
-        tm.listen(cl, PhoneStateListener.LISTEN_CALL_STATE);
+        Log.d("myTAG",intent.getAction()); //android.intent.action.PHONE_STATE
+        switch (intent.getAction()) {
+            case OUR_ACTION:
+                this.context = context;
+                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                CallListener cl = new CallListener();
+                tm.listen(cl, PhoneStateListener.LISTEN_CALL_STATE);
+                break;
+            default:
+                break;
+        }
+
     }
 
     private class CallListener extends PhoneStateListener{
