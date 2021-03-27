@@ -21,7 +21,7 @@ public class AddRating extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_rating);
 
-        homepagebtn = findViewById(R.id.button);
+        homepagebtn = findViewById(R.id.homebutton);
         homepagebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

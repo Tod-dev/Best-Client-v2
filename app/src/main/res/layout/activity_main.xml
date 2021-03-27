@@ -14,6 +14,7 @@
         android:background="@drawable/customized_button"
         android:text="Add Rating"
         android:visibility="visible"
+        app:backgroundTint="#0B0A0A"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
