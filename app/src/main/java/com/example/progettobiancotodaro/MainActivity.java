@@ -9,25 +9,31 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.CallLog;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
-  //  public static TextView tv;
+    public TextView tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-       // tv = (TextView) findViewById(R.id.informazioni);
+       tv = (TextView) findViewById(R.id.informazioni);
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_PHONE_STATE}, 1);
@@ -44,32 +50,26 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        /*Button bottone = findViewById(R.id.button);
+        Button bottone = findViewById(R.id.button);
         bottone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-                int callState = tm.getCallState();
-                String state;
-                String number = "";
+                Cursor c = getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, "date DESC");
 
-                switch(callState){
-                    case TelephonyManager.CALL_STATE_IDLE:
-                        state = "The phone is idle";
-                        break;
-                    case TelephonyManager.CALL_STATE_OFFHOOK:
-                        state = "The phone is in use";
-                        break;
-                    case TelephonyManager.CALL_STATE_RINGING:{
-                        state = "The phone is ringing";
-                        break;
-                    }
-                    default: state="null";
-                             break;
+                StringBuffer stringBuffer = new StringBuffer();
+
+                int colNumber = c.getColumnIndex(CallLog.Calls.NUMBER);
+                int colDate = c.getColumnIndex(CallLog.Calls.DATE);
+                while(c.moveToNext()){
+                    String number = c.getString(colNumber);
+                    Date date = new Date(Long.valueOf(c.getString(colDate)));
+                    stringBuffer.append("\nNumber: "+number);
+                    stringBuffer.append("\nDate: "+date);
                 }
-                tv.setText(state+" "+number);
+                c.close();
+                tv.setText(stringBuffer);
             }
-        });*/
+        });
     }
 
 }
