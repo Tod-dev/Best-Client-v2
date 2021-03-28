@@ -81,7 +81,7 @@ public class AddRating extends AppCompatActivity {
 
 
         //tv.setText(stringBuffer);
-        ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,l);
+        ArrayAdapter <String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,l);
         listView.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener((parent, view, i1, id) -> Toast.makeText(AddRating.this,l.get(i1),Toast.LENGTH_SHORT).show());
