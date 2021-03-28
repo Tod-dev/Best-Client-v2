@@ -29,8 +29,6 @@ public class AddRating extends AppCompatActivity {
         toolbar_text = findViewById(R.id.toolbar_title);
         toolbar_text.setText(R.string.add_rating);
 
-        setSupportActionBar(toolbar);
-
         arrow_back = findViewById(R.id.arrow_back);
         arrow_back.setImageResource(R.drawable.ic_baseline_arrow_back_24);
         arrow_back.setOnClickListener(v -> {
