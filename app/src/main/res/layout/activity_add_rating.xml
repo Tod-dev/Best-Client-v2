@@ -7,6 +7,7 @@
     tools:context=".AddRating">
 
     <include
+        android:id="@+id/include"
         layout="@layout/customized_toolbar"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="parent" />
@@ -27,20 +28,17 @@
         app:layout_constraintVertical_bias="0.949"
         tools:visibility="visible" />
 
-    <TextView
-        android:id="@+id/informazioni"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/basic"
-        android:text="Hello World!"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="8pt"
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include"
-        app:layout_constraintVertical_bias="0.110" />
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

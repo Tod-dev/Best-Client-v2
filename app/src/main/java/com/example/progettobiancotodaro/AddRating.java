@@ -8,14 +8,21 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class AddRating extends AppCompatActivity {
+    ListView listView;
     TextView tv;
     TextView toolbar_text;
     ImageView arrow_back;
@@ -30,8 +37,6 @@ public class AddRating extends AppCompatActivity {
         toolbar_text = findViewById(R.id.toolbar_title);
         toolbar_text.setText(R.string.add_rating);
 
-        setSupportActionBar(toolbar);
-
         arrow_back = findViewById(R.id.arrow_back);
         arrow_back.setImageResource(R.drawable.ic_baseline_arrow_back_24);
         arrow_back.setOnClickListener(v -> {
@@ -39,7 +44,10 @@ public class AddRating extends AppCompatActivity {
             startActivity(intent);
         });
 
-        tv = findViewById(R.id.informazioni);
+        listView = (ListView) findViewById(R.id.list);
+        List<String> l = new ArrayList<>();
+
+        //tv = findViewById(R.id.informazioni);
 
 
         Cursor c = getContentResolver().query(CallLog.Calls.CONTENT_URI, new String[] {"number", "date"}, null, null, "date DESC");
@@ -63,11 +71,24 @@ public class AddRating extends AppCompatActivity {
             String number = c.getString(colNumber);
             Date date = new Date(Long.parseLong(c.getString(colDate)));
             String stringDate = format.format(date);
-
-            stringBuffer.append("\nNumber: "+number+"\nDate: "+stringDate);
+            String finalString = "\nNumber: "+number+" Date: "+stringDate;
+            //stringBuffer.append(finalString);
+            l.add(finalString);
             i++;
         }
         c.close();
-        tv.setText(stringBuffer);
+
+
+
+        //tv.setText(stringBuffer);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,l);
+        listView.setAdapter(arrayAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
+                Toast.makeText(AddRating.this,l.get(i),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
