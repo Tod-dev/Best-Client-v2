@@ -44,7 +44,7 @@ public class AddRating extends AppCompatActivity {
             startActivity(intent);
         });
 
-        listView = (ListView) findViewById(R.id.list);
+        listView = findViewById(R.id.list);
         List<String> l = new ArrayList<>();
 
         //tv = findViewById(R.id.informazioni);
@@ -52,13 +52,13 @@ public class AddRating extends AppCompatActivity {
 
         Cursor c = getContentResolver().query(CallLog.Calls.CONTENT_URI, new String[] {"number", "date"}, null, null, "date DESC");
 
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
 
         int colNumber = c.getColumnIndex(CallLog.Calls.NUMBER);
         int colDate = c.getColumnIndex(CallLog.Calls.DATE);
 
         int offset = 0;
-        final int limit = 10;
+        final int limit = 50;
 
         int i = 0;
         while(i < offset && c.moveToNext()){
@@ -81,14 +81,9 @@ public class AddRating extends AppCompatActivity {
 
 
         //tv.setText(stringBuffer);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,l);
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,l);
         listView.setAdapter(arrayAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
-                Toast.makeText(AddRating.this,l.get(i),Toast.LENGTH_SHORT).show();
-            }
-        });
+        listView.setOnItemClickListener((parent, view, i1, id) -> Toast.makeText(AddRating.this,l.get(i1),Toast.LENGTH_SHORT).show());
     }
 }
