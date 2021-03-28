@@ -1,36 +1,45 @@
 package com.example.progettobiancotodaro;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class AddRating extends AppCompatActivity {
     TextView tv;
-    Button homepagebtn;
+    TextView toolbar_text;
+    ImageView arrow_back;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_rating);
 
-        homepagebtn = findViewById(R.id.homebutton);
-        homepagebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AddRating.this, MainActivity.class);
-                startActivity(intent);
-            }
+        toolbar = findViewById(R.id.toolbar);
+        toolbar_text = findViewById(R.id.toolbar_title);
+        toolbar_text.setText(R.string.add_rating);
+
+        setSupportActionBar(toolbar);
+
+        arrow_back = findViewById(R.id.arrow_back);
+        arrow_back.setImageResource(R.drawable.ic_baseline_arrow_back_24);
+        arrow_back.setOnClickListener(v -> {
+            Intent intent = new Intent(AddRating.this, MainActivity.class);
+            startActivity(intent);
         });
 
-        tv = (TextView) findViewById(R.id.informazioni);
+        tv = findViewById(R.id.informazioni);
 
 
         Cursor c = getContentResolver().query(CallLog.Calls.CONTENT_URI, new String[] {"number", "date"}, null, null, "date DESC");
@@ -48,11 +57,14 @@ public class AddRating extends AppCompatActivity {
             i++;
         }
 
+        SimpleDateFormat format = new SimpleDateFormat("dd/M/yyyy HH:mm", Locale.ITALIAN);
+
         while(c.moveToNext() && i < limit){
             String number = c.getString(colNumber);
-            Date date = new Date(Long.valueOf(c.getString(colDate)));
-            stringBuffer.append("\nNumber: "+number);
-            stringBuffer.append("\nDate: "+date);
+            Date date = new Date(Long.parseLong(c.getString(colDate)));
+            String stringDate = format.format(date);
+
+            stringBuffer.append("\nNumber: "+number+"\nDate: "+stringDate);
             i++;
         }
         c.close();

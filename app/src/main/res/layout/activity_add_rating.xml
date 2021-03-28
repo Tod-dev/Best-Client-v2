@@ -4,52 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
     tools:context=".AddRating">
 
+    <include
+        layout="@layout/customized_toolbar"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
 
-    <Button
-        android:id="@+id/homebutton"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:background="@drawable/customized_button"
-        android:text="Home Page"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.931"
-        tools:visibility="visible" />
 
     <Button
         android:id="@+id/addbutton"
         android:layout_width="250dp"
         android:layout_height="60dp"
         android:background="@drawable/customized_button"
-        android:text="Add Rating"
+        android:text="@string/add_rating"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.804"
+        app:layout_constraintVertical_bias="0.949"
         tools:visibility="visible" />
 
     <TextView
         android:id="@+id/informazioni"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/customized_textview"
-        android:padding="24dp"
+        android:fontFamily="@font/basic"
         android:text="Hello World!"
-        android:textSize="22sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="8pt"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/include"
+        app:layout_constraintVertical_bias="0.110" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
