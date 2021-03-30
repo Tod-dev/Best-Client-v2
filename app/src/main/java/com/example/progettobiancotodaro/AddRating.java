@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -56,21 +58,42 @@ public class AddRating extends AppCompatActivity {
         int colNumber = c.getColumnIndex(CallLog.Calls.NUMBER);
         int colDate = c.getColumnIndex(CallLog.Calls.DATE);
 
-        int offset = 0;
+
+        //int offset = 0;
         final int limit = 50;
+        int days_group_by = 1;
 
         int i = 0;
+        /*
         while(i < offset && c.moveToNext()){
             i++;
         }
+        Log.d("i: ", ""+i);
+        */
 
-        List<Rating> ratings = new ArrayList<>(limit);
+        List<Rating> ratings = new ArrayList<>();
 
         while(c.moveToNext() && i < limit){
+            //Log.d("i, array:  ", ""+i + Arrays.toString(ratings.toArray()));
             String number = c.getString(colNumber);
             Date date = new Date(Long.parseLong(c.getString(colDate)));
+            Rating check = new Rating(number,date);
+            //Log.d("Data: ", ""+c.getString(colDate));
 
-            ratings.add(new Rating(number, date, 0));
+
+            boolean checkIfExist = false;
+            for(Rating r: ratings){
+                boolean res = r.equals(check,days_group_by);
+                //Log.d("CHECK_CONFRONTO: ", ""+res);
+                if(res){
+                    checkIfExist = true;
+                    break;
+                }
+            }
+
+            if(!checkIfExist){
+                ratings.add(new Rating(number, date));
+            }
             i++;
         }
         c.close();
