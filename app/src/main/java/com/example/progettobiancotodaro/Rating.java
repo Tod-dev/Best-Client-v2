@@ -2,6 +2,7 @@ package com.example.progettobiancotodaro;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Rating {
     private String phoneNumber;
@@ -19,11 +20,20 @@ public class Rating {
     }
 
     public String getDate(){
-        SimpleDateFormat format = new SimpleDateFormat("dd-mm-yyyy");
+        SimpleDateFormat format = new SimpleDateFormat("dd/M/yyyy HH:mm", Locale.ITALIAN);
+
         return format.format(date);
     }
 
     public float getRating() {
         return rating;
+    }
+
+    public void setRating(float rating){
+        this.rating = rating;
+    }
+
+    public String toString(){
+        return "Number: "+phoneNumber+", Date: "+getDate()+", Current Rating: "+rating;
     }
 }

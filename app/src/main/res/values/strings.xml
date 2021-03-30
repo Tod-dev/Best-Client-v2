@@ -3,4 +3,7 @@
     <string name="add_rating">Add Rating</string>
     <string name="arrowback">ArrowBack</string>
     <string name="home">Home Page</string>
+    <string name="dialogMessage">Set Rating</string>
+    <string name="positiveButton">Confirm</string>
+    <string name="negativeButton">Cancel</string>
 </resources>
