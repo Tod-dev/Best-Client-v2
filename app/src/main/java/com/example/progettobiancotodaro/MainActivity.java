@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.CallLog;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
@@ -23,7 +24,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.progettobiancotodaro.DB.DBhelper;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,14 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         ratingButton = findViewById(R.id.button);
-        ratingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddRating.class);
-                startActivity(intent);
-            }
+        ratingButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddRating.class);
+            startActivity(intent);
         });
     }
+
+
 
 }
 /*tv = (TextView) findViewById(R.id.informazioni);

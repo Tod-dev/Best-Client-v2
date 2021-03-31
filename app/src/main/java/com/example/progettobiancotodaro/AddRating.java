@@ -21,23 +21,29 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.progettobiancotodaro.DB.DBhelper;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AddRating extends AppCompatActivity {
     ListView listView;
     TextView toolbar_text;
     ImageView arrow_back;
     Toolbar toolbar;
+    DBhelper myDBhelper;
 
     @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_rating);
-
+        myDBhelper = new DBhelper(this);
         toolbar = findViewById(R.id.toolbar);
         toolbar_text = findViewById(R.id.toolbar_title);
         toolbar_text.setText(R.string.add_rating);
@@ -50,7 +56,66 @@ public class AddRating extends AppCompatActivity {
         });
 
         listView = findViewById(R.id.list);
-        List<String> l = new ArrayList<>();
+
+        List<Rating> ratings = null;
+        try {
+            ratings = getAllRatings();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        List<String> l = ratingToString(ratings);
+
+        ArrayAdapter <String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,l);
+        listView.setAdapter(arrayAdapter);
+        List<Rating> finalRatings = ratings;
+        listView.setOnItemClickListener((parent, view, i1, id) -> {
+            //Toast.makeText(AddRating.this,l.get(i1),Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.dialogMessage);
+            LayoutInflater inflater = this.getLayoutInflater();
+            View viewDialog = inflater.inflate(R.layout.rating_stars, null);
+            RatingBar ratingbar = viewDialog.findViewById(R.id.ratingStars);
+            builder.setView(viewDialog)
+                    .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
+                        float nuovoRating = ratingbar.getRating();
+                        finalRatings.get(i1).setRating(nuovoRating);
+                        try {
+                            UpdateData(finalRatings.get(i1));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        refreshView(finalRatings,l,listView);
+                        //ratings.get(i1).setRating(rating.getRating());
+                        //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+        });
+    }
+
+    private void UpdateData(Rating r) throws ParseException {
+
+        int ret = myDBhelper.updateRating(r);
+        if(ret == -1){
+            AddData(r);
+        }
+    }
+
+    public void refreshView(List<Rating> ratings, List<String> l, ListView listView){
+        l.clear();
+        for(Rating r: ratings){
+            l.add("\n"+r.toString());
+        }
+        ArrayAdapter <String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,l);
+        listView.setAdapter(arrayAdapter);
+    }
+
+
+    public List<Rating> getAllRatings() throws ParseException {
 
         Cursor c = getContentResolver().query(CallLog.Calls.CONTENT_URI, new String[] {"number", "date"}, null, null, "date DESC");
 
@@ -83,7 +148,7 @@ public class AddRating extends AppCompatActivity {
 
             boolean checkIfExist = false;
             for(Rating r: ratings){
-                boolean res = r.equals(check,days_group_by);
+                boolean res = r.group_by(check);
                 //Log.d("CHECK_CONFRONTO: ", ""+res);
                 if(res){
                     checkIfExist = true;
@@ -98,41 +163,73 @@ public class AddRating extends AppCompatActivity {
         }
         c.close();
 
+        /* GET DATA FROM DB */
+        Cursor data = myDBhelper.getData();
+        List<Rating> listData = new ArrayList<>();
+        while(data.moveToNext()){
+            //get the value from the database in column 1
+            //then add it to the ArrayList
+            String cell = data.getString(1);
+            String date = data.getString(2);
+            float rating = data.getFloat(3);
+
+            if(rating != -1)
+                listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(date),rating));
+            else
+                listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy",Locale.ITALY).parse(date)));
+
+        }
+
+        for(Rating r: ratings){
+            for(Rating j: listData){
+                if(r.group_by(j)){
+                    r.setRating(j.getRating());
+                }
+            }
+        }
+
+        Log.d("lista db: ",Arrays.toString(listData.toArray()));
+
+        return ratings;
+
+    }
+
+    public List<String> ratingToString(List<Rating> ratings){
+        List<String> l = new ArrayList<>();
+
         for(Rating r: ratings){
             l.add("\n"+r.toString());
         }
-
-        ArrayAdapter <String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,l);
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener((parent, view, i1, id) -> {
-            //Toast.makeText(AddRating.this,l.get(i1),Toast.LENGTH_SHORT).show();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.dialogMessage);
-            LayoutInflater inflater = this.getLayoutInflater();
-            View viewDialog = inflater.inflate(R.layout.rating_stars, null);
-            RatingBar ratingbar = viewDialog.findViewById(R.id.ratingStars);
-            builder.setView(viewDialog)
-                    .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
-                        ratings.get(i1).setRating(ratingbar.getRating());
-                        refreshView(ratings,l,listView);
-                        //ratings.get(i1).setRating(rating.getRating());
-                        //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
-                    }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
-
-            AlertDialog dialog = builder.create();
-            dialog.show();
-
-
-        });
+        return l;
     }
 
-    public void refreshView(List<Rating> ratings, List<String> l, ListView listView){
-        l.clear();
-        for(Rating r: ratings){
-            l.add("\n"+r.toString());
+    public void AddData(Rating r) {
+        boolean insertData = myDBhelper.addData(r.getPhoneNumber(),r.getDate(),r.getRating());
+
+        if (insertData) {
+            toastMessage("Data Successfully Inserted!");
+        } else {
+            toastMessage("Something went wrong");
         }
-        ArrayAdapter <String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,l);
-        listView.setAdapter(arrayAdapter);
     }
+
+    private void toastMessage(String message){
+        Toast.makeText(this,message, Toast.LENGTH_SHORT).show();
+    }
+
+    /*
+    public boolean checkIfInDB(int id){
+        Cursor data = myDBhelper.getData();
+        boolean res = false;
+        while(data.moveToNext()){
+            //get the value from the database in column 1
+            //then add it to the ArrayList
+            int _id = data.getInt(0);
+
+            if(_id == id) res=true;
+        }
+        Log.d("CHECK ID: ", String.valueOf(res));
+        return res;
+    }
+    */
 }
