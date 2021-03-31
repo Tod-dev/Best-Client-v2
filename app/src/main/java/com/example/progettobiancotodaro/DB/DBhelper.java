@@ -60,7 +60,7 @@ public class DBhelper extends SQLiteOpenHelper {
         db.execSQL(q);
         onCreate(db);
     }
-
+    /*
     public boolean addData(String cell, String date ) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -79,7 +79,7 @@ public class DBhelper extends SQLiteOpenHelper {
         //if date as inserted incorrectly it will return -1
         return result != -1;
     }
-
+*/
     public boolean addData(String cell, String date, float rating) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
