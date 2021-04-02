@@ -1,5 +1,6 @@
 package com.example.progettobiancotodaro;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -25,6 +26,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,6 +62,32 @@ public class MainActivity extends AppCompatActivity {
 
         ratingButton = findViewById(R.id.button);
         ratingButton.setOnClickListener(v -> {
+            /* TEST FIREBASE*/
+            // Write a message to the database
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("ratings");
+
+            // Read from the database
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // This method is called once with the initial value and again
+                    // whenever data at this location is updated.
+                    String value = dataSnapshot.getValue(String.class);
+                    Log.d("Main", "Value is: " + value);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Failed to read value
+                    Log.w("Main", "Failed to read value.", error.toException());
+                }
+            });
+            myRef.setValue("Hello, World!");
+            myRef.setValue("Try");
+            myRef.push();
+
+            /* FINE TEST FIREBASE */
             Intent intent = new Intent(MainActivity.this, AddRating.class);
             startActivity(intent);
         });

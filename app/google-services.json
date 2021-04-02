@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "341030057278",
+    "firebase_url": "https://rating-manager-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "rating-manager",
+    "storage_bucket": "rating-manager.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:341030057278:android:ca274070ebc9d7bbfce86f",
+        "android_client_info": {
+          "package_name": "com.example.progettobiancotodaro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "341030057278-ntunei712e6uiin9p0vgt979ul9ma32o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsHqpv99rIpSfRB5wJIS8xaqUV9UpGAXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "341030057278-ntunei712e6uiin9p0vgt979ul9ma32o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
