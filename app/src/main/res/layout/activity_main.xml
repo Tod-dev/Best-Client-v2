@@ -13,18 +13,19 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
+        android:layout_width="143dp"
+        android:layout_height="144dp"
         android:background="@drawable/customized_button"
         android:text="@string/add_rating"
         android:visibility="visible"
-        app:backgroundTint="#0B0A0A"
+        app:backgroundTint="#0da152"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.126"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499"
+        app:layout_constraintVertical_bias="0.266"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
