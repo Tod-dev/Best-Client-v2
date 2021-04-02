@@ -126,6 +126,27 @@ public class DBhelper extends SQLiteOpenHelper {
         return -1;
     }
 
+    public float getRating(String incomingNumber){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT "+COL_RATING+" FROM "+TABLE_NAME+" WHERE "+COL_CELL+"="+incomingNumber;
+        Cursor c = db.rawQuery(query, null);
+        float rating = 0;
+        float i = 0;
+        while(c.moveToNext()){
+            int colRating = c.getColumnIndex(COL_RATING);
+            rating += c.getFloat(colRating);
+            i++;
+        }
+        c.close();
+
+        if(i == 0){
+            return -1;
+        }
+
+        return rating / i;
+
+    }
+
     public int updateRating(Rating r) throws ParseException {
         int id = getRatingId(r);
         if(id == -1){
