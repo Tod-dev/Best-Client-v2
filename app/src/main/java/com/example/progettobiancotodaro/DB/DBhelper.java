@@ -107,6 +107,12 @@ public class DBhelper extends SQLiteOpenHelper {
         return db.rawQuery(query, null);
     }
 
+    public Cursor getData(String cell){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT "+COL_RATING+" FROM " + TABLE_NAME + " WHERE " + COL_CELL + "=" +cell;
+        return db.rawQuery(query, null);
+    }
+
     public int getRatingId(Rating r) throws ParseException {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME+ " WHERE "+COL_CELL+" = "+r.getPhoneNumber();
@@ -114,7 +120,10 @@ public class DBhelper extends SQLiteOpenHelper {
         Date d1 = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(r.getDate());
         while(c.moveToNext()){
             Date d2 =  new SimpleDateFormat("dd/MM/yyyy",Locale.ITALY).parse(c.getString(2));
-            long diffInMillies = Math.abs(d2.getTime()-d1.getTime());
+            long diffInMillies = 0;
+            if (d2 != null && d1 != null) {
+                diffInMillies = Math.abs(d2.getTime()-d1.getTime());
+            }
             long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
             if(diff < r.DAYS_TO_GROUP_BY){
                 int val = c.getInt(0);
