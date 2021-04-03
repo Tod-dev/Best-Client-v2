@@ -17,14 +17,13 @@ public class Settings extends AppCompatActivity {
     Toolbar toolbar;
     TextView toolbar_text;
     ImageView arrow_back;
-    Switch choice;
+    //Switch choice = findViewById(R.id.switch1);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        choice = findViewById(R.id.switch1);
         toolbar = findViewById(R.id.toolbar);
         toolbar_text = findViewById(R.id.toolbar_title);
         toolbar_text.setText(R.string.settings);
@@ -36,4 +35,8 @@ public class Settings extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
+    /*public boolean getSwitch(){
+        return choice.isChecked();
+    }*/
 }
