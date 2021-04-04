@@ -26,11 +26,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
-/*import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;*/
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         ratingButton.setOnClickListener(v -> {
             /* TEST FIREBASE*/
             // Write a message to the database
-            /*FirebaseDatabase database = FirebaseDatabase.getInstance();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("ratings");
 
             // Read from the database
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             });
             myRef.setValue("Hello, World!");
             myRef.setValue("Try");
-            myRef.push();*/
+            myRef.push();
 
             /* FINE TEST FIREBASE */
             Intent intent = new Intent(MainActivity.this, AddRating.class);
