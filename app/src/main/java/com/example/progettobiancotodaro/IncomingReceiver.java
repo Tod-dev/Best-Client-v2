@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
 
@@ -46,6 +48,9 @@ public class IncomingReceiver extends BroadcastReceiver {
 
             if (incomingNumber.length() > 0 && state == TelephonyManager.CALL_STATE_RINGING) {
 
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                String notificationPreference = preferences.getString("Notification", "Toast Message");
+
                 String message;
                 String onlyNumber = incomingNumber.substring(incomingNumber.length() - 10);
 
@@ -70,8 +75,14 @@ public class IncomingReceiver extends BroadcastReceiver {
 
                 }
 
-                makeToast(message);
-                makeNotification(message);
+                if(notificationPreference.equals("toast_message")){
+                    makeToast(message);
+                }
+                else if(notificationPreference.equals("notification")){
+                    makeNotification(message);
+                }
+
+
             }
 
 
@@ -85,7 +96,7 @@ public class IncomingReceiver extends BroadcastReceiver {
 
         public void makeNotification(String message){
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                NotificationChannel channel = new NotificationChannel("Rating Notification", "Rating Notification", NotificationManager.IMPORTANCE_DEFAULT);
+                NotificationChannel channel = new NotificationChannel("Rating Notification", "Rating Notification", NotificationManager.IMPORTANCE_HIGH);
                 NotificationManager manager = context.getSystemService(NotificationManager.class);
                 manager.createNotificationChannel(channel);
             }
@@ -93,6 +104,7 @@ public class IncomingReceiver extends BroadcastReceiver {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"Rating Notification");
             builder.setContentTitle("Rating Manager");
             builder.setContentText(message);
+            builder.setPriority(NotificationCompat.PRIORITY_MAX);
             builder.setSmallIcon(R.drawable.ic_baseline_star);
             builder.setAutoCancel(true);
 

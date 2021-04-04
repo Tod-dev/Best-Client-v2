@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         settingsbutton = findViewById(R.id.settingsButton);
         settingsbutton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, Settings.class);
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
         });
     }

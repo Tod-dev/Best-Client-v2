@@ -17,7 +17,9 @@
         android:theme="@style/Theme.ProgettoBiancoTodaro"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".Settings"/>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"/>
         <activity android:name=".AddRating" />
         <activity android:name=".MainActivity">
             <intent-filter>
