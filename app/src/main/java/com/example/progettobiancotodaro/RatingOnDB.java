@@ -1,5 +1,7 @@
 package com.example.progettobiancotodaro;
 
+import androidx.annotation.NonNull;
+
 public class RatingOnDB {
     private String phoneNumber;
     private String ratings;
@@ -27,5 +29,14 @@ public class RatingOnDB {
 
     public void setRatings(String ratings){
         this.ratings = ratings;
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return "RatingOnDB{" +
+                "phoneNumber='" + phoneNumber + '\'' +
+                ", ratings='" + ratings + '\'' +
+                '}';
     }
 }

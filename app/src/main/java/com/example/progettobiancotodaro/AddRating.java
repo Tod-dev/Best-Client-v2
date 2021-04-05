@@ -27,7 +27,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.StreamTokenizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,13 +105,25 @@ public class AddRating extends AppCompatActivity {
     }
 
     private void UpdateData(Rating r) throws ParseException {
-
         int ret = myDBhelper.updateRating(r);
         if(ret == -1){
             AddData(r);
         }else{
             toastMessage("Data Successfully Updated!");
         }
+        updateDB(r);
+    }
+
+    private void updateDB(Rating r){
+        Log.d("ratingonDB:", "Sto USANDO IL DB");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ratingsRef = database.getReference("ratings").child(r.getPhoneNumber());
+        //RatingOnDB oldfirebaseRating;
+        //RatingOnDB newfirebaseRating;
+        RatingOnDB r2 = new RatingOnDB(r.getPhoneNumber(),""+r.getRating());
+        Log.d("ratingonDB:", r2.toString());
+        ratingsRef.setValue(r2);
+        toastMessage("Data On Firebase");
     }
 
     public void refreshView(List<Rating> ratings, List<String> l, ListView listView){

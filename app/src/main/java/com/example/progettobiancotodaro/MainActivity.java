@@ -14,11 +14,8 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -47,48 +44,18 @@ public class MainActivity extends AppCompatActivity {
 
         ratingButton = findViewById(R.id.AddRatingButton);
         ratingButton.setOnClickListener(v -> {
-            /* TEST FIREBASE*/
-            // Write a message to the database
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference ratingsRef = database.getReference("ratings").child("3348331521");
-
-            // Read from the database
-            ratingsRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
-                    /*String value = dataSnapshot.getValue(String.class);
-                    Log.d("Main", "Value is: " + value);*/
-                    String msg = "ciao";
-                    RatingOnDB r = dataSnapshot.getValue(RatingOnDB.class);
-                    /*for(DataSnapshot d : dataSnapshot.getChildren()){
-                        r = (RatingOnDB) d.getValue(RatingOnDB.class);
-                    }
-
-                    Toast t = Toast.makeText(MainActivity.this, r.getPhoneNumber()+" "+r.getRatings(), Toast.LENGTH_LONG);
-                    t.show();*/
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    // Failed to read value
-                    Log.w("Main", "Failed to read value.", error.toException());
-                }
-            });
-
-            /*RatingOnDB r = new RatingOnDB("3349331521","1;1;2.5;3.5;");
-            ratingsRef.child(r.getPhoneNumber()).setValue(r);*/
-
-
-
-            /* FINE TEST FIREBASE */
             Intent intent = new Intent(MainActivity.this, AddRatingSQL.class);
             startActivity(intent);
         });
 
         settingsbutton = findViewById(R.id.settingsButton);
         settingsbutton.setOnClickListener(v -> {
+            /*
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("message");
+
+            myRef.setValue("Hello, World!");
+            */
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
         });
@@ -124,3 +91,31 @@ public class MainActivity extends AppCompatActivity {
         }
         c.close();
         tv.setText(stringBuffer);*/
+
+
+
+/* // Read from the database
+        ratingsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                    /*String value = dataSnapshot.getValue(String.class);
+                    Log.d("Main", "Value is: " + value);
+                oldfirebaseRating = dataSnapshot.getValue(RatingOnDB.class);
+        Log.w("OLD FIREBASE RATING", "");
+                    /*for(DataSnapshot d : dataSnapshot.getChildren()){
+                        r = (RatingOnDB) d.getValue(RatingOnDB.class);
+                    }
+
+                    Toast t = Toast.makeText(MainActivity.this, r.getPhoneNumber()+" "+r.getRatings(), Toast.LENGTH_LONG);
+                    t.show();
+        }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+                Log.w("Main", "Failed to read value.", error.toException());
+            }
+        });
+*/
