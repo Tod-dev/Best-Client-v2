@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,16 +50,24 @@ public class MainActivity extends AppCompatActivity {
             /* TEST FIREBASE*/
             // Write a message to the database
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("ratings");
+            DatabaseReference ratingsRef = database.getReference("ratings").child("3348331521");
 
             // Read from the database
-            myRef.addValueEventListener(new ValueEventListener() {
+            ratingsRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
-                    String value = dataSnapshot.getValue(String.class);
-                    Log.d("Main", "Value is: " + value);
+                    /*String value = dataSnapshot.getValue(String.class);
+                    Log.d("Main", "Value is: " + value);*/
+                    String msg = "ciao";
+                    RatingOnDB r = dataSnapshot.getValue(RatingOnDB.class);
+                    /*for(DataSnapshot d : dataSnapshot.getChildren()){
+                        r = (RatingOnDB) d.getValue(RatingOnDB.class);
+                    }
+
+                    Toast t = Toast.makeText(MainActivity.this, r.getPhoneNumber()+" "+r.getRatings(), Toast.LENGTH_LONG);
+                    t.show();*/
                 }
 
                 @Override
@@ -67,12 +76,14 @@ public class MainActivity extends AppCompatActivity {
                     Log.w("Main", "Failed to read value.", error.toException());
                 }
             });
-            myRef.setValue("Hello, World!");
-            myRef.setValue("Try");
-            myRef.push();
+
+            /*RatingOnDB r = new RatingOnDB("3349331521","1;1;2.5;3.5;");
+            ratingsRef.child(r.getPhoneNumber()).setValue(r);*/
+
+
 
             /* FINE TEST FIREBASE */
-            Intent intent = new Intent(MainActivity.this, AddRating.class);
+            Intent intent = new Intent(MainActivity.this, AddRatingSQL.class);
             startActivity(intent);
         });
 

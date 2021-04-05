@@ -1,5 +1,9 @@
 package com.example.progettobiancotodaro;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,19 +19,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import com.example.progettobiancotodaro.DB.DBhelper;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.io.StreamTokenizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,16 +28,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
-public class AddRating extends AppCompatActivity {
+public class AddRatingSQL extends AppCompatActivity {
     ListView listView;
     TextView toolbar_text;
     ImageView arrow_back;
     Toolbar toolbar;
     DBhelper myDBhelper;
-    RatingOnDB curRating;
-    List<RatingOnDB> allRatings = new ArrayList<>();
 
     @SuppressLint("InflateParams")
     @Override
@@ -59,7 +49,7 @@ public class AddRating extends AppCompatActivity {
         arrow_back = findViewById(R.id.arrow_back);
         arrow_back.setImageResource(R.drawable.ic_baseline_arrow_back_24);
         arrow_back.setOnClickListener(v -> {
-            Intent intent = new Intent(AddRating.this, MainActivity.class);
+            Intent intent = new Intent(AddRatingSQL.this, MainActivity.class);
             startActivity(intent);
         });
 
@@ -129,12 +119,22 @@ public class AddRating extends AppCompatActivity {
 
         Cursor c = getContentResolver().query(CallLog.Calls.CONTENT_URI, new String[] {"number", "date"}, null, null, "date DESC");
 
+
         int colNumber = c.getColumnIndex(CallLog.Calls.NUMBER);
         int colDate = c.getColumnIndex(CallLog.Calls.DATE);
 
+
+        //int offset = 0;
         final int limit = 50;
+        int days_group_by = 1;
 
         int i = 0;
+        /*
+        while(i < offset && c.moveToNext()){
+            i++;
+        }
+        Log.d("i: ", ""+i);
+        */
 
         List<Rating> ratings = new ArrayList<>();
 
@@ -148,7 +148,7 @@ public class AddRating extends AppCompatActivity {
 
             boolean checkIfExist = false;
             for(Rating r: ratings){
-                boolean res = r.group_by_number(check);
+                boolean res = r.group_by(check);
                 //Log.d("CHECK_CONFRONTO: ", ""+res);
                 if(res){
                     checkIfExist = true;
@@ -163,10 +163,7 @@ public class AddRating extends AppCompatActivity {
         }
         c.close();
 
-        // GET DATA FROM DB
-
-        //getAllRatingsFromDB();
-
+        /* GET DATA FROM DB */
         Cursor data = myDBhelper.getData();
         List<Rating> listData = new ArrayList<>();
         while(data.moveToNext()){
@@ -220,71 +217,19 @@ public class AddRating extends AppCompatActivity {
         Toast.makeText(this,message, Toast.LENGTH_SHORT).show();
     }
 
-    //Selects the object from firebase db using phone number and copies it into curRating object
-    public void getRatingFromNumber(String number){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("ratings").child(number);
+    /*
+    public boolean checkIfInDB(int id){
+        Cursor data = myDBhelper.getData();
+        boolean res = false;
+        while(data.moveToNext()){
+            //get the value from the database in column 1
+            //then add it to the ArrayList
+            int _id = data.getInt(0);
 
-
-        ratingsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                curRating = dataSnapshot.getValue(RatingOnDB.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Log.w("Main", "Failed to read value.", error.toException());
-            }
-        });
-    }
-
-    //Downoads all ratings in the db and puts them into allRatings List
-    public void getAllRatingsFromDB(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("ratings");
-        allRatings.clear();
-
-        ratingsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot d : dataSnapshot.getChildren()){
-                    allRatings.add(d.getValue(RatingOnDB.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Log.w("Main", "Failed to read value.", error.toException());
-            }
-        });
-    }
-
-    //Calculates average rating of a RatingOnDB object
-    public float CalculateAvgRating(RatingOnDB ratingOnDB){
-        StringTokenizer stringTokenizer = new StringTokenizer(ratingOnDB.getRatings(), ";");
-        float avg = 0;
-        float i = 0;
-        while(stringTokenizer.hasMoreElements()){
-            avg += (Float) stringTokenizer.nextElement();
-            i++;
+            if(_id == id) res=true;
         }
-
-        if(i == 0) return 0;
-
-        return avg / i;
+        Log.d("CHECK ID: ", String.valueOf(res));
+        return res;
     }
-
-    //Adds a new rating on db
-    public void AddNewRating(RatingOnDB ratingOnDB){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("ratings");
-
-        ratingsRef.child(ratingOnDB.getPhoneNumber()).setValue(ratingOnDB);
-    }
-
-
+    */
 }

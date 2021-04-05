@@ -70,6 +70,15 @@ public class Rating {
         long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
         return diff < DAYS_TO_GROUP_BY;
     }
+
+    public boolean group_by_number(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Rating rating = (Rating) o;
+
+        return phoneNumber.equals(rating.phoneNumber);
+    }
     /*
     @Override
     public boolean equals(Object o) {
