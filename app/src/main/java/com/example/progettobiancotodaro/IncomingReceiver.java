@@ -15,16 +15,25 @@ import android.view.Gravity;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.StringTokenizer;
 
 public class IncomingReceiver extends BroadcastReceiver {
     //final String OUR_ACTION = "android.intent.action.PHONE_STATE";
     Context context;
     DBhelper myDBhelper;
+    RatingOnDB curRating;
    // private NotificationManagerCompat notificationManager;
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
@@ -54,11 +63,15 @@ public class IncomingReceiver extends BroadcastReceiver {
                 String message;
                 String onlyNumber = incomingNumber.substring(incomingNumber.length() - 10);
 
-                float rating = myDBhelper.getRating(onlyNumber);
-                if(rating == -1){
+                getRatingFromNumber(onlyNumber);
+
+                //float rating = myDBhelper.getRating(onlyNumber);
+                if(curRating.getRatings().equals("notRated")){
                     message = "Number not rated";
                 }
                 else{
+                    float rating = CalculateAvgRating(curRating);
+
                     if(rating == 0){
                         message = onlyNumber+": 0 stars!";
                     }
@@ -110,6 +123,49 @@ public class IncomingReceiver extends BroadcastReceiver {
 
             NotificationManagerCompat notificationCompat = NotificationManagerCompat.from(context);
             notificationCompat.notify(1, builder.build());
+        }
+
+        //Selects the object from firebase db using phone number and copies it into curRating object
+        public void getRatingFromNumber(String number){
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference ratingsRef = database.getReference("ratings").child(number);
+
+
+            ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    if(dataSnapshot.getValue() == null){
+                        curRating = new RatingOnDB(number,"notRated");
+                        //Toast.makeText(AddRating.this, "null", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        curRating = dataSnapshot.getValue(RatingOnDB.class);
+                        //Toast.makeText(AddRating.this, r.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Failed to read value
+                    Log.w("Main", "Failed to read value.", error.toException());
+                }
+            });
+        }
+
+        //Calculates average rating of a RatingOnDB object
+        public float CalculateAvgRating(RatingOnDB ratingOnDB){
+            StringTokenizer stringTokenizer = new StringTokenizer(ratingOnDB.getRatings(), ";");
+            float avg = 0;
+            float i = 0;
+            while(stringTokenizer.hasMoreElements()){
+                avg += (Float) stringTokenizer.nextElement();
+                i++;
+            }
+
+            if(i == 0) return 0;
+
+            return avg / i;
         }
 
     }

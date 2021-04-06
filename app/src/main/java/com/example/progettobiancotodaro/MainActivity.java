@@ -1,6 +1,5 @@
 package com.example.progettobiancotodaro;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -10,9 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -44,18 +41,18 @@ public class MainActivity extends AppCompatActivity {
 
         ratingButton = findViewById(R.id.AddRatingButton);
         ratingButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddRatingSQL.class);
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference ratingsRef = database.getReference("ratings");
+
+            /*RatingOnDB r = new RatingOnDB("3349331521","4;5;3.5;2");
+            ratingsRef.child("3349331521").setValue(r);*/
+
+            Intent intent = new Intent(MainActivity.this, AddRating.class);
             startActivity(intent);
         });
 
         settingsbutton = findViewById(R.id.settingsButton);
         settingsbutton.setOnClickListener(v -> {
-            /*
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("message");
-
-            myRef.setValue("Hello, World!");
-            */
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
         });

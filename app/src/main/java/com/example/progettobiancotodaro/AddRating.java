@@ -176,7 +176,7 @@ public class AddRating extends AppCompatActivity {
 
         // GET DATA FROM DB
 
-        //getAllRatingsFromDB();
+        getAllRatingsFromDB();
 
         Cursor data = myDBhelper.getData();
         List<Rating> listData = new ArrayList<>();
@@ -196,7 +196,7 @@ public class AddRating extends AppCompatActivity {
 
         for(Rating r: ratings){
             for(Rating j: listData){
-                if(r.group_by(j)){
+                if(r.group_by_number(j)){
                     r.setRating(j.getRating());
                 }
             }
@@ -231,39 +231,23 @@ public class AddRating extends AppCompatActivity {
         Toast.makeText(this,message, Toast.LENGTH_SHORT).show();
     }
 
-    //Selects the object from firebase db using phone number and copies it into curRating object
-    public void getRatingFromNumber(String number){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("ratings").child(number);
 
-
-        ratingsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                curRating = dataSnapshot.getValue(RatingOnDB.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Log.w("Main", "Failed to read value.", error.toException());
-            }
-        });
-    }
 
     //Downoads all ratings in the db and puts them into allRatings List
     public void getAllRatingsFromDB(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ratingsRef = database.getReference("ratings");
-        allRatings.clear();
+        //allRatings.clear();
 
         ratingsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot d : dataSnapshot.getChildren()){
-                    allRatings.add(d.getValue(RatingOnDB.class));
+                    RatingOnDB r = d.getValue(RatingOnDB.class);
+                    allRatings.add(r);
+                    Toast.makeText(AddRating.this, "Sono in lettura"+r.toString(), Toast.LENGTH_LONG).show();
                 }
+                //Toast.makeText(AddRating.this, "Sono in lettura"+allRatings.get(0).toString(), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -272,21 +256,6 @@ public class AddRating extends AppCompatActivity {
                 Log.w("Main", "Failed to read value.", error.toException());
             }
         });
-    }
-
-    //Calculates average rating of a RatingOnDB object
-    public float CalculateAvgRating(RatingOnDB ratingOnDB){
-        StringTokenizer stringTokenizer = new StringTokenizer(ratingOnDB.getRatings(), ";");
-        float avg = 0;
-        float i = 0;
-        while(stringTokenizer.hasMoreElements()){
-            avg += (Float) stringTokenizer.nextElement();
-            i++;
-        }
-
-        if(i == 0) return 0;
-
-        return avg / i;
     }
 
     //Adds a new rating on db
