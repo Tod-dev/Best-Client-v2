@@ -57,16 +57,16 @@ public class IncomingReceiver extends BroadcastReceiver {
 
             if (incomingNumber.length() > 0 && state == TelephonyManager.CALL_STATE_RINGING) {
 
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                /*SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 String notificationPreference = preferences.getString("Notification", "Toast Message");
 
-                String message;
+                String message;*/
                 String onlyNumber = incomingNumber.substring(incomingNumber.length() - 10);
 
                 getRatingFromNumber(onlyNumber);
 
                 //float rating = myDBhelper.getRating(onlyNumber);
-                if(curRating.getRatings().equals("notRated")){
+                /*if(curRating.getRatings().equals("notRated")){
                     message = "Number not rated";
                 }
                 else{
@@ -93,7 +93,7 @@ public class IncomingReceiver extends BroadcastReceiver {
                 }
                 else if(notificationPreference.equals("notification")){
                     makeNotification(message);
-                }
+                }*/
 
 
             }
@@ -134,14 +134,39 @@ public class IncomingReceiver extends BroadcastReceiver {
             ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    String notificationPreference = preferences.getString("Notification", "Toast Message");
+                    String message;
                     if(dataSnapshot.getValue() == null){
-                        curRating = new RatingOnDB(number,"notRated");
+                        message = "Number not rated";
+                        //curRating = new RatingOnDB(number,"notRated");
                         //Toast.makeText(AddRating.this, "null", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         curRating = dataSnapshot.getValue(RatingOnDB.class);
+                        float rating = CalculateAvgRating(curRating);
+
+                        if(rating == 0){
+                            message = number+": 0 stars!";
+                        }
+                        else{
+                            int roundRating = Math.round(rating);
+                            StringBuilder feedBack = new StringBuilder();
+
+                            for(int i = 0; i < roundRating; i++){
+                                feedBack.append("⭐");
+                            }
+                            message = number+ " "+feedBack.toString();
+
+                        }
                         //Toast.makeText(AddRating.this, r.toString(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    if(notificationPreference.equals("toast_message")){
+                        makeToast(message);
+                    }
+                    else if(notificationPreference.equals("notification")){
+                        makeNotification(message);
                     }
                 }
 
@@ -158,8 +183,8 @@ public class IncomingReceiver extends BroadcastReceiver {
             StringTokenizer stringTokenizer = new StringTokenizer(ratingOnDB.getRatings(), ";");
             float avg = 0;
             float i = 0;
-            while(stringTokenizer.hasMoreElements()){
-                avg += (Float) stringTokenizer.nextElement();
+            while(stringTokenizer.hasMoreTokens()){
+                avg += Float.parseFloat(stringTokenizer.nextToken());
                 i++;
             }
 
