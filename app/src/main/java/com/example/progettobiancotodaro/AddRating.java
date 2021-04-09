@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.EventListener;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
@@ -120,10 +121,30 @@ public class AddRating extends AppCompatActivity {
         DatabaseReference ratingsRef = database.getReference("ratings").child(r.getPhoneNumber());
         //RatingOnDB oldfirebaseRating;
         //RatingOnDB newfirebaseRating;
-        RatingOnDB r2 = new RatingOnDB(r.getPhoneNumber(),""+r.getRating());
+        ratingsRef.addListenerForSingleValueEvent(new ValueEventListener(){
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() == null){
+                    RatingOnDB ratingOnDB = new RatingOnDB(r.getPhoneNumber(), r.getRating()+";");
+                    ratingsRef.setValue(ratingOnDB);
+                }
+                else{
+                    RatingOnDB ratingOnDB = dataSnapshot.getValue(RatingOnDB.class);
+                    ratingOnDB.setRatings(ratingOnDB.getRatings()+""+r.getRating()+";");
+                    ratingsRef.setValue(ratingOnDB);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        /*RatingOnDB r2 = new RatingOnDB(r.getPhoneNumber(),""+r.getRating());
         Log.d("ratingonDB:", r2.toString());
         ratingsRef.setValue(r2);
-        toastMessage("Data On Firebase");
+        toastMessage("Data On Firebase");*/
     }
 
     public void refreshView(List<Rating> ratings, List<String> l, ListView listView){
