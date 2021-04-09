@@ -77,7 +77,10 @@ public class AddRating extends AppCompatActivity {
         listView.setAdapter(arrayAdapter);
         List<Rating> finalRatings = ratings;
         listView.setOnItemClickListener((parent, view, i1, id) -> {
-            //Toast.makeText(AddRating.this,l.get(i1),Toast.LENGTH_SHORT).show();
+            if( finalRatings.get(i1).getRating() != -1) {
+                Toast.makeText(AddRating.this,"Rating already inserted!",Toast.LENGTH_SHORT).show();
+                return;
+            }
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.dialogMessage);
             LayoutInflater inflater = this.getLayoutInflater();
@@ -180,7 +183,7 @@ public class AddRating extends AppCompatActivity {
 
             boolean checkIfExist = false;
             for(Rating r: ratings){
-                boolean res = r.group_by_number(check);
+                boolean res = r.group_by(check);
                 //Log.d("CHECK_CONFRONTO: ", ""+res);
                 if(res){
                     checkIfExist = true;
@@ -217,7 +220,7 @@ public class AddRating extends AppCompatActivity {
 
         for(Rating r: ratings){
             for(Rating j: listData){
-                if(r.group_by_number(j)){
+                if(r.group_by(j)){
                     r.setRating(j.getRating());
                 }
             }
@@ -266,7 +269,7 @@ public class AddRating extends AppCompatActivity {
                 for(DataSnapshot d : dataSnapshot.getChildren()){
                     RatingOnDB r = d.getValue(RatingOnDB.class);
                     allRatings.add(r);
-                    Toast.makeText(AddRating.this, "Sono in lettura"+r.toString(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(AddRating.this, "Sono in lettura"+r.toString(), Toast.LENGTH_LONG).show();
                 }
                 //Toast.makeText(AddRating.this, "Sono in lettura"+allRatings.get(0).toString(), Toast.LENGTH_LONG).show();
             }
