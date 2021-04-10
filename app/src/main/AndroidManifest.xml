@@ -19,8 +19,14 @@
         tools:targetApi="m">
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"/>
-        <activity android:name=".AddRating" />
+            android:label="@string/title_activity_settings">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+        </activity>
+        <activity android:name=".AddRating">
+           <meta-data android:name="android.support.PARENT_ACTIVITY"
+               android:value=".MainActivity"/>
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,7 @@
 package com.example.progettobiancotodaro;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.provider.CallLog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -44,6 +47,9 @@ public class AddRating extends AppCompatActivity {
     Toolbar toolbar;
     DBhelper myDBhelper;
     RatingOnDB curRating;
+    String[] phoneNumbers;
+    String[] dates;
+    String[] ratingString;
     List<RatingOnDB> allRatings = new ArrayList<>();
 
     @SuppressLint("InflateParams")
@@ -51,8 +57,17 @@ public class AddRating extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_rating);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.add_rating);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setIcon(R.drawable.ic_baseline_arrow_back_24);
+        }
+
+
         myDBhelper = new DBhelper(this);
-        toolbar = findViewById(R.id.toolbar);
+        /*toolbar = findViewById(R.id.toolbar);
         toolbar_text = findViewById(R.id.toolbar_title);
         toolbar_text.setText(R.string.add_rating);
 
@@ -61,7 +76,7 @@ public class AddRating extends AppCompatActivity {
         arrow_back.setOnClickListener(v -> {
             Intent intent = new Intent(AddRating.this, MainActivity.class);
             startActivity(intent);
-        });
+        });*/
 
         listView = findViewById(R.id.list);
 
@@ -71,9 +86,10 @@ public class AddRating extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        List<String> l = ratingToString(ratings);
 
-        ArrayAdapter <String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,l);
+        ratingToString(ratings);
+
+        MyAdapter arrayAdapter = new MyAdapter(this, phoneNumbers, dates, ratingString);
         listView.setAdapter(arrayAdapter);
         List<Rating> finalRatings = ratings;
         listView.setOnItemClickListener((parent, view, i1, id) -> {
@@ -95,7 +111,7 @@ public class AddRating extends AppCompatActivity {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        refreshView(finalRatings,l,listView);
+                        refreshView(finalRatings, listView);
                         //ratings.get(i1).setRating(rating.getRating());
                         //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
                         dialog.dismiss();
@@ -150,12 +166,9 @@ public class AddRating extends AppCompatActivity {
         toastMessage("Data On Firebase");*/
     }
 
-    public void refreshView(List<Rating> ratings, List<String> l, ListView listView){
-        l.clear();
-        for(Rating r: ratings){
-            l.add("\n"+r.toString());
-        }
-        ArrayAdapter <String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,l);
+    public void refreshView(List<Rating> ratings, ListView listView){
+        ratingToString(ratings);
+        MyAdapter arrayAdapter = new MyAdapter(this, phoneNumbers, dates, ratingString);
         listView.setAdapter(arrayAdapter);
     }
 
@@ -232,13 +245,18 @@ public class AddRating extends AppCompatActivity {
 
     }
 
-    public List<String> ratingToString(List<Rating> ratings){
-        List<String> l = new ArrayList<>();
+    public void ratingToString(List<Rating> ratings){
+        phoneNumbers = new String[ratings.size()];
+        dates = new String[ratings.size()];
+        ratingString = new String[ratings.size()];
 
+        int i = 0;
         for(Rating r: ratings){
-            l.add("\n"+r.toString());
+            phoneNumbers[i] = ratings.get(i).getPhoneNumber();
+            dates[i] = ratings.get(i).getDate();
+            ratingString[i] = String.valueOf(ratings.get(i).getRating());
+            i++;
         }
-        return l;
     }
 
     public void AddData(Rating r) {
@@ -288,6 +306,40 @@ public class AddRating extends AppCompatActivity {
         DatabaseReference ratingsRef = database.getReference("ratings");
 
         ratingsRef.child(ratingOnDB.getPhoneNumber()).setValue(ratingOnDB);
+    }
+
+    class MyAdapter extends ArrayAdapter<String>{
+        Context context;
+        String[] rPhoneNumber;
+        String[] rDate;
+        String[] rRating;
+
+        MyAdapter(Context context, String[] phoneNumber, String[] date, String[] rating){
+            super(context,R.layout.rows,R.id.phoneNumber, phoneNumber);
+            this.context = context;
+            this.rPhoneNumber = phoneNumber;
+            this.rDate = date;
+            this.rRating = rating;
+        }
+
+        @SuppressLint("SetTextI18n")
+        public View getView(int position, View convertView, ViewGroup parent){
+            LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            @SuppressLint("ViewHolder")
+            View row = layoutInflater.inflate(R.layout.rows, parent, false);
+            TextView phoneNumberView = row.findViewById(R.id.phoneNumber);
+            TextView dateView = row.findViewById(R.id.date);
+            TextView ratingView = row.findViewById(R.id.rating);
+
+            phoneNumberView.setText(rPhoneNumber[position]);
+            dateView.setText("Last call: "+rDate[position]);
+            if(rRating[position].equals("-1.0")){
+                ratingView.setText("Rating: -");
+            }
+            else ratingView.setText("Rating: "+rRating[position]);
+
+            return row;
+        }
     }
 
 

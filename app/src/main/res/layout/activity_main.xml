@@ -6,10 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <include
+   <!-- <include
         layout="@layout/customized_toolbar"
         app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="parent" />-->
+
+    <ImageView
+        android:layout_width="345dp"
+        android:layout_height="98dp"
+        android:src="@drawable/logo_scritta"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.077" />
 
     <Button
         android:id="@+id/settingsButton"
@@ -22,10 +32,9 @@
         app:backgroundTint="#0da152"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.265"
+        app:layout_constraintVertical_bias="0.793"
         tools:visibility="visible" />
 
     <Button
@@ -34,15 +43,14 @@
         android:layout_height="144dp"
         android:background="@drawable/customized_button"
         android:text="@string/add_rating"
+        android:textStyle="bold"
         android:visibility="visible"
         app:backgroundTint="#0da152"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.126"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.266"
+        app:layout_constraintVertical_bias="0.499"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
