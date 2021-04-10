@@ -34,16 +34,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.EventListener;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 public class AddRating extends AppCompatActivity {
     ListView listView;
     TextView toolbar_text;
-    ImageView arrow_back;
     Toolbar toolbar;
     DBhelper myDBhelper;
     RatingOnDB curRating;
@@ -87,50 +90,66 @@ public class AddRating extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        ratingToString(ratings);
+        if (ratings != null) {
+            ratingToString(ratings);
+        }
 
         MyAdapter arrayAdapter = new MyAdapter(this, phoneNumbers, dates, ratingString);
         listView.setAdapter(arrayAdapter);
         List<Rating> finalRatings = ratings;
         listView.setOnItemClickListener((parent, view, i1, id) -> {
-            if( finalRatings.get(i1).getRating() != -1) {
-                Toast.makeText(AddRating.this,"Rating already inserted!",Toast.LENGTH_SHORT).show();
-                return;
-            }
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.dialogMessage);
             LayoutInflater inflater = this.getLayoutInflater();
-            View viewDialog = inflater.inflate(R.layout.rating_stars, null);
-            RatingBar ratingbar = viewDialog.findViewById(R.id.ratingStars);
-            builder.setView(viewDialog)
-                    .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
-                        float nuovoRating = ratingbar.getRating();
-                        finalRatings.get(i1).setRating(nuovoRating);
-                        try {
-                            UpdateData(finalRatings.get(i1));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        refreshView(finalRatings, listView);
-                        //ratings.get(i1).setRating(rating.getRating());
-                        //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
-                    }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
-
+            if( finalRatings.get(i1).getRating() != -1) {
+                //Toast.makeText(AddRating.this,"Rating already inserted!",Toast.LENGTH_SHORT).show();
+                builder.setTitle(R.string.dialogMessage2);
+                View viewDialog = inflater.inflate(R.layout.delete_rating, null);
+                builder.setView(viewDialog)
+                        .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
+                            float nuovoRating = -2;
+                            finalRatings.get(i1).setRating(nuovoRating);
+                            try {
+                                UpdateData(finalRatings.get(i1), false);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            refreshView(finalRatings, listView);
+                            //ratings.get(i1).setRating(rating.getRating());
+                            //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                        }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
+            } else {
+                builder.setTitle(R.string.dialogMessage);
+                View viewDialog = inflater.inflate(R.layout.rating_stars, null);
+                RatingBar ratingbar = viewDialog.findViewById(R.id.ratingStars);
+                builder.setView(viewDialog)
+                        .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
+                            float nuovoRating = ratingbar.getRating();
+                            finalRatings.get(i1).setRating(nuovoRating);
+                            try {
+                                UpdateData(finalRatings.get(i1), true);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            refreshView(finalRatings, listView);
+                            //ratings.get(i1).setRating(rating.getRating());
+                            //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                        }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
+            }
             AlertDialog dialog = builder.create();
             dialog.show();
-
-
         });
     }
 
-    private void UpdateData(Rating r) throws ParseException {
+    private void UpdateData(Rating r,boolean db) throws ParseException {
         int ret = myDBhelper.updateRating(r);
         if(ret == -1){
             AddData(r);
         }else{
             toastMessage("Data Successfully Updated!");
         }
+        if(db)
         updateDB(r);
     }
 
@@ -150,7 +169,7 @@ public class AddRating extends AppCompatActivity {
                 }
                 else{
                     RatingOnDB ratingOnDB = dataSnapshot.getValue(RatingOnDB.class);
-                    ratingOnDB.setRatings(ratingOnDB.getRatings()+""+r.getRating()+";");
+                    Objects.requireNonNull(ratingOnDB).setRatings(ratingOnDB.getRatings()+""+r.getRating()+";");
                     ratingsRef.setValue(ratingOnDB);
                 }
             }
@@ -167,9 +186,18 @@ public class AddRating extends AppCompatActivity {
     }
 
     public void refreshView(List<Rating> ratings, ListView listView){
+        filtroNonMeno2(ratings);
         ratingToString(ratings);
         MyAdapter arrayAdapter = new MyAdapter(this, phoneNumbers, dates, ratingString);
         listView.setAdapter(arrayAdapter);
+    }
+
+    private void filtroNonMeno2(List<Rating> r){
+        for(Iterator<Rating>k = r.iterator();k.hasNext();){
+            if(k.next().getRating() == -2){
+                k.remove();
+            }
+        }
     }
 
 
@@ -180,13 +208,14 @@ public class AddRating extends AppCompatActivity {
         int colNumber = c.getColumnIndex(CallLog.Calls.NUMBER);
         int colDate = c.getColumnIndex(CallLog.Calls.DATE);
 
-        final int limit = 50;
+        //final int limit = 50;
 
         int i = 0;
 
         List<Rating> ratings = new ArrayList<>();
 
-        while(c.moveToNext() && i < limit){
+        //LETTURA REGISTRO CHIAMATE
+        while(c.moveToNext()){
             //Log.d("i, array:  ", ""+i + Arrays.toString(ratings.toArray()));
             String number = c.getString(colNumber);
             Date date = new Date(Long.parseLong(c.getString(colDate)));
@@ -213,22 +242,17 @@ public class AddRating extends AppCompatActivity {
 
         // GET DATA FROM DB
 
-        getAllRatingsFromDB();
+        //getAllRatingsFromDB();
 
+        //SQL lite
         Cursor data = myDBhelper.getData();
         List<Rating> listData = new ArrayList<>();
         while(data.moveToNext()){
-            //get the value from the database in column 1
-            //then add it to the ArrayList
             String cell = data.getString(1);
             String date = data.getString(2);
             float rating = data.getFloat(3);
-
             if(rating != -1)
                 listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(date),rating));
-            else
-                listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy",Locale.ITALY).parse(date)));
-
         }
 
         for(Rating r: ratings){
@@ -239,9 +263,27 @@ public class AddRating extends AppCompatActivity {
             }
         }
 
-        Log.d("lista db: ",Arrays.toString(listData.toArray()));
+        //filtro solo != -2 -> Iterator
+        filtroNonMeno2(ratings);
 
-        return ratings;
+
+       // Log.d("lista db: ",Arrays.toString(listData.toArray()));
+
+        //SORTING
+        List<Rating> notRatedFirst = new ArrayList<>();
+
+        for( Rating r: ratings){
+            if(r.getRating() == -1){
+                notRatedFirst.add(r);
+            }
+        }
+        for( Rating r: ratings){
+            if(r.getRating() != -1){
+                notRatedFirst.add(r);
+            }
+        }
+
+        return notRatedFirst;
 
     }
 

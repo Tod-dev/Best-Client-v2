@@ -14,6 +14,7 @@
     <ImageView
         android:layout_width="345dp"
         android:layout_height="98dp"
+        android:contentDescription="@string/logo"
         android:src="@drawable/logo_scritta"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

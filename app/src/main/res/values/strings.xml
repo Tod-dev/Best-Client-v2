@@ -30,4 +30,7 @@
     <string name="rating">Rating</string>
     <string name="date">Date</string>
     <string name="phone_number">Phone Number</string>
+    <string name="logo">logo</string>
+    <string name="dialogMessage2">Rating already inserted</string>
+    <string name="delete_the_item_from_the_list">Delete the item from the list?</string>
 </resources>

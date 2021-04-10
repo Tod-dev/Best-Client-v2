@@ -1,52 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:visibility="visible">
 
     <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/ic_baseline_perm_contact_calendar_24"
-        android:contentDescription="@string/icon" />
+        android:contentDescription="@string/icon"
+        android:src="@drawable/ic_baseline_perm_contact_calendar_24" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/phoneNumber"
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:text="@string/phone_number"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_margin="5dp"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/date"
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="@string/date"
-            android:textColor="#a9a9a9"
-            android:textStyle="bold"
             android:layout_margin="5dp"
-            android:textSize="15sp"/>
+            android:text="@string/date"
+            android:textColor="@color/teal_200"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/rating"
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:text="@string/rating"
             android:textColor="#7a7a7a"
-            android:textStyle="bold"
-            android:layout_margin="5dp"
-            android:textSize="15sp"/>
-
-
+            android:textSize="15sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
+
+  <!--  <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="bottom"
+        android:contentDescription="@string/icon"
+        android:src="@drawable/ic_baseline_delete_24"
+        android:visibility="invisible" />
+-->
 
 </LinearLayout>
