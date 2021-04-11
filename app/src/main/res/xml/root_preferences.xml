@@ -14,7 +14,8 @@
             app:entryValues="@array/notifications_values"
             app:key="@string/notification"
             app:title="@string/notification_title"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true"
+            />
 
     </PreferenceCategory>
 

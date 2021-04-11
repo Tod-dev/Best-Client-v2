@@ -118,7 +118,7 @@ public class IncomingReceiver extends BroadcastReceiver {
             builder.setContentTitle("Rating Manager");
             builder.setContentText(message);
             builder.setPriority(NotificationCompat.PRIORITY_MAX);
-            builder.setSmallIcon(R.drawable.ic_baseline_star);
+            builder.setSmallIcon(R.drawable.logo_pieno);
             builder.setAutoCancel(true);
 
             NotificationManagerCompat notificationCompat = NotificationManagerCompat.from(context);
