@@ -2,7 +2,6 @@ package com.example.progettobiancotodaro;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CallLog;
@@ -33,16 +32,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.StringTokenizer;
 
 public class AddRating extends AppCompatActivity {
     ListView listView;
@@ -98,48 +92,65 @@ public class AddRating extends AppCompatActivity {
         listView.setAdapter(arrayAdapter);
         List<Rating> finalRatings = ratings;
         listView.setOnItemClickListener((parent, view, i1, id) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            LayoutInflater inflater = this.getLayoutInflater();
-            if( finalRatings.get(i1).getRating() != -1) {
-                //Toast.makeText(AddRating.this,"Rating already inserted!",Toast.LENGTH_SHORT).show();
-                builder.setTitle(R.string.dialogMessage2);
-                View viewDialog = inflater.inflate(R.layout.delete_rating, null);
-                builder.setView(viewDialog)
-                        .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
-                            float nuovoRating = -2;
-                            finalRatings.get(i1).setRating(nuovoRating);
-                            try {
-                                UpdateData(finalRatings.get(i1), false);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            refreshView(finalRatings, listView);
-                            //ratings.get(i1).setRating(rating.getRating());
-                            //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
-                            dialog.dismiss();
-                        }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
-            } else {
+            Rating k = finalRatings.get(i1);
+            if( k.getRating() != -1) {
+                showDialog(1,finalRatings,i1); //Dialog cancella un elemento
+            }else{
+                showDialog(2,finalRatings,i1); //Dialog dai un voto / cancella un elemento
+            }
+        });
+    }
+
+    private void showDialog(int type, List <Rating> finalRatings, int index){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        if(type == 1 ) { //Dialog cancella un elemento
+            builder.setTitle(R.string.dialogMessage2);
+            View viewDialog = inflater.inflate(R.layout.delete_rating, null);
+            builder.setView(viewDialog)
+                    .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
+                        float nuovoRating = -2;
+                        finalRatings.get(index).setRating(nuovoRating);
+                        try {
+                            UpdateData(finalRatings.get(index), false);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        refreshView(finalRatings, listView);
+                        //ratings.get(i1).setRating(rating.getRating());
+                        //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        else if (type == 2) { //Dialog dai un voto / cancella un elemento
                 builder.setTitle(R.string.dialogMessage);
                 View viewDialog = inflater.inflate(R.layout.rating_stars, null);
                 RatingBar ratingbar = viewDialog.findViewById(R.id.ratingStars);
+                ImageView deleteButton = viewDialog.findViewById(R.id.delete);
                 builder.setView(viewDialog)
-                        .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
-                            float nuovoRating = ratingbar.getRating();
-                            finalRatings.get(i1).setRating(nuovoRating);
-                            try {
-                                UpdateData(finalRatings.get(i1), true);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            refreshView(finalRatings, listView);
-                            //ratings.get(i1).setRating(rating.getRating());
-                            //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
-                            dialog.dismiss();
-                        }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
-            }
+                    .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
+                        float nuovoRating =  ratingbar.getRating();
+                        finalRatings.get(index).setRating(nuovoRating);
+                        try {
+                            UpdateData(finalRatings.get(index), true);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        refreshView(finalRatings, listView);
+                        //ratings.get(i1).setRating(rating.getRating());
+                        //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
             AlertDialog dialog = builder.create();
             dialog.show();
-        });
+            deleteButton.setOnClickListener(v -> {
+                dialog.dismiss();
+                showDialog(1,finalRatings,index);
+            });
+
+        }
     }
 
     private void UpdateData(Rating r,boolean db) throws ParseException {

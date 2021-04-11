@@ -17,14 +17,14 @@ public class Rating {
     public final int DAYS_TO_GROUP_BY = 1;
 
     public Rating(String phoneNumber, Date date, float rating){
-        this.phoneNumber = phoneNumber.substring(phoneNumber.length()-10);
+        this.phoneNumber = phoneNumber.length() <= 10 ? phoneNumber:  phoneNumber.substring(phoneNumber.length()-10);
         this.date = date;
         this.rating = rating;
        // this.id = ID_GENERATOR.getAndIncrement();
     }
 
     public Rating(String phoneNumber, Date date){
-        this.phoneNumber = phoneNumber.substring(phoneNumber.length()-10);
+        this.phoneNumber = phoneNumber.length() <= 10 ? phoneNumber:  phoneNumber.substring(phoneNumber.length()-10);
         this.date = date;
       //  this.id = ID_GENERATOR.getAndIncrement();
     }
