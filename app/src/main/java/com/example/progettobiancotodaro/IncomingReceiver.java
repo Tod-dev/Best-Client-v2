@@ -48,6 +48,7 @@ public class IncomingReceiver extends BroadcastReceiver {
 
         } else if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)) {
             Log.d("CALL: ", "CALL ENDED");
+            //Refresh view ?
         }
     }
 

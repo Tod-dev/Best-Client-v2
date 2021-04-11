@@ -11,13 +11,11 @@
         android:visibility="visible"
         android:layout_gravity="center_horizontal"/>
 
-   <!-- <ImageView
+   <ImageView
         android:id="@+id/delete"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center_horizontal"
         android:contentDescription="@string/icon"
-        android:src="@drawable/ic_baseline_delete_24"
-        android:visibility="invisible" />
--->
+        android:src="@drawable/ic_baseline_delete_24" />
 </LinearLayout>
