@@ -1,5 +1,6 @@
 package com.example.progettobiancotodaro;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -7,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -21,8 +23,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
@@ -46,17 +50,21 @@ public class IncomingReceiver extends BroadcastReceiver {
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-            this.context = context;
-            myDBhelper = new DBhelper(this.context);
-            TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            CallListener cl = new CallListener();
-            tm.listen(cl, PhoneStateListener.LISTEN_CALL_STATE);
+        if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
+            if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                this.context = context;
+                myDBhelper = new DBhelper(this.context);
+                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                CallListener cl = new CallListener();
+                tm.listen(cl, PhoneStateListener.LISTEN_CALL_STATE);
 
-        } else if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-            Log.d("CALL: ", "CALL ENDED");
-            //Refresh view ?
+            } else if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+                Log.d("CALL: ", "CALL ENDED");
+                //Refresh view ?
+            }
         }
+        else Toast.makeText(context,"This app couldn't read phone state, please allow in settings", Toast.LENGTH_LONG).show();
+
     }
 
     private class CallListener extends PhoneStateListener{
@@ -193,7 +201,7 @@ public class IncomingReceiver extends BroadcastReceiver {
                     }
                     else if(notificationPreference.equals("notification")){
                         makeNotification(message);
-                        makeDialog(message);
+                        //makeDialog(message);
                     }
                 }
 

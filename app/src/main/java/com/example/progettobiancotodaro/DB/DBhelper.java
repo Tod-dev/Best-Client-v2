@@ -28,6 +28,7 @@ public class DBhelper extends SQLiteOpenHelper {
     public static final String COL_RATING="rating";
     public static final String COL_CELL="number";
     public static final String COL_DATE="data";
+    public static final String COL_COMMENT="comment";
 
     public DBhelper(Context context) {
         super(context, DBNAME, null, 1);

@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -49,14 +50,14 @@ public class MainActivity extends AppCompatActivity {
 
         ratingButton = findViewById(R.id.AddRatingButton);
         ratingButton.setOnClickListener(v -> {
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference ratingsRef = database.getReference("ratings");
+            if((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED) &&
+                    (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED)){
+                //se ha i permessi avvia add rating
+                Intent intent = new Intent(MainActivity.this, AddRating.class);
+                startActivity(intent);
+            }
+            else Toast.makeText(this,"This app couldn't read phone numbers and call log, please allow in settings", Toast.LENGTH_LONG).show();
 
-            /*RatingOnDB r = new RatingOnDB("3349331521","4;5;3.5;2");
-            ratingsRef.child("3349331521").setValue(r);*/
-
-            Intent intent = new Intent(MainActivity.this, AddRating.class);
-            startActivity(intent);
         });
 
         settingsbutton = findViewById(R.id.settingsButton);

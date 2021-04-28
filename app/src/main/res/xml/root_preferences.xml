@@ -3,11 +3,6 @@
     <PreferenceCategory app:title="@string/notifications_header"
         app:icon="@drawable/ic_baseline_notifications_active_24">
 
-        <!--<EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />-->
-
         <ListPreference
             app:defaultValue="@string/toastMessage"
             app:entries="@array/notifications_entries"
@@ -16,6 +11,16 @@
             app:title="@string/notification_title"
             app:useSimpleSummaryProvider="true"
             />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/group_header"
+        app:icon="@drawable/ic_baseline_group_24">
+
+        <EditTextPreference
+            app:key="@string/group"
+            app:title="@string/group_title"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
