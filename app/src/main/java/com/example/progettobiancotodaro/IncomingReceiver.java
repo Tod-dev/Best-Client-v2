@@ -12,10 +12,15 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
@@ -27,6 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class IncomingReceiver extends BroadcastReceiver {
@@ -126,6 +133,21 @@ public class IncomingReceiver extends BroadcastReceiver {
             notificationCompat.notify(1, builder.build());
         }
 
+        public void makeDialog(String msg){
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+            builder.setTitle(R.string.dialogMessage);
+            View viewDialog = inflater.inflate(R.layout.rating_avg, null);
+            builder.setMessage(msg)
+                    .setView(viewDialog)
+                    .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
+                        Toast.makeText(context,"DIALOGO NASCOSTO",Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    });
+            AlertDialog dialog = builder.create();
+            //dialog.show();
+        }
+
         //Selects the object from firebase db using phone number and copies it into curRating object
         public void getRatingFromNumber(String number){
             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -145,7 +167,10 @@ public class IncomingReceiver extends BroadcastReceiver {
                     }
                     else{
                         curRating = dataSnapshot.getValue(RatingOnDB.class);
-                        float rating = CalculateAvgRating(curRating);
+                        float rating = 0;
+                        if (curRating != null) {
+                            rating = CalculateAvgRating(curRating);
+                        }
 
                         if(rating == 0){
                             message = number+": 0 stars!";
@@ -168,6 +193,7 @@ public class IncomingReceiver extends BroadcastReceiver {
                     }
                     else if(notificationPreference.equals("notification")){
                         makeNotification(message);
+                        makeDialog(message);
                     }
                 }
 
