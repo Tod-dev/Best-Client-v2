@@ -147,6 +147,14 @@ public class IncomingReceiver extends BroadcastReceiver {
             notificationCompat.notify(1, builder.build());
         }
 
+        public void makePopup(String title, String dialogTxt){
+            Intent intent = new Intent(context, MyAlertDialog.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("title", title);
+            intent.putExtra("text", dialogTxt);
+            context.startActivity(intent);
+        }
+
         //Selects the object from firebase db using phone number and copies it into curRating object
         public void getRatingFromNumber(String number){
             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -191,16 +199,16 @@ public class IncomingReceiver extends BroadcastReceiver {
                         //Toast.makeText(AddRating.this, r.toString(), Toast.LENGTH_SHORT).show();
                     }
 
-                    if(notificationPreference.equals("toast_message")){
-                        makeToast(message);
-                    }
-                    else if(notificationPreference.equals("notification")){
-                        makeNotification(message);
-                        Intent intent = new Intent(context, MyAlertDialog.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.putExtra("title", number);
-                        intent.putExtra("text", dialogTxt);
-                        context.startActivity(intent);
+                    switch (notificationPreference) {
+                        case "toast_message":
+                            makeToast(message);
+                            break;
+                        case "notification":
+                            makeNotification(message);
+                            break;
+                        case "popup":
+                            makePopup(number, dialogTxt);
+                            break;
                     }
                 }
 
@@ -211,6 +219,8 @@ public class IncomingReceiver extends BroadcastReceiver {
                 }
             });
         }
+
+
 
         //Calculates average rating of a RatingOnDB object
         public float CalculateAvgRating(RatingOnDB ratingOnDB){
