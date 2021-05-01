@@ -28,6 +28,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -133,13 +134,25 @@ public class AddRating extends AppCompatActivity {
         else if (type == 2) { //Dialog dai un voto / cancella un elemento
                 builder.setTitle(R.string.dialogMessage);
                 View viewDialog = inflater.inflate(R.layout.rating_stars, null);
+                TextInputLayout comment = viewDialog.findViewById(R.id.comment);
+                TextInputEditText commentText = viewDialog.findViewById(R.id.commentText);
                 RatingBar ratingbar = viewDialog.findViewById(R.id.ratingStars);
                 ImageView deleteButton = viewDialog.findViewById(R.id.delete);
                 ImageView commentButton = viewDialog.findViewById(R.id.commentLogo);
+
+                if(!finalRatings.get(index).getComment().equals("")){
+                    commentText.setText(finalRatings.get(index).getComment());
+                }
+
                 builder.setView(viewDialog)
                     .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
                         float nuovoRating =  ratingbar.getRating();
-                        finalRatings.get(index).setRating(nuovoRating);
+                        if(nuovoRating != 0){
+                            finalRatings.get(index).setRating(nuovoRating);
+                        }
+                        if(!comment.getEditText().getText().toString().equals("")){
+                            finalRatings.get(index).setComment(comment.getEditText().getText().toString());
+                        }
                         try {
                             UpdateData(finalRatings.get(index), true);
                         } catch (ParseException e) {
@@ -157,7 +170,6 @@ public class AddRating extends AppCompatActivity {
                 showDialog(1,finalRatings,index);
             });
             commentButton.setOnClickListener(v -> {
-                TextInputLayout comment = viewDialog.findViewById(R.id.comment);
                 comment.setVisibility(View.VISIBLE);
                 commentButton.setVisibility(View.INVISIBLE);
             });
@@ -275,14 +287,20 @@ public class AddRating extends AppCompatActivity {
             String date = data.getString(2);
             float rating = data.getFloat(3);
             String comment = data.getString(4);
-            if(rating != -1)
-                listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(date),rating, comment));
+            if(rating != -1 || !comment.equals(""))
+                listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(date), rating, comment));
         }
 
         for(Rating r: ratings){
             for(Rating j: listData){
                 if(r.group_by(j)){
-                    r.setRating(j.getRating());
+                    if(j.getRating() != -1){
+                        r.setRating(j.getRating());
+                    }
+                    //Scrivo l'ultimo commento inserito
+                    if(!j.getComment().equals("")){
+                        r.setComment(j.getComment());
+                    }
                 }
             }
         }

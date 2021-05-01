@@ -82,13 +82,14 @@ public class DBhelper extends SQLiteOpenHelper {
         return result != -1;
     }
 */
-    public boolean addData(String cell, String date, float rating) {
+    public boolean addData(String cell, String date, float rating, String comment) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
        // contentValues.put(COL_ID, id);
         contentValues.put(COL_CELL, cell);
         contentValues.put(COL_DATE, date);
         contentValues.put(COL_RATING, rating);
+        contentValues.put(COL_COMMENT, comment);
 
         Log.d(TAG, "addData: " +
              //   "Adding _id: " + id +

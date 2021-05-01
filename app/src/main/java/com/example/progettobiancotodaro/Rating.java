@@ -3,6 +3,7 @@ package com.example.progettobiancotodaro;
 import androidx.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +42,24 @@ public class Rating {
         return format.format(date);
     }
 
+    public String getYear(){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy", Locale.ITALIAN);
+
+        return format.format(date);
+    }
+
+    public String getMonth(){
+        SimpleDateFormat format = new SimpleDateFormat("M", Locale.ITALIAN);
+
+        return format.format(date);
+    }
+
+    public String getDay(){
+        SimpleDateFormat format = new SimpleDateFormat("dd", Locale.ITALIAN);
+
+        return format.format(date);
+    }
+
     public float getRating() {
         return rating;
     }
@@ -60,7 +79,7 @@ public class Rating {
     @NonNull
     public String toString(){
         String ratingString =  rating == -1 ? "-" : String.valueOf(rating);
-        return "Number: "+phoneNumber+", Date: "+getDate()+", Current Rating: "+ ratingString;
+        return "Number: "+phoneNumber+", Date: "+getDate()+", Current Rating: "+ ratingString+", Comment: "+comment;
     }
 
     /*
@@ -76,9 +95,10 @@ public class Rating {
         Rating rating = (Rating) o;
 
         if (!phoneNumber.equals(rating.phoneNumber)) return false;
-        long diffInMillies = Math.abs(date.getTime() - rating.date.getTime());
+        return getYear().equals(rating.getYear()) && getMonth().equals(rating.getMonth()) && getDay().equals(rating.getDay());
+        /*long diffInMillies = Math.abs(date.getTime() - rating.date.getTime());
         long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-        return diff < DAYS_TO_GROUP_BY;
+        return diff < DAYS_TO_GROUP_BY;*/
     }
 
     public boolean group_by_number(Object o) {
