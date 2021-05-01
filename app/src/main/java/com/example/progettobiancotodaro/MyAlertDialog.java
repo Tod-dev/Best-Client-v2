@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MyAlertDialog extends Activity {
+    AlertDialog dialog;
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void makeDialog(String title, String text){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -31,11 +32,22 @@ public class MyAlertDialog extends Activity {
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     });
-            AlertDialog dialog = builder.create();
+            dialog = builder.create();
             dialog.show();
             TextView messageText = (TextView)dialog.findViewById(android.R.id.message);
             messageText.setGravity(Gravity.CENTER);
+            dialog.setCanceledOnTouchOutside(false);
     }
+
+    //Per evitare di creare troppe istanze - se chiamate ravvicinate
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if ( dialog!=null && dialog.isShowing() ){
+            dialog.cancel();
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

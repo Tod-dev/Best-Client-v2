@@ -80,7 +80,9 @@ public class IncomingReceiver extends BroadcastReceiver {
                 String notificationPreference = preferences.getString("Notification", "Toast Message");
 
                 String message;*/
-                String onlyNumber = incomingNumber.substring(incomingNumber.length() - 10);
+                String onlyNumber=incomingNumber;
+                if(incomingNumber.length() >= 10)
+                    onlyNumber = incomingNumber.substring(incomingNumber.length() - 10);
 
                 getRatingFromNumber(onlyNumber);
 
