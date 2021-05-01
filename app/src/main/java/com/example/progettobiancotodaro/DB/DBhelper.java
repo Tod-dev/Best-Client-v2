@@ -42,8 +42,7 @@ public class DBhelper extends SQLiteOpenHelper {
                 COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COL_CELL+" TEXT ," +
                 COL_DATE+" TEXT ," +
-                COL_RATING+" REAL,"+
-                COL_COMMENT+"TEXT"+
+                COL_RATING+" REAL"+
                 ")";
         db.execSQL(q);
     }
@@ -56,11 +55,7 @@ public class DBhelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 */
-    public void addColumn(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String q = "ALTER TABLE "+ TABLE_NAME+" ADD "+COL_COMMENT+" TEXT";
-        db.execSQL(q);
-    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         String q = "DROP  TABLE IF EXISTS "+ TABLE_NAME;
@@ -87,14 +82,13 @@ public class DBhelper extends SQLiteOpenHelper {
         return result != -1;
     }
 */
-    public boolean addData(String cell, String date, float rating, String comment) {
+    public boolean addData(String cell, String date, float rating) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
        // contentValues.put(COL_ID, id);
         contentValues.put(COL_CELL, cell);
         contentValues.put(COL_DATE, date);
         contentValues.put(COL_RATING, rating);
-        contentValues.put(COL_COMMENT, comment);
 
         Log.d(TAG, "addData: " +
              //   "Adding _id: " + id +
