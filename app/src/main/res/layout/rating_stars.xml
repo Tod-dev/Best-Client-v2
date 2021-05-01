@@ -12,10 +12,34 @@
         android:visibility="visible" />
 
     <ImageView
+        android:id="@+id/commentLogo"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/icon"
+        android:src="@drawable/ic_baseline_comment_24"
+        android:visibility="visible"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="@string/comment"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
         android:id="@+id/delete"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center_horizontal"
         android:contentDescription="@string/icon"
         android:src="@drawable/ic_baseline_delete_24" />
+
+
 </LinearLayout>

@@ -13,13 +13,15 @@ public class Rating {
    // private int id;
     private String phoneNumber;
     private Date date;
+    private String comment = "";
     private float rating = -1;
     public final int DAYS_TO_GROUP_BY = 1;
 
-    public Rating(String phoneNumber, Date date, float rating){
+    public Rating(String phoneNumber, Date date, float rating, String comment){
         this.phoneNumber = phoneNumber.length() <= 10 ? phoneNumber :  phoneNumber.substring(phoneNumber.length()-10);
         this.date = date;
         this.rating = rating;
+        this.comment = comment;
        // this.id = ID_GENERATOR.getAndIncrement();
     }
 
@@ -45,6 +47,14 @@ public class Rating {
 
     public void setRating(float rating){
         this.rating = rating;
+    }
+
+    public String getComment(){
+        return comment;
+    }
+
+    public void setComment(String comment){
+        this.comment = comment;
     }
 
     @NonNull

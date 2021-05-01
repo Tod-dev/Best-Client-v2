@@ -28,6 +28,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,8 +68,8 @@ public class AddRating extends AppCompatActivity {
             actionBar.setIcon(R.drawable.ic_baseline_arrow_back_24);
         }
 
-
         myDBhelper = new DBhelper(this);
+        //myDBhelper.addColumn();
         /*toolbar = findViewById(R.id.toolbar);
         toolbar_text = findViewById(R.id.toolbar_title);
         toolbar_text.setText(R.string.add_rating);
@@ -134,6 +135,7 @@ public class AddRating extends AppCompatActivity {
                 View viewDialog = inflater.inflate(R.layout.rating_stars, null);
                 RatingBar ratingbar = viewDialog.findViewById(R.id.ratingStars);
                 ImageView deleteButton = viewDialog.findViewById(R.id.delete);
+                ImageView commentButton = viewDialog.findViewById(R.id.commentLogo);
                 builder.setView(viewDialog)
                     .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
                         float nuovoRating =  ratingbar.getRating();
@@ -153,6 +155,11 @@ public class AddRating extends AppCompatActivity {
             deleteButton.setOnClickListener(v -> {
                 dialog.dismiss();
                 showDialog(1,finalRatings,index);
+            });
+            commentButton.setOnClickListener(v -> {
+                TextInputLayout comment = viewDialog.findViewById(R.id.comment);
+                comment.setVisibility(View.VISIBLE);
+                commentButton.setVisibility(View.INVISIBLE);
             });
 
         }
@@ -267,8 +274,9 @@ public class AddRating extends AppCompatActivity {
             String cell = data.getString(1);
             String date = data.getString(2);
             float rating = data.getFloat(3);
+            String comment = data.getString(4);
             if(rating != -1)
-                listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(date),rating));
+                listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(date),rating, comment));
         }
 
         for(Rating r: ratings){
@@ -318,7 +326,7 @@ public class AddRating extends AppCompatActivity {
     }
 
     public void AddData(Rating r) {
-        boolean insertData = myDBhelper.addData(r.getPhoneNumber(),r.getDate(),r.getRating());
+        boolean insertData = myDBhelper.addData(r.getPhoneNumber(),r.getDate(),r.getRating(), r.getComment());
 
         if (insertData) {
             toastMessage("Data Successfully Inserted!");

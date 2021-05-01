@@ -8,8 +8,10 @@
     <string name="negativeButton">Cancel</string>
     <string name="settings">Settings</string>
     <string name="toastMessage">Toast Message</string>
+    <string name="toastMessageValue">toast_message</string>
     <string name="notification">Notification</string>
     <string name="group">Group</string>
+    <string name="comment">Comment</string>
     <string name="settingsChoice">How to get phone number rating</string>
     <string name="title_activity_settings">SettingsActivity</string>
 

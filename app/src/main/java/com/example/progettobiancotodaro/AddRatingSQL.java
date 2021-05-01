@@ -172,9 +172,10 @@ public class AddRatingSQL extends AppCompatActivity {
             String cell = data.getString(1);
             String date = data.getString(2);
             float rating = data.getFloat(3);
+            String comment = data.getString(4);
 
             if(rating != -1)
-                listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(date),rating));
+                listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(date),rating, comment));
             else
                 listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy",Locale.ITALY).parse(date)));
 
@@ -204,7 +205,7 @@ public class AddRatingSQL extends AppCompatActivity {
     }
 
     public void AddData(Rating r) {
-        boolean insertData = myDBhelper.addData(r.getPhoneNumber(),r.getDate(),r.getRating());
+        boolean insertData = myDBhelper.addData(r.getPhoneNumber(),r.getDate(),r.getRating(), r.getComment());
 
         if (insertData) {
             toastMessage("Data Successfully Inserted!");

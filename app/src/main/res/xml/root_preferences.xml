@@ -4,7 +4,7 @@
         app:icon="@drawable/ic_baseline_notifications_active_24">
 
         <ListPreference
-            app:defaultValue="@string/toastMessage"
+            app:defaultValue="@string/toastMessageValue"
             app:entries="@array/notifications_entries"
             app:entryValues="@array/notifications_values"
             app:key="@string/notification"

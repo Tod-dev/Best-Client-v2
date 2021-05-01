@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -135,7 +136,8 @@ public class IncomingReceiver extends BroadcastReceiver {
             builder.setContentText(message);
             builder.setPriority(NotificationCompat.PRIORITY_MAX);
             builder.setSmallIcon(R.drawable.logo_pieno);
-            builder.setAutoCancel(true);
+            builder.setAutoCancel(false);
+            builder.setOngoing(true);
 
             NotificationManagerCompat notificationCompat = NotificationManagerCompat.from(context);
             notificationCompat.notify(1, builder.build());

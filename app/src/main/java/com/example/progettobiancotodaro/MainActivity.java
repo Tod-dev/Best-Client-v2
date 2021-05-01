@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button ratingButton;
     Button settingsbutton;
+    String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_PHONE_NUMBERS,Manifest.permission.READ_CALL_LOG};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +35,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_PHONE_STATE}, 1);
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) +
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS)+
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, Permissions, 1);
         }
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED){
+        /*if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_NUMBERS},2);
             }
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALL_LOG},3);
-        }
+        }*/
 
         ratingButton = findViewById(R.id.AddRatingButton);
         ratingButton.setOnClickListener(v -> {
