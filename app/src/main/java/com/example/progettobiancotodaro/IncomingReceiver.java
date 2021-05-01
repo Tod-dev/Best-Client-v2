@@ -2,10 +2,13 @@ package com.example.progettobiancotodaro;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -133,27 +136,13 @@ public class IncomingReceiver extends BroadcastReceiver {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"Rating Notification");
             builder.setContentTitle("Rating Manager");
             builder.setContentText(message);
-            builder.setPriority(NotificationCompat.PRIORITY_MAX);
             builder.setSmallIcon(R.drawable.logo_pieno);
             builder.setAutoCancel(true);
+            builder.setOngoing(true);
+            builder.setPriority(Notification.PRIORITY_MAX);
 
             NotificationManagerCompat notificationCompat = NotificationManagerCompat.from(context);
             notificationCompat.notify(1, builder.build());
-        }
-
-        public void makeDialog(String msg){
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-            builder.setTitle(R.string.dialogMessage);
-            View viewDialog = inflater.inflate(R.layout.rating_avg, null);
-            builder.setMessage(msg)
-                    .setView(viewDialog)
-                    .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
-                        Toast.makeText(context,"DIALOGO NASCOSTO",Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
-                    });
-            AlertDialog dialog = builder.create();
-            //dialog.show();
         }
 
         //Selects the object from firebase db using phone number and copies it into curRating object
@@ -168,8 +157,10 @@ public class IncomingReceiver extends BroadcastReceiver {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                     String notificationPreference = preferences.getString("Notification", "Toast Message");
                     String message;
+                    String dialogTxt;
                     if(dataSnapshot.getValue() == null){
                         message = "Number not rated";
+                        dialogTxt=message;
                         //curRating = new RatingOnDB(number,"notRated");
                         //Toast.makeText(AddRating.this, "null", Toast.LENGTH_SHORT).show();
                     }
@@ -182,6 +173,7 @@ public class IncomingReceiver extends BroadcastReceiver {
 
                         if(rating == 0){
                             message = number+": 0 stars!";
+                            dialogTxt="0 stars!";
                         }
                         else{
                             int roundRating = Math.round(rating);
@@ -191,6 +183,7 @@ public class IncomingReceiver extends BroadcastReceiver {
                                 feedBack.append("⭐");
                             }
                             message = number+ " "+feedBack.toString();
+                            dialogTxt=feedBack.toString();
 
                         }
                         //Toast.makeText(AddRating.this, r.toString(), Toast.LENGTH_SHORT).show();
@@ -201,7 +194,11 @@ public class IncomingReceiver extends BroadcastReceiver {
                     }
                     else if(notificationPreference.equals("notification")){
                         makeNotification(message);
-                        //makeDialog(message);
+                        Intent intent = new Intent(context, MyAlertDialog.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.putExtra("title", number);
+                        intent.putExtra("text", dialogTxt);
+                        context.startActivity(intent);
                     }
                 }
 

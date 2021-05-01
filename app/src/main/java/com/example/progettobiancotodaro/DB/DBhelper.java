@@ -55,6 +55,7 @@ public class DBhelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 */
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         String q = "DROP  TABLE IF EXISTS "+ TABLE_NAME;
