@@ -6,9 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -20,11 +22,8 @@ public class MyAlertDialog extends Activity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void makeDialog(String title, String text){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            LayoutInflater inflater = (LayoutInflater) this.getSystemService( LAYOUT_INFLATER_SERVICE );
             builder.setTitle(title);
-            View viewDialog = inflater.inflate(R.layout.rating_avg, null);
             builder.setMessage(text)
-                    .setView(viewDialog)
                     .setPositiveButton("ok", (dialog, which) -> {
                         //Toast.makeText(this,"DIALOGO NASCOSTO",Toast.LENGTH_LONG).show();
                         dialog.dismiss();
@@ -34,6 +33,8 @@ public class MyAlertDialog extends Activity {
                     });
             AlertDialog dialog = builder.create();
             dialog.show();
+            TextView messageText = (TextView)dialog.findViewById(android.R.id.message);
+            messageText.setGravity(Gravity.CENTER);
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
