@@ -147,17 +147,20 @@ public class AddRating extends AppCompatActivity {
                 builder.setView(viewDialog)
                     .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
                         float nuovoRating =  ratingbar.getRating();
-                        if(nuovoRating != 0){
-                            finalRatings.get(index).setRating(nuovoRating);
-                        }
+
                         if(!comment.getEditText().getText().toString().equals("")){
                             finalRatings.get(index).setComment(comment.getEditText().getText().toString());
                         }
-                        try {
-                            UpdateData(finalRatings.get(index), true);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                        if(nuovoRating != 0){
+                            //se ho inserito un rating modifico il db firebase
+                            finalRatings.get(index).setRating(nuovoRating);
+                            try {
+                                UpdateData(finalRatings.get(index), true);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
+
                         refreshView(finalRatings, listView);
                         //ratings.get(i1).setRating(rating.getRating());
                         //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
