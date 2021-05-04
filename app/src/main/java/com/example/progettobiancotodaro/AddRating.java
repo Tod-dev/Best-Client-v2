@@ -294,13 +294,18 @@ public class AddRating extends AppCompatActivity {
         for(Rating r: ratings){
             for(Rating j: listData){
                 if(r.group_by(j)){
-                    if(j.getRating() != -1){
-                        r.setRating(j.getRating());
+                    //se sul db il rating è -2 lo ignoro perchè l'utente lo ha eliminato
+                    if(j.getRating() != -2){
+                        //aggiorno il rating solo se sul db ne ho già inserito uno lo stesso giorno
+                        if(j.getRating() != -1){
+                            r.setRating(j.getRating());
+                        }
+                        //Scrivo l'ultimo commento inserito
+                        if(!j.getComment().equals("")){
+                            r.setComment(j.getComment());
+                        }
                     }
-                    //Scrivo l'ultimo commento inserito
-                    if(!j.getComment().equals("")){
-                        r.setComment(j.getComment());
-                    }
+
                 }
             }
         }
