@@ -42,7 +42,8 @@ public class DBhelper extends SQLiteOpenHelper {
                 COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COL_CELL+" TEXT ," +
                 COL_DATE+" TEXT ," +
-                COL_RATING+" REAL"+
+                COL_COMMENT+" TEXT ,"+
+                COL_RATING+" REAL "+
                 ")";
         db.execSQL(q);
     }
@@ -53,6 +54,13 @@ public class DBhelper extends SQLiteOpenHelper {
         String q = "DROP  TABLE IF EXISTS "+ TABLE_NAME;
         db.execSQL(q);
         onCreate(db);
+    }
+*/
+    /*
+    public void addColumn(){
+        String q = "alter table "+ TABLE_NAME + " ADD " +COL_COMMENT +" TEXT";
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(q);
     }
 */
 
