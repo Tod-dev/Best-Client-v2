@@ -2,6 +2,7 @@ package com.example.progettobiancotodaro;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CallLog;
@@ -20,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
 import com.google.android.material.textfield.TextInputEditText;
@@ -33,11 +35,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class AddRating extends AppCompatActivity {
     ListView listView;
@@ -176,14 +180,21 @@ public class AddRating extends AppCompatActivity {
 
     private void UpdateData(Rating r,boolean db) throws ParseException {
         /* AGGIORNA I DATI SUL DB SQLITE E SU FIREBASE */
+        Rating remoteRating = new Rating(r.getPhoneNumber(), r.getRealDate(), r.getRating(), r.getComment());
+
+        if(db)
+            updateDB(remoteRating);
+
+        if(r.getRating() > 0){
+            r.setRating(-2);
+        }
+
         int ret = myDBhelper.updateRating(r);
         if(ret == -1){
             AddData(r);
         }else{
             toastMessage("Data Successfully Updated!");
         }
-        if(db)
-        updateDB(r);
     }
 
     private void updateDB(Rating r){
@@ -241,20 +252,38 @@ public class AddRating extends AppCompatActivity {
         int colNumber = c.getColumnIndex(CallLog.Calls.NUMBER);
         int colDate = c.getColumnIndex(CallLog.Calls.DATE);
 
-        //final int limit = 50;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String notificationPreference = preferences.getString("Last Calls", "None");
 
         int i = 0;
 
         List<Rating> ratings = new ArrayList<>();
 
+        Date curDate = Calendar.getInstance().getTime();
         //LETTURA REGISTRO CHIAMATE
         while(c.moveToNext()){
+            boolean skip = false;
             //Log.d("i, array:  ", ""+i + Arrays.toString(ratings.toArray()));
             String number = c.getString(colNumber);
             Date date = new Date(Long.parseLong(c.getString(colDate)));
             Rating check = new Rating(number,date);
             //Log.d("Data: ", ""+c.getString(colDate));
 
+            long diffInMillies = Math.abs(date.getTime() - curDate.getTime());
+            long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            //Filtro in base alle impostazioni
+            switch (notificationPreference) {
+                case "last24":
+                    if(diff > 24) skip = true;
+                    break;
+                case "last48":
+                    if(diff > 48) skip = true;
+                    break;
+                default:
+                    break;
+            }
+
+            if(skip) continue;
 
             boolean checkIfExist = false;
             for(Rating r: ratings){

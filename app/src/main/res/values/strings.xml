@@ -10,17 +10,18 @@
     <string name="toastMessage">Toast Message</string>
     <string name="toastMessageValue">toast_message</string>
     <string name="notification">Notification</string>
-    <string name="group">Group</string>
+    <string name="lastcalls">Last Calls</string>
     <string name="comment">Comment</string>
     <string name="settingsChoice">How to get phone number rating</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
     <string name="notifications_header">Notifications</string>
-    <string name="group_header">Group</string>
+    <string name="lastcalls_header">Last Calls</string>
+    <string name="lastcalls_title">Last Calls Time Range</string>
 
     <!-- Messages Preferences -->
-    <string name="group_title">Your group</string>
+    <string name="NoFilter">None</string>
     <string name="notification_title">Default way of notification</string>
 
     <!-- Sync Preferences -->

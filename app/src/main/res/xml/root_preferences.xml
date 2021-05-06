@@ -14,13 +14,17 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/group_header"
-        app:icon="@drawable/ic_baseline_group_24">
+    <PreferenceCategory app:title="@string/lastcalls_header"
+        app:icon="@drawable/ic_baseline_access_time_filled_24">
 
-        <EditTextPreference
-            app:key="@string/group"
-            app:title="@string/group_title"
-            app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            app:defaultValue="@string/NoFilter"
+            app:entries="@array/lastcalls_entries"
+            app:entryValues="@array/lastcalls_values"
+            app:key="@string/lastcalls"
+            app:title="@string/lastcalls_title"
+            app:useSimpleSummaryProvider="true"
+            />
 
     </PreferenceCategory>
 
