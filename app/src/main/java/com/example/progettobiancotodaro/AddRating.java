@@ -145,6 +145,15 @@ public class AddRating extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
+                        else{
+                            if(!comment.getEditText().getText().toString().equals("")){
+                                try {
+                                    UpdateData(finalRatings.get(index), false);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
 
                         refreshView(finalRatings, listView);
                         //ratings.get(i1).setRating(rating.getRating());
@@ -264,6 +273,8 @@ public class AddRating extends AppCompatActivity {
         }
         c.close();
 
+        //HO TUTTO IL REGISTRO IN ratings RAGGRUPPATO PER DATA
+
         //PRENDO I DATI DA SQL lite PER VEDERE QUALI RATING HO GIA' INSERITO E QUALI NO
         Cursor data = myDBhelper.getData();
         List<Rating> listData = new ArrayList<>();
@@ -279,18 +290,14 @@ public class AddRating extends AppCompatActivity {
         for(Rating r: ratings){
             for(Rating j: listData){
                 if(r.group_by(j)){
-                    //se sul db il rating è -2 lo ignoro perchè l'utente lo ha eliminato
-                    if(j.getRating() != -2){
-                        //aggiorno il rating solo se sul db ne ho già inserito uno lo stesso giorno
-                        if(j.getRating() != -1){
-                            r.setRating(j.getRating());
-                        }
-                        //Scrivo l'ultimo commento inserito
-                        if(!j.getComment().equals("")){
-                            r.setComment(j.getComment());
-                        }
+                    //aggiorno il rating solo se sul db ne ho già inserito uno lo stesso giorno
+                    if(j.getRating() != -1){
+                        r.setRating(j.getRating());
                     }
-
+                    //Scrivo l'ultimo commento inserito
+                    if(!j.getComment().equals("")){
+                        r.setComment(j.getComment());
+                    }
                 }
             }
         }
