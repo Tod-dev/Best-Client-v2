@@ -42,6 +42,10 @@ public class Rating {
         return format.format(date);
     }
 
+    public Date getRealDate(){
+        return date;
+    }
+
     public String getYear(){
         SimpleDateFormat format = new SimpleDateFormat("yyyy", Locale.ITALIAN);
 
