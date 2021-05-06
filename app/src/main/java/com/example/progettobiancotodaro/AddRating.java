@@ -1,11 +1,8 @@
 package com.example.progettobiancotodaro;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.util.Log;
@@ -23,9 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
 import com.google.android.material.textfield.TextInputEditText;
@@ -47,10 +41,7 @@ import java.util.Objects;
 
 public class AddRating extends AppCompatActivity {
     ListView listView;
-    TextView toolbar_text;
-    Toolbar toolbar;
     DBhelper myDBhelper;
-    RatingOnDB curRating;
     String[] phoneNumbers;
     String[] dates;
     String[] ratingString;
@@ -71,19 +62,10 @@ public class AddRating extends AppCompatActivity {
 
         myDBhelper = new DBhelper(this);
         //myDBhelper.addColumn();
-        /*toolbar = findViewById(R.id.toolbar);
-        toolbar_text = findViewById(R.id.toolbar_title);
-        toolbar_text.setText(R.string.add_rating);
-
-        arrow_back = findViewById(R.id.arrow_back);
-        arrow_back.setImageResource(R.drawable.ic_baseline_arrow_back_24);
-        arrow_back.setOnClickListener(v -> {
-            Intent intent = new Intent(AddRating.this, MainActivity.class);
-            startActivity(intent);
-        });*/
 
         listView = findViewById(R.id.list);
 
+        /* PRENDO TUTTI I RATING */
         List<Rating> ratings = null;
         try {
             ratings = getAllRatings();
@@ -95,11 +77,14 @@ public class AddRating extends AppCompatActivity {
             ratingToString(ratings);
         }
 
+        /* INSERISCO TUTTI I RATING NELLA LISTVIEW */
         MyAdapter arrayAdapter = new MyAdapter(this, phoneNumbers, dates, ratingString);
         listView.setAdapter(arrayAdapter);
         List<Rating> finalRatings = ratings;
         listView.setOnItemClickListener((parent, view, i1, id) -> {
             Rating k = finalRatings.get(i1);
+
+            /* SE HO GIA' INSERITO QUEL RATING CHIEDO SE LO VUOLE ELIMINARE DALLA LISTA */
             if( k.getRating() != -1) {
                 showDialog(1,finalRatings,i1); //Dialog cancella un elemento
             }else{
@@ -181,6 +166,7 @@ public class AddRating extends AppCompatActivity {
     }
 
     private void UpdateData(Rating r,boolean db) throws ParseException {
+        /* AGGIORNA I DATI SUL DB SQLITE E SU FIREBASE */
         int ret = myDBhelper.updateRating(r);
         if(ret == -1){
             AddData(r);
@@ -278,11 +264,7 @@ public class AddRating extends AppCompatActivity {
         }
         c.close();
 
-        // GET DATA FROM DB
-
-        //getAllRatingsFromDB();
-
-        //SQL lite
+        //PRENDO I DATI DA SQL lite PER VEDERE QUALI RATING HO GIA' INSERITO E QUALI NO
         Cursor data = myDBhelper.getData();
         List<Rating> listData = new ArrayList<>();
         while(data.moveToNext()){
@@ -319,7 +301,7 @@ public class AddRating extends AppCompatActivity {
 
        // Log.d("lista db: ",Arrays.toString(listData.toArray()));
 
-        //SORTING
+        //SORTING (METTO PRIMA QUELLI DA INSERIRE E POI QUELLI GIA' INSERITI)
         List<Rating> notRatedFirst = new ArrayList<>();
 
         for( Rating r: ratings){
@@ -400,6 +382,7 @@ public class AddRating extends AppCompatActivity {
         ratingsRef.child(ratingOnDB.getPhoneNumber()).setValue(ratingOnDB);
     }
 
+    /* CLASSE PER LA VISIONE PERSONALIZZATA DELLA LIST VIEW */
     class MyAdapter extends ArrayAdapter<String>{
         Context context;
         String[] rPhoneNumber;

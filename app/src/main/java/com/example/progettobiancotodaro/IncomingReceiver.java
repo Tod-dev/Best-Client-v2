@@ -80,54 +80,24 @@ public class IncomingReceiver extends BroadcastReceiver {
                 String notificationPreference = preferences.getString("Notification", "Toast Message");
 
                 String message;*/
+
+                /* ESTRAGGO IL NUMERO DEL CHIAMANTE */
                 String onlyNumber=incomingNumber;
                 if(incomingNumber.length() >= 10)
                     onlyNumber = incomingNumber.substring(incomingNumber.length() - 10);
 
                 getRatingFromNumber(onlyNumber);
-
-                //float rating = myDBhelper.getRating(onlyNumber);
-                /*if(curRating.getRatings().equals("notRated")){
-                    message = "Number not rated";
-                }
-                else{
-                    float rating = CalculateAvgRating(curRating);
-
-                    if(rating == 0){
-                        message = onlyNumber+": 0 stars!";
-                    }
-                    else{
-                        int roundRating = Math.round(rating);
-                        StringBuilder feedBack = new StringBuilder();
-
-                        for(int i = 0; i < roundRating; i++){
-                            feedBack.append("⭐");
-                        }
-                        message = onlyNumber+ " "+feedBack.toString();
-
-                    }
-
-                }
-
-                if(notificationPreference.equals("toast_message")){
-                    makeToast(message);
-                }
-                else if(notificationPreference.equals("notification")){
-                    makeNotification(message);
-                }*/
-
-
             }
-
-
         }
 
+        /* DISPLAY DEL TOAST */
         public void makeToast(String message){
             Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
             toast.show();
         }
 
+        /* DISPLAY DELLA NOTIFICA */
         public void makeNotification(String message){
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
                 NotificationChannel channel = new NotificationChannel("Rating Notification", "Rating Notification", NotificationManager.IMPORTANCE_HIGH);
@@ -147,6 +117,7 @@ public class IncomingReceiver extends BroadcastReceiver {
             notificationCompat.notify(1, builder.build());
         }
 
+        /* DISPLAY DEL POPUP */
         public void makePopup(String title, String dialogTxt){
             Intent intent = new Intent(context, MyAlertDialog.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);

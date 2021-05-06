@@ -42,7 +42,8 @@ public class DBhelper extends SQLiteOpenHelper {
                 COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COL_CELL+" TEXT ," +
                 COL_DATE+" TEXT ," +
-                COL_RATING+" REAL"+
+                COL_RATING+" REAL,"+
+                COL_COMMENT+" TEXT"+
                 ")";
         db.execSQL(q);
     }
