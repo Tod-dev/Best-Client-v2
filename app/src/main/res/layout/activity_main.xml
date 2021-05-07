@@ -54,4 +54,21 @@
         app:layout_constraintVertical_bias="0.499"
         tools:visibility="visible" />
 
+    <Button
+        android:id="@+id/SignOutButton"
+        android:layout_width="106dp"
+        android:layout_height="66dp"
+        android:background="@drawable/customized_button"
+        android:text="@string/logout"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:backgroundTint="#0da152"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.819"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.276"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
