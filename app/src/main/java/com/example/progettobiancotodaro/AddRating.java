@@ -193,7 +193,8 @@ public class AddRating extends AppCompatActivity {
         if(ret == -1){
             AddData(r);
         }else{
-            toastMessage("Data Successfully Updated!");
+           // toastMessage("Data Successfully Updated!");
+            Log.d("DATA IN LOCALE", "UpdateData: ");
         }
     }
 
