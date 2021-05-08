@@ -1,33 +1,28 @@
 package com.example.progettobiancotodaro;
 
-import androidx.annotation.NonNull;
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.Menu;
+import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.progettobiancotodaro.ui.login.LoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
 
     GoogleSignInClient mGoogleSignInClient;
@@ -58,16 +53,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,personName+" "+personEmail+" "+personId, Toast.LENGTH_SHORT).show();
         }
         logoutButton = (Button) findViewById(R.id.SignOutButton);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    // ...
-                    case R.id.SignOutButton:
-                        signOut();
-                        break;
-                    // ...
-                }
+        logoutButton.setOnClickListener(v -> {
+            // ...
+            if (v.getId() == R.id.SignOutButton) {
+                signOut();
+                // ...
             }
         });
 
@@ -131,13 +121,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void signOut() {
         mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
+                .addOnCompleteListener(this, task -> {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
                 });
     }
 

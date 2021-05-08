@@ -1,29 +1,13 @@
 package  com.example.progettobiancotodaro.ui.login;
 
-import android.app.Activity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.progettobiancotodaro.MainActivity;
 import com.example.progettobiancotodaro.R;
-import com.example.progettobiancotodaro.databinding.ActivityLoginBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -47,15 +31,10 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         com.google.android.gms.common.SignInButton googleLogin = (com.google.android.gms.common.SignInButton) findViewById(R.id.loginGoogle);
-        googleLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.loginGoogle:
-                        signIn();
-                        break;
-                    // ...
-                }
+        googleLogin.setOnClickListener(v -> {
+            if (v.getId() == R.id.loginGoogle) {
+                signIn();
+                // ...
             }
         });
     }
