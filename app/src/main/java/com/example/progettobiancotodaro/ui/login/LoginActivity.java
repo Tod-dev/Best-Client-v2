@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,7 +74,19 @@ public class LoginActivity extends AppCompatActivity {
         User user = new User(emailText, passwordText, pivaText);
 
         auth = FirebaseAuth.getInstance();
-        auth.createUserWithEmailAndPassword(emailText, passwordText)
+        auth.signInWithEmailAndPassword(emailText, passwordText).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(LoginActivity.this, "Login", Toast.LENGTH_LONG).show();
+                    /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);*/
+                }
+                else Toast.makeText(LoginActivity.this, "No Login", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        /*auth.createUserWithEmailAndPassword(emailText, passwordText)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -82,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                             .child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).setValue(user);
                 }
             }
-        });
+        });*/
 
     }
 
