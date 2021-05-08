@@ -5,10 +5,8 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,16 +15,9 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -39,15 +30,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
-import java.util.List;
-import java.util.StringTokenizer;
-
 public class IncomingReceiver extends BroadcastReceiver {
     //final String OUR_ACTION = "android.intent.action.PHONE_STATE";
     Context context;
     DBhelper myDBhelper;
-    RatingOnDB curRating;
+    RatingAVGOnDB curRating;
    // private NotificationManagerCompat notificationManager;
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
@@ -129,7 +116,7 @@ public class IncomingReceiver extends BroadcastReceiver {
         //Selects the object from firebase db using phone number and copies it into curRating object
         public void getRatingFromNumber(String number){
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference ratingsRef = database.getReference("ratings").child(number);
+            DatabaseReference ratingsRef = database.getReference("ratingAVG").child(number);
 
 
             ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -146,18 +133,20 @@ public class IncomingReceiver extends BroadcastReceiver {
                         //Toast.makeText(AddRating.this, "null", Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        curRating = dataSnapshot.getValue(RatingOnDB.class);
-                        float rating = 0;
+                        double val = dataSnapshot.getValue(Double.class);
+                        curRating = new RatingAVGOnDB(val);
+                        double rating = curRating.getRating();
+                        /*
                         if (curRating != null) {
                             rating = CalculateAvgRating(curRating);
                         }
-
+                        */
                         if(rating == 0){
                             message = number+": 0 stars!";
                             dialogTxt="0 stars!";
                         }
                         else{
-                            int roundRating = Math.round(rating);
+                            int roundRating = (int) Math.round(rating);
                             StringBuilder feedBack = new StringBuilder();
 
                             for(int i = 0; i < roundRating; i++){
@@ -192,10 +181,10 @@ public class IncomingReceiver extends BroadcastReceiver {
         }
 
 
-
+        /*
         //Calculates average rating of a RatingOnDB object
-        public float CalculateAvgRating(RatingOnDB ratingOnDB){
-            StringTokenizer stringTokenizer = new StringTokenizer(ratingOnDB.getRatings(), ";");
+        public float CalculateAvgRating(RatingAVGOnDB ratingAVGOnDB){
+            StringTokenizer stringTokenizer = new StringTokenizer(ratingAVGOnDB.getRating(), ";");
             float avg = 0;
             float i = 0;
             while(stringTokenizer.hasMoreTokens()){
@@ -207,7 +196,7 @@ public class IncomingReceiver extends BroadcastReceiver {
 
             return avg / i;
         }
-
+        */
     }
 
 }

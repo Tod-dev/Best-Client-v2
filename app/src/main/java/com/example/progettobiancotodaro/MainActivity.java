@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             //Uri personPhoto = acct.getPhotoUrl();
             Toast.makeText(this,personName+" "+personEmail+" "+personId, Toast.LENGTH_SHORT).show();
         }
-        logoutButton = (Button) findViewById(R.id.SignOutButton);
+        logoutButton = findViewById(R.id.SignOutButton);
         logoutButton.setOnClickListener(v -> {
             // ...
             if (v.getId() == R.id.SignOutButton) {
@@ -113,10 +113,11 @@ public class MainActivity extends AppCompatActivity {
         //Toast.makeText(this,"sign in", Toast.LENGTH_SHORT).show();
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-        if(account == null){
+       /* if(account == null){
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         }
+        */
     }
 
     private void signOut() {

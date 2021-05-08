@@ -49,7 +49,7 @@ public class AddRating extends AppCompatActivity {
     String[] phoneNumbers;
     String[] dates;
     String[] ratingString;
-    List<RatingOnDB> allRatings = new ArrayList<>();
+    //List<RatingAVGOnDB> allRatings = new ArrayList<>();
 
     @SuppressLint("InflateParams")
     @Override
@@ -137,7 +137,7 @@ public class AddRating extends AppCompatActivity {
                     .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
                         float nuovoRating =  ratingbar.getRating();
 
-                        if(!comment.getEditText().getText().toString().equals("")){
+                        if(!Objects.requireNonNull(comment.getEditText()).getText().toString().equals("")){
                             finalRatings.get(index).setComment(comment.getEditText().getText().toString());
                         }
                         if(nuovoRating != 0){
@@ -183,7 +183,7 @@ public class AddRating extends AppCompatActivity {
         Rating remoteRating = new Rating(r.getPhoneNumber(), r.getRealDate(), r.getRating(), r.getComment());
 
         if(db)
-            updateDB(remoteRating);
+            //updateDB(remoteRating);
 
         if(r.getRating() > 0){
             r.setRating(-2);
@@ -200,21 +200,19 @@ public class AddRating extends AppCompatActivity {
     private void updateDB(Rating r){
         Log.d("ratingonDB:", "Sto USANDO IL DB");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("ratings").child(r.getPhoneNumber());
-        //RatingOnDB oldfirebaseRating;
-        //RatingOnDB newfirebaseRating;
+        DatabaseReference ratingsRef = database.getReference("ratingBig").child(r.getPhoneNumber());
         ratingsRef.addListenerForSingleValueEvent(new ValueEventListener(){
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null){
-                    RatingOnDB ratingOnDB = new RatingOnDB(r.getPhoneNumber(), r.getRating()+";");
-                    ratingsRef.setValue(ratingOnDB);
+                    RatingAVGOnDB ratingAVGOnDB = new RatingAVGOnDB(r.getRating());
+                    ratingsRef.setValue(ratingAVGOnDB);
                 }
                 else{
-                    RatingOnDB ratingOnDB = dataSnapshot.getValue(RatingOnDB.class);
-                    Objects.requireNonNull(ratingOnDB).setRatings(ratingOnDB.getRatings()+""+r.getRating()+";");
-                    ratingsRef.setValue(ratingOnDB);
+                    RatingAVGOnDB ratingAVGOnDB = dataSnapshot.getValue(RatingAVGOnDB.class);
+                    Objects.requireNonNull(ratingAVGOnDB).setRating(ratingAVGOnDB.getRating());
+                    ratingsRef.setValue(ratingAVGOnDB);
                 }
             }
 
@@ -254,8 +252,6 @@ public class AddRating extends AppCompatActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String notificationPreference = preferences.getString("Last Calls", "None");
-
-        int i = 0;
 
         List<Rating> ratings = new ArrayList<>();
 
@@ -298,7 +294,6 @@ public class AddRating extends AppCompatActivity {
             if(!checkIfExist){
                 ratings.add(new Rating(number, date));
             }
-            i++;
         }
         c.close();
 
@@ -361,7 +356,7 @@ public class AddRating extends AppCompatActivity {
         ratingString = new String[ratings.size()];
 
         int i = 0;
-        for(Rating r: ratings){
+        for(Rating ignored : ratings){
             phoneNumbers[i] = ratings.get(i).getPhoneNumber();
             dates[i] = ratings.get(i).getDate();
             ratingString[i] = String.valueOf(ratings.get(i).getRating());
@@ -384,7 +379,7 @@ public class AddRating extends AppCompatActivity {
     }
 
 
-
+    /*
     //Downoads all ratings in the db and puts them into allRatings List
     public void getAllRatingsFromDB(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -395,7 +390,7 @@ public class AddRating extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot d : dataSnapshot.getChildren()){
-                    RatingOnDB r = d.getValue(RatingOnDB.class);
+                    RatingAVGOnDB r = d.getValue(RatingAVGOnDB.class);
                     allRatings.add(r);
                     //Toast.makeText(AddRating.this, "Sono in lettura"+r.toString(), Toast.LENGTH_LONG).show();
                 }
@@ -409,15 +404,16 @@ public class AddRating extends AppCompatActivity {
             }
         });
     }
-
+    */
+    /*
     //Adds a new rating on db
-    public void AddNewRating(RatingOnDB ratingOnDB){
+    public void AddNewRating(RatingAVGOnDB ratingAVGOnDB){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ratingsRef = database.getReference("ratings");
 
-        ratingsRef.child(ratingOnDB.getPhoneNumber()).setValue(ratingOnDB);
+        ratingsRef.child(ratingAVGOnDB.getPhoneNumber()).setValue(ratingAVGOnDB);
     }
-
+    */
     /* CLASSE PER LA VISIONE PERSONALIZZATA DELLA LIST VIEW */
     class MyAdapter extends ArrayAdapter<String>{
         Context context;
