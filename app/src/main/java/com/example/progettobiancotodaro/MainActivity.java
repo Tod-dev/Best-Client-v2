@@ -113,11 +113,11 @@ public class MainActivity extends AppCompatActivity {
         //Toast.makeText(this,"sign in", Toast.LENGTH_SHORT).show();
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-       /* if(account == null){
+        if(account == null){
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         }
-        */
+
     }
 
     private void signOut() {

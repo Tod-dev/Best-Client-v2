@@ -11,6 +11,7 @@
     <string name="toastMessageValue">toast_message</string>
     <string name="notification">Notification</string>
     <string name="lastcalls">Last Calls</string>
+    <string name="piva">Partita IVA</string>
     <string name="comment">Comment</string>
     <string name="settingsChoice">How to get phone number rating</string>
     <string name="title_activity_settings">SettingsActivity</string>
