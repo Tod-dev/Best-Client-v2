@@ -17,7 +17,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,11 +25,8 @@ import androidx.preference.PreferenceManager;
 import com.example.progettobiancotodaro.DB.DBhelper;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,6 +46,7 @@ public class AddRating extends AppCompatActivity {
     String[] dates;
     String[] ratingString;
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
+    SharedPreferences sp;
 
     @SuppressLint("InflateParams")
     @Override
@@ -180,10 +177,15 @@ public class AddRating extends AppCompatActivity {
 
     private void UpdateData(Rating r,boolean db) throws ParseException {
         /* AGGIORNA I DATI SUL DB SQLITE E SU FIREBASE */
-        Rating remoteRating = new Rating(r.getPhoneNumber(), r.getRealDate(), r.getRating(), r.getComment());
+        Date date = new Date();
+        sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+        String uid = sp.getString("uid", "");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        //System.out.println(formatter.format(date));
+        RatingBigOnDB remoteRating = new RatingBigOnDB(uid,formatter.format(date),r.getRating(),r.getPhoneNumber(),r.getComment());
 
         if(db)
-            //updateDB(remoteRating);
+            updateDB(remoteRating);
 
         if(r.getRating() > 0){
             r.setRating(-2);
@@ -198,34 +200,10 @@ public class AddRating extends AppCompatActivity {
         }
     }
 
-    private void updateDB(Rating r){
-        Log.d("ratingonDB:", "Sto USANDO IL DB");
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("ratingBig").child(r.getPhoneNumber());
-        ratingsRef.addListenerForSingleValueEvent(new ValueEventListener(){
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() == null){
-                    RatingAVGOnDB ratingAVGOnDB = new RatingAVGOnDB(r.getRating());
-                    ratingsRef.setValue(ratingAVGOnDB);
-                }
-                else{
-                    RatingAVGOnDB ratingAVGOnDB = dataSnapshot.getValue(RatingAVGOnDB.class);
-                    Objects.requireNonNull(ratingAVGOnDB).setRating(ratingAVGOnDB.getRating());
-                    ratingsRef.setValue(ratingAVGOnDB);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        /*RatingOnDB r2 = new RatingOnDB(r.getPhoneNumber(),""+r.getRating());
-        Log.d("ratingonDB:", r2.toString());
-        ratingsRef.setValue(r2);
-        toastMessage("Data On Firebase");*/
+    private void updateDB(RatingBigOnDB r){
+        Log.d("ratingonDB:", "Sto USANDO IL DB"); //ratingBig
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("ratingBig");
+        mDatabase.push().setValue(r);
     }
 
     public void refreshView(List<Rating> ratings, ListView listView){
