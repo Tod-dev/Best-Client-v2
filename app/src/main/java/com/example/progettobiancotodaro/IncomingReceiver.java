@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
+import com.example.progettobiancotodaro.ui.login.LoginActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +36,7 @@ public class IncomingReceiver extends BroadcastReceiver {
     Context context;
     DBhelper myDBhelper;
     RatingAVGOnDB curRating;
+    SharedPreferences sp;
    // private NotificationManagerCompat notificationManager;
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
@@ -62,7 +64,13 @@ public class IncomingReceiver extends BroadcastReceiver {
         public void onCallStateChanged(int state, String incomingNumber){
 
             if (incomingNumber.length() > 0 && state == TelephonyManager.CALL_STATE_RINGING) {
+                sp = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+                String email = sp.getString("email", "");
+                String password = sp.getString("password", "");
 
+                if(email.equals("") || password.equals("")){
+                    return;
+                }
                 /*SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 String notificationPreference = preferences.getString("Notification", "Toast Message");
 

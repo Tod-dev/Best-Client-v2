@@ -2,6 +2,7 @@ package com.example.progettobiancotodaro;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -31,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     GoogleSignInClient mGoogleSignInClient;
     Button ratingButton;
-    Button logoutButton;
     Button settingsbutton;
     String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_PHONE_NUMBERS,Manifest.permission.READ_CALL_LOG};
     SharedPreferences sp;
@@ -66,24 +67,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
-        logoutButton = findViewById(R.id.SignOutButton);
-        logoutButton.setOnClickListener(v -> {
-            sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
-
-            @SuppressLint("CommitPrefEdits")
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("email", "");
-            editor.putString("password", "");
-            editor.putString("uid", "");
-            editor.apply();
-
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-        });
-
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
             actionBar.setTitle(R.string.app_name);
+
         }
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) +
@@ -123,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.home_menu, menu);
+        menu.findItem(R.id.logout).setVisible(true);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -158,6 +146,25 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        if(item.getItemId() == R.id.logout){
+            sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+
+            @SuppressLint("CommitPrefEdits")
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("email", "");
+            editor.putString("password", "");
+            editor.putString("uid", "");
+            editor.apply();
+
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return false;
     }
 
 
