@@ -47,6 +47,11 @@ public class AddRating extends AppCompatActivity {
     String[] ratingString;
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
     SharedPreferences sp;
+    String uid;
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     @SuppressLint("InflateParams")
     @Override
@@ -65,6 +70,12 @@ public class AddRating extends AppCompatActivity {
         //myDBhelper.addColumn();
 
         listView = findViewById(R.id.list);
+
+        //SETTO L'UID
+        sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+        String uid = sp.getString("uid", "");
+        setUid(uid);
+        toastMessage(uid);
 
         /* PRENDO TUTTI I RATING */
         List<Rating> ratings = null;
@@ -178,8 +189,6 @@ public class AddRating extends AppCompatActivity {
     private void UpdateData(Rating r,boolean db) throws ParseException {
         /* AGGIORNA I DATI SUL DB SQLITE E SU FIREBASE */
         Date date = new Date();
-        sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
-        String uid = sp.getString("uid", "");
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         //System.out.println(formatter.format(date));
         RatingBigOnDB remoteRating = new RatingBigOnDB(uid,formatter.format(date),r.getRating(),r.getPhoneNumber(),r.getComment());
