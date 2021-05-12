@@ -1,11 +1,16 @@
 package  com.example.progettobiancotodaro.ui.login;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,7 +37,8 @@ public class LoginActivity extends AppCompatActivity {
     Button loginBtn;
     EditText email;
     EditText password;
-    EditText piva;
+    TextView noAccount;
+    SharedPreferences sp;
     private FirebaseAuth auth;
 
     @Override
@@ -42,15 +48,16 @@ public class LoginActivity extends AppCompatActivity {
 
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
-        piva = findViewById(R.id.piva);
+        sp = getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+
+        noAccount = findViewById(R.id.NoAccount);
+        noAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
 
         loginBtn = findViewById(R.id.login);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerUser();
-            }
-        });
+        loginBtn.setOnClickListener(v -> loginUser());
         /*GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -66,36 +73,38 @@ public class LoginActivity extends AppCompatActivity {
         });*/
     }
 
-    private void registerUser(){
+    private void loginUser(){
         String emailText = email.getText().toString();
         String passwordText = password.getText().toString();
-        String pivaText = piva.getText().toString();
 
-        User user = new User(emailText, passwordText, pivaText);
+        if(emailText.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(emailText).matches()){
+            email.setError("Please provide a valid email");
+            email.requestFocus();
+            return;
+        }
+        if(passwordText.isEmpty()){
+            password.setError("Please provide a password");
+            password.requestFocus();
+            return;
+        }
 
         auth = FirebaseAuth.getInstance();
-        auth.signInWithEmailAndPassword(emailText, passwordText).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(LoginActivity.this, "Login", Toast.LENGTH_LONG).show();
-                    /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);*/
-                }
-                else Toast.makeText(LoginActivity.this, "No Login", Toast.LENGTH_LONG).show();
-            }
-        });
+        auth.signInWithEmailAndPassword(emailText, passwordText).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                @SuppressLint("CommitPrefEdits")
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("email", emailText);
+                editor.putString("password", passwordText);
+                editor.apply();
 
-        /*auth.createUserWithEmailAndPassword(emailText, passwordText)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    FirebaseDatabase.getInstance().getReference("Users")
-                            .child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).setValue(user);
-                }
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                //Toast.makeText(LoginActivity.this, "Login", Toast.LENGTH_LONG).show();
+            /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);*/
             }
-        });*/
+            else Toast.makeText(LoginActivity.this, "No Login", Toast.LENGTH_LONG).show();
+        });
 
     }
 

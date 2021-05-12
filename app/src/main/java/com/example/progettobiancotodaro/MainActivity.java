@@ -1,11 +1,15 @@
 package com.example.progettobiancotodaro;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -30,12 +34,13 @@ public class MainActivity extends AppCompatActivity {
     Button logoutButton;
     Button settingsbutton;
     String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_PHONE_NUMBERS,Manifest.permission.READ_CALL_LOG};
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        /*
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -45,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
         if (acct != null) {
             String personName = acct.getDisplayName();
-            /*String personGivenName = acct.getGivenName();
-            String personFamilyName = acct.getFamilyName();*/
+            String personGivenName = acct.getGivenName();
+            String personFamilyName = acct.getFamilyName();
             String personEmail = acct.getEmail();
             String personId = acct.getId();
             //Uri personPhoto = acct.getPhotoUrl();
@@ -59,6 +64,20 @@ public class MainActivity extends AppCompatActivity {
                 signOut();
                 // ...
             }
+        });*/
+
+        logoutButton = findViewById(R.id.SignOutButton);
+        logoutButton.setOnClickListener(v -> {
+            sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+
+            @SuppressLint("CommitPrefEdits")
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("email", "");
+            editor.putString("password", "");
+            editor.apply();
+
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
         });
 
         ActionBar actionBar = getSupportActionBar();
@@ -110,13 +129,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
+        sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+        String email = sp.getString("email", "");
+        String password = sp.getString("password", "");
+
+        if(email.equals("") || password.equals("")){
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
+
         //Toast.makeText(this,"sign in", Toast.LENGTH_SHORT).show();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        /*GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
         if(account == null){
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-        }
+        }*/
 
     }
 
