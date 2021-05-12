@@ -2,7 +2,6 @@ package com.example.progettobiancotodaro;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -21,11 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.progettobiancotodaro.script.BigToAvg;
 import com.example.progettobiancotodaro.ui.login.LoginActivity;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -66,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
                 // ...
             }
         });*/
-
+        //SCRIPT
+        BigToAvg.update();
         ActionBar actionBar = getSupportActionBar();
 
         if(actionBar != null){

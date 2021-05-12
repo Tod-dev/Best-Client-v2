@@ -18,4 +18,8 @@ public class RatingAVGOnDB {
         this.ratingAVG = ratingAVG;
     }
 
+    @Override
+    public String toString() {
+        return ""+ratingAVG;
+    }
 }

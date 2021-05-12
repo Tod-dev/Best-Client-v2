@@ -7,6 +7,9 @@ public class RatingBigOnDB {
     private String numero;
     private String commento; //OPZIONALE
 
+    public RatingBigOnDB(){
+
+    }
 
     public RatingBigOnDB(String idEsercente, String date, double voto, String numero, String commento) {
         this.idEsercente = idEsercente;

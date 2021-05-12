@@ -75,7 +75,7 @@ public class AddRating extends AppCompatActivity {
         sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
         String uid = sp.getString("uid", "");
         setUid(uid);
-        toastMessage(uid);
+        //toastMessage(uid);
 
         /* PRENDO TUTTI I RATING */
         List<Rating> ratings = null;
