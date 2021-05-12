@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sp.edit();
             editor.putString("email", "");
             editor.putString("password", "");
+            editor.putString("uid", "");
             editor.apply();
 
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -132,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
         sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
         String email = sp.getString("email", "");
         String password = sp.getString("password", "");
+        String uid = sp.getString("uid", "");
+        //Toast.makeText(this, email+" "+password+" "+uid, Toast.LENGTH_LONG).show();
 
         if(email.equals("") || password.equals("")){
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);

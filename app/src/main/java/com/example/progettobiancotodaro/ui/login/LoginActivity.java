@@ -95,6 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("email", emailText);
                 editor.putString("password", passwordText);
+                editor.putString("uid", auth.getUid());
                 editor.apply();
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);

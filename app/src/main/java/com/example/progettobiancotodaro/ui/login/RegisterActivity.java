@@ -65,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
             email.requestFocus();
             return;
         }
-        if(pivaText.length() < 6){
+        if(passwordText.length() < 6){
             password.setError("Please provide a password, at least 6 characters");
             password.requestFocus();
             return;
@@ -83,13 +83,15 @@ public class RegisterActivity extends AppCompatActivity {
         auth.createUserWithEmailAndPassword(emailText, passwordText)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
+                        String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();
                         FirebaseDatabase.getInstance().getReference("Users")
-                                .child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).setValue(user);
+                                .child(uid).setValue(user);
 
                         @SuppressLint("CommitPrefEdits")
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString("email", emailText);
                         editor.putString("password", passwordText);
+                        editor.putString("uid", uid);
                         editor.apply();
 
                         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
