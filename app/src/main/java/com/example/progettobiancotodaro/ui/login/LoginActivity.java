@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
             /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);*/
             }
-            else Toast.makeText(LoginActivity.this, "No Login", Toast.LENGTH_LONG).show();
+            else Toast.makeText(LoginActivity.this, "Email o password errati", Toast.LENGTH_LONG).show();
         });
 
     }

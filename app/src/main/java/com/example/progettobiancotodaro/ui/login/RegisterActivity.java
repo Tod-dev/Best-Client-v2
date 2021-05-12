@@ -65,8 +65,8 @@ public class RegisterActivity extends AppCompatActivity {
             email.requestFocus();
             return;
         }
-        if(passwordText.isEmpty()){
-            password.setError("Please provide a password");
+        if(pivaText.length() < 6){
+            password.setError("Please provide a password, at least 6 characters");
             password.requestFocus();
             return;
         }
