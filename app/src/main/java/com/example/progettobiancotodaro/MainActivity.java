@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -19,19 +21,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.progettobiancotodaro.httpRequest.HttpManager;
+import com.example.progettobiancotodaro.httpRequest.RequestPackage;
 import com.example.progettobiancotodaro.script.BigToAvg;
 import com.example.progettobiancotodaro.ui.login.LoginActivity;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
 
-    GoogleSignInClient mGoogleSignInClient;
+   // GoogleSignInClient mGoogleSignInClient;
     Button ratingButton;
     Button settingsbutton;
     String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_PHONE_NUMBERS,Manifest.permission.READ_CALL_LOG};
     SharedPreferences sp;
+    final String uri = "http://worldtimeapi.org/api/timezone/Europe/Rome";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +71,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
         //SCRIPT
-        BigToAvg.update();
+        requestData();
+
+        //ACtivity
         ActionBar actionBar = getSupportActionBar();
 
         if(actionBar != null){
@@ -119,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
         String email = sp.getString("email", "");
         String password = sp.getString("password", "");
-        String uid = sp.getString("uid", "");
+        //String uid = sp.getString("uid", "");
         //Toast.makeText(this, email+" "+password+" "+uid, Toast.LENGTH_LONG).show();
 
         if(email.equals("") || password.equals("")){
@@ -136,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         }*/
 
     }
-
+    /*
     private void signOut() {
         mGoogleSignInClient.signOut()
                 .addOnCompleteListener(this, task -> {
@@ -145,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                 });
     }
-
+*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         if(item.getItemId() == R.id.logout){
@@ -165,7 +175,49 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    private void requestData() {
+        Log.d("REQUEST DATA:","SONO IN REQUEST DATA");
+        RequestPackage requestPackage = new RequestPackage();
+        requestPackage.setMethod("GET");
+        requestPackage.setUrl(uri);
 
+        Downloader downloader = new Downloader(); //Instantiation of the Async task
+        //that’s defined below
+
+        downloader.execute(requestPackage);
+    }
+
+    private static class Downloader extends AsyncTask<RequestPackage, String, String> {
+        @Override
+        protected String doInBackground(RequestPackage... params) {
+            return HttpManager.getData(params[0]);
+        }
+
+        //The String that is returned in the doInBackground() method is sent to the
+        // onPostExecute() method below. The String should contain JSON data.
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                Log.d("DOWNLOADER:","SONO IN DOWNLOADER : "+result);
+                //We need to convert the string in result to a JSONObject
+                if(result == null) return;
+                JSONObject jsonObject = new JSONObject(result);
+                Log.d("JSON:",jsonObject.toString());
+                //The “ask” value below is a field in the JSON Object that was
+                //retrieved from the BitcoinAverage API. It contains the current
+                //bitcoin price
+                long unixTime = jsonObject.getLong("unixtime");
+                unixTime *= 1000; //timestamp in ms
+                Log.d("Data:",""+unixTime);
+                BigToAvg.update(unixTime);
+
+                //Now we can use the value in the mPriceTextView
+                //mPriceTextView.setText(price);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }
 /*tv = (TextView) findViewById(R.id.informazioni);
