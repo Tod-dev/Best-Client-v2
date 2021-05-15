@@ -135,7 +135,7 @@ public class IncomingReceiver extends BroadcastReceiver {
                     String message;
                     String dialogTxt;
                     if(dataSnapshot.getValue() == null){
-                        message = "Number not rated";
+                        message = number + ": Number not rated";
                         dialogTxt=message;
                         //curRating = new RatingOnDB(number,"notRated");
                         //Toast.makeText(AddRating.this, "null", Toast.LENGTH_SHORT).show();

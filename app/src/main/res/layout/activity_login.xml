@@ -15,16 +15,20 @@
     <EditText
         android:id="@+id/email"
         android:layout_width="0dp"
-        android:autofillHints="@string/prompt_email"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="300dp"
         android:layout_marginEnd="24dp"
+        android:autofillHints="@string/prompt_email"
         android:background="@drawable/input_round"
+        android:drawableLeft="@drawable/ic_baseline_local_post_office_24"
+        android:drawablePadding="8sp"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
+        android:paddingStart="20dp"
         android:paddingLeft="20dp"
         android:paddingTop="10dp"
+        android:paddingEnd="10dp"
         android:paddingRight="10dp"
         android:paddingBottom="10dp"
         android:selectAllOnFocus="true"
@@ -34,24 +38,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:paddingStart="20dp"
-        android:paddingEnd="10dp" />
+        android:drawableStart="@drawable/ic_baseline_local_post_office_24" />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="0dp"
-        android:autofillHints="@string/prompt_password"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="24dp"
+        android:autofillHints="@string/prompt_password"
         android:background="@drawable/input_round"
+        android:drawableLeft="@drawable/ic_baseline_password_24"
+        android:drawablePadding="8sp"
         android:hint="@string/prompt_password"
         android:imeActionLabel="@string/action_sign_in_short"
         android:imeOptions="actionDone"
         android:inputType="textPassword"
+        android:paddingStart="20dp"
         android:paddingLeft="20dp"
         android:paddingTop="10dp"
+        android:paddingEnd="10dp"
         android:paddingRight="10dp"
         android:paddingBottom="10dp"
         android:selectAllOnFocus="true"
@@ -61,8 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email"
-        android:paddingStart="20dp"
-        android:paddingEnd="10dp" />
+        android:drawableStart="@drawable/ic_baseline_password_24" />
 
 
     <Button
