@@ -3,6 +3,7 @@ package com.example.progettobiancotodaro.ui.login;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,8 +13,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.progettobiancotodaro.MainActivity;
@@ -51,6 +54,15 @@ public class RegisterActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         piva = findViewById(R.id.piva);
+
+        ConstraintLayout l = findViewById(R.id.containerRegister);
+        l.setOnClickListener(v -> {
+            View view = RegisterActivity.this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        });
 
         sp = getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
 
@@ -94,6 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString("email", emailText);
                         editor.putString("password", passwordText);
+                        editor.putString("piva", pivaText);
                         editor.putString("uid", uid);
                         editor.apply();
 

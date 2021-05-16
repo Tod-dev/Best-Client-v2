@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.progettobiancotodaro.MainActivity;
 import com.example.progettobiancotodaro.R;
@@ -27,7 +29,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -54,6 +60,15 @@ public class LoginActivity extends AppCompatActivity {
         noAccount.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
+        });
+
+        ConstraintLayout l = findViewById(R.id.containerLogin);
+        l.setOnClickListener(v -> {
+            View view = LoginActivity.this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
         });
 
         loginBtn = findViewById(R.id.login);
@@ -95,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("email", emailText);
                 editor.putString("password", passwordText);
+                getPiva(auth.getUid());
                 editor.putString("uid", auth.getUid());
                 editor.apply();
 
@@ -107,6 +123,28 @@ public class LoginActivity extends AppCompatActivity {
             else Toast.makeText(LoginActivity.this, "Email o password errati", Toast.LENGTH_LONG).show();
         });
 
+    }
+
+    public void getPiva(String uid){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ratingsRef = database.getReference("Users").child(uid).child("piva");
+        final String[] piva = new String[1];
+
+        ratingsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                piva[0] = dataSnapshot.getValue(String.class);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("piva", piva[0]);
+                editor.apply();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+                Log.w("Main", "Failed to read value.", error.toException());
+            }
+        });
     }
 
     private void signIn() {

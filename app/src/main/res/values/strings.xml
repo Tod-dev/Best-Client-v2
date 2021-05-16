@@ -42,7 +42,7 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
-    <string name="action_register">Register</string>
+    <string name="action_register">Register and login</string>
     <string name="noAccount">You don\'t have an account? Click here to register</string>
     <string name="sign_google">Sign in with Google</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -50,4 +50,6 @@
 
     <string name="home">Home</string>
     <string name="profile">Profile</string>
+    <string name="your_profile">Your Profile</string>
+    <string name="refresh">Refresh</string>
 </resources>

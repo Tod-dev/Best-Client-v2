@@ -47,7 +47,6 @@ public class AddRatingSQL extends AppCompatActivity {
         toolbar_text.setText(R.string.add_rating);
 
         arrow_back = findViewById(R.id.arrow_back);
-        arrow_back.setImageResource(R.drawable.ic_baseline_arrow_back_24);
         arrow_back.setOnClickListener(v -> {
             Intent intent = new Intent(AddRatingSQL.this, MainActivity.class);
             startActivity(intent);

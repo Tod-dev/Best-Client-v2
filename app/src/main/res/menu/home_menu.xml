@@ -6,7 +6,14 @@
         android:id="@+id/logout"
         android:icon="@drawable/ic_baseline_logout_24"
         android:title="@string/logout"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/refresh"
+        android:icon="@drawable/ic_baseline_refresh_24"
+        android:title="@string/refresh"
+        app:showAsAction="ifRoom"
         android:visible="false" />
 
 </menu>

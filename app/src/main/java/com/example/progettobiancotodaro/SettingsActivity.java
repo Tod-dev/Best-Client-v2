@@ -1,5 +1,6 @@
 package com.example.progettobiancotodaro;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,9 +24,6 @@ public class SettingsActivity extends AppCompatActivity {
                     .commit();
         }
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
         actionBar.setTitle(R.string.settings);
 
         BottomNavigationView bn = findViewById(R.id.bottomMenu);
@@ -34,13 +33,17 @@ public class SettingsActivity extends AppCompatActivity {
                 case R.id.homeBtn:{
                     Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    break;
                 }
                 case R.id.settingsBtn:{
                     break;
                 }
                 case R.id.profileBtn:{
-                    Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SettingsActivity.this, Profile.class);
                     startActivity(intent);
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    break;
                 }
                 default: break;
             }

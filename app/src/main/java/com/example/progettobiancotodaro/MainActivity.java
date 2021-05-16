@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.progettobiancotodaro.ui.login.LoginActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -27,12 +28,12 @@ public class MainActivity extends AppCompatActivity {
 
     // GoogleSignInClient mGoogleSignInClient;
     Button ratingButton;
-    Button settingsbutton;
     String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.READ_CALL_LOG};
     SharedPreferences sp;
     //final String uri = "http://worldtimeapi.org/api/timezone/Europe/Rome";
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +63,31 @@ public class MainActivity extends AppCompatActivity {
                 // ...
             }
         });*/
+
+        BottomNavigationView bn = findViewById(R.id.bottomMenu);
+        bn.setSelectedItemId(R.id.homeBtn);
+        bn.setOnNavigationItemSelectedListener(item -> {
+            switch(item.getItemId()){
+                case R.id.homeBtn:{
+                    break;
+                }
+                case R.id.settingsBtn:{
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    break;
+                }
+                case R.id.profileBtn:{
+                    Intent intent = new Intent(MainActivity.this, Profile.class);
+                    startActivity(intent);
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    break;
+                }
+                default: break;
+            }
+
+            return true;
+        });
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -97,19 +123,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "This app couldn't read phone numbers and call log, please allow in settings", Toast.LENGTH_LONG).show();
 
         });
-
-        settingsbutton = findViewById(R.id.settingsButton);
-        settingsbutton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(intent);
-        });
-    }
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.home_menu, menu);
-        menu.findItem(R.id.logout).setVisible(true);
-
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -146,24 +159,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.logout) {
-            sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
 
-            @SuppressLint("CommitPrefEdits")
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("email", "");
-            editor.putString("password", "");
-            editor.putString("uid", "");
-            editor.apply();
-
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        return false;
-    }
 }
     /*
     private void requestData() {

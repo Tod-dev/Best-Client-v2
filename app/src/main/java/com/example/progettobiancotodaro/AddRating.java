@@ -2,12 +2,15 @@ package com.example.progettobiancotodaro;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -23,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
+import com.example.progettobiancotodaro.ui.login.LoginActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
@@ -63,7 +67,6 @@ public class AddRating extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setTitle(R.string.add_rating);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setIcon(R.drawable.ic_baseline_arrow_back_24);
         }
 
         myDBhelper = new DBhelper(this);
@@ -77,6 +80,10 @@ public class AddRating extends AppCompatActivity {
         setUid(uid);
         //toastMessage(uid);
 
+        showRatings();
+    }
+
+    public void showRatings(){
         /* PRENDO TUTTI I RATING */
         List<Rating> ratings = null;
         try {
@@ -103,6 +110,22 @@ public class AddRating extends AppCompatActivity {
                 showDialog(2,finalRatings,i1); //Dialog dai un voto / cancella un elemento
             }
         });
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_menu, menu);
+        menu.findItem(R.id.refresh).setVisible(true);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.refresh) {
+            showRatings();
+            return true;
+        }
+        return false;
     }
 
     private void showDialog(int type, List <Rating> finalRatings, int index){

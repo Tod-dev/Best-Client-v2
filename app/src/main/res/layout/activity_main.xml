@@ -24,22 +24,6 @@
         app:layout_constraintVertical_bias="0.077" />
 
     <Button
-        android:id="@+id/settingsButton"
-        android:layout_width="143dp"
-        android:layout_height="144dp"
-        android:background="@drawable/customized_button"
-        android:text="@string/settings"
-        android:textStyle="bold"
-        android:visibility="visible"
-        app:backgroundTint="@color/teal_200"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.793"
-        tools:visibility="visible" />
-
-    <Button
         android:id="@+id/AddRatingButton"
         android:layout_width="143dp"
         android:layout_height="144dp"
@@ -57,7 +41,7 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:id="@+id/bottomMenu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +49,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        android:backgroundTint="@color/white"
+        android:background="@color/white"
         app:menu="@menu/bottom_menu">
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
