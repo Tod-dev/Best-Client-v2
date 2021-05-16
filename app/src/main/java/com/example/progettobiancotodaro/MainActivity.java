@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -21,69 +19,34 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.progettobiancotodaro.httpRequest.HttpManager;
-import com.example.progettobiancotodaro.httpRequest.RequestPackage;
-import com.example.progettobiancotodaro.script.BigToAvg;
 import com.example.progettobiancotodaro.ui.login.LoginActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
 
-   // GoogleSignInClient mGoogleSignInClient;
+    // GoogleSignInClient mGoogleSignInClient;
     Button ratingButton;
     Button settingsbutton;
-    String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_PHONE_NUMBERS,Manifest.permission.READ_CALL_LOG};
+    String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.READ_CALL_LOG};
     SharedPreferences sp;
-    final String uri = "http://worldtimeapi.org/api/timezone/Europe/Rome";
+    //final String uri = "http://worldtimeapi.org/api/timezone/Europe/Rome";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if (acct != null) {
-            String personName = acct.getDisplayName();
-            String personGivenName = acct.getGivenName();
-            String personFamilyName = acct.getFamilyName();
-            String personEmail = acct.getEmail();
-            String personId = acct.getId();
-            //Uri personPhoto = acct.getPhotoUrl();
-            Toast.makeText(this,personName+" "+personEmail+" "+personId, Toast.LENGTH_SHORT).show();
-        }
-        logoutButton = findViewById(R.id.SignOutButton);
-        logoutButton.setOnClickListener(v -> {
-            // ...
-            if (v.getId() == R.id.SignOutButton) {
-                signOut();
-                // ...
-            }
-        });*/
-        //SCRIPT
-        requestData();
-
-        //ACtivity
         ActionBar actionBar = getSupportActionBar();
 
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setTitle(R.string.app_name);
 
         }
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) +
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS)+
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) +
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) +
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, Permissions, 1);
         }
 
@@ -99,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
         ratingButton = findViewById(R.id.AddRatingButton);
         ratingButton.setOnClickListener(v -> {
-            if((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED) &&
-                    (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED)){
+            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED) &&
+                    (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED)) {
                 //se ha i permessi avvia add rating
                 Intent intent = new Intent(MainActivity.this, AddRating.class);
                 startActivity(intent);
-            }
-            else Toast.makeText(this,"This app couldn't read phone numbers and call log, please allow in settings", Toast.LENGTH_LONG).show();
+            } else
+                Toast.makeText(this, "This app couldn't read phone numbers and call log, please allow in settings", Toast.LENGTH_LONG).show();
 
         });
 
@@ -116,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home_menu, menu);
         menu.findItem(R.id.logout).setVisible(true);
 
@@ -124,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
         String email = sp.getString("email", "");
@@ -132,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         //String uid = sp.getString("uid", "");
         //Toast.makeText(this, email+" "+password+" "+uid, Toast.LENGTH_LONG).show();
 
-        if(email.equals("") || password.equals("")){
+        if (email.equals("") || password.equals("")) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         }
@@ -146,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         }*/
 
     }
+
     /*
     private void signOut() {
         mGoogleSignInClient.signOut()
@@ -157,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
     }
 */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        if(item.getItemId() == R.id.logout){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
             sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
 
             @SuppressLint("CommitPrefEdits")
@@ -174,7 +138,8 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
-
+}
+    /*
     private void requestData() {
         Log.d("REQUEST DATA:","SONO IN REQUEST DATA");
         RequestPackage requestPackage = new RequestPackage();
@@ -186,7 +151,9 @@ public class MainActivity extends AppCompatActivity {
 
         downloader.execute(requestPackage);
     }
+  */
 
+/*
     private static class Downloader extends AsyncTask<RequestPackage, String, String> {
         @Override
         protected String doInBackground(RequestPackage... params) {
@@ -220,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+*/
+
 /*tv = (TextView) findViewById(R.id.informazioni);
 
 
