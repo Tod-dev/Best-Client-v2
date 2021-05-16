@@ -37,6 +37,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        /*
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if (acct != null) {
+            String personName = acct.getDisplayName();
+            String personGivenName = acct.getGivenName();
+            String personFamilyName = acct.getFamilyName();
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+            //Uri personPhoto = acct.getPhotoUrl();
+            Toast.makeText(this,personName+" "+personEmail+" "+personId, Toast.LENGTH_SHORT).show();
+        }
+        logoutButton = findViewById(R.id.SignOutButton);
+        logoutButton.setOnClickListener(v -> {
+            // ...
+            if (v.getId() == R.id.SignOutButton) {
+                signOut();
+                // ...
+            }
+        });*/
+
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -151,9 +177,8 @@ public class MainActivity extends AppCompatActivity {
 
         downloader.execute(requestPackage);
     }
-  */
-
-/*
+*/
+    /*
     private static class Downloader extends AsyncTask<RequestPackage, String, String> {
         @Override
         protected String doInBackground(RequestPackage... params) {
@@ -188,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
 
 }
 */
-
 /*tv = (TextView) findViewById(R.id.informazioni);
 
 
