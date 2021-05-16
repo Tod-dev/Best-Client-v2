@@ -2,7 +2,6 @@
     <string name="app_name">Rating Manager</string>
     <string name="add_rating">Add Rating</string>
     <string name="arrowback">ArrowBack</string>
-    <string name="home">Home Page</string>
     <string name="dialogMessage">Set Rating</string>
     <string name="positiveButton">Confirm</string>
     <string name="negativeButton">Cancel</string>
@@ -48,4 +47,7 @@
     <string name="sign_google">Sign in with Google</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="logout">Logout</string>
+
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
 </resources>

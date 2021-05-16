@@ -15,16 +15,19 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentContainerView;
 
 import com.example.progettobiancotodaro.httpRequest.HttpManager;
 import com.example.progettobiancotodaro.httpRequest.RequestPackage;
 import com.example.progettobiancotodaro.script.BigToAvg;
 import com.example.progettobiancotodaro.ui.login.LoginActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,7 +74,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
         //SCRIPT
-        requestData();
+        //requestData();
+        BottomNavigationView bn = findViewById(R.id.bottomMenu);
+        bn.setSelectedItemId(R.id.homeBtn);
+        bn.setOnNavigationItemSelectedListener(item -> {
+            switch(item.getItemId()){
+                case R.id.homeBtn:{
+                    break;
+                }
+                case R.id.settingsBtn:{
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                }
+                case R.id.profileBtn:{
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                }
+                default: break;
+            }
+
+            return true;
+        });
 
         //ACtivity
         ActionBar actionBar = getSupportActionBar();
