@@ -1,22 +1,16 @@
 package com.example.progettobiancotodaro;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 public class MyAlertDialog extends Activity {
     AlertDialog dialog;
@@ -28,13 +22,13 @@ public class MyAlertDialog extends Activity {
                     .setPositiveButton("ok", (dialog, which) -> {
                         //Toast.makeText(this,"DIALOGO NASCOSTO",Toast.LENGTH_LONG).show();
                         dialog.dismiss();
-                        Intent intent = new Intent(this, MainActivity.class);
+                        Intent intent = new Intent(this, HomeActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     });
             dialog = builder.create();
             dialog.show();
-            TextView messageText = (TextView)dialog.findViewById(android.R.id.message);
+            TextView messageText = dialog.findViewById(android.R.id.message);
             messageText.setGravity(Gravity.CENTER);
             dialog.setCanceledOnTouchOutside(false);
     }

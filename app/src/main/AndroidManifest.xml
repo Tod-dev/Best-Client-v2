@@ -19,8 +19,16 @@
         android:theme="@style/Theme.ProgettoBiancoTodaro"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".Profile"
-            android:label="@string/profile"/>
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Profile"
+            android:label="@string/profile" />
         <activity
             android:name=".ui.login.RegisterActivity"
             android:label="@string/title_activity_login">
@@ -33,20 +41,13 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings">
-        </activity>
+            android:label="@string/title_activity_settings"/>
         <activity android:name=".AddRating">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".HomeActivity" />
         </activity>
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".HomeActivity"/>
         <activity
             android:name=".MyAlertDialog"
             android:background="@color/teal_200" />

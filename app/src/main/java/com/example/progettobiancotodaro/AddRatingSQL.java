@@ -48,7 +48,7 @@ public class AddRatingSQL extends AppCompatActivity {
 
         arrow_back = findViewById(R.id.arrow_back);
         arrow_back.setOnClickListener(v -> {
-            Intent intent = new Intent(AddRatingSQL.this, MainActivity.class);
+            Intent intent = new Intent(AddRatingSQL.this, HomeActivity.class);
             startActivity(intent);
         });
 

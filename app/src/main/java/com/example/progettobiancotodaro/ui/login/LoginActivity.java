@@ -18,24 +18,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.progettobiancotodaro.MainActivity;
+import com.example.progettobiancotodaro.HomeActivity;
 import com.example.progettobiancotodaro.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
     int RC_SIGN_IN = 0;
@@ -114,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("uid", auth.getUid());
                 editor.apply();
 
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                 startActivity(intent);
                 //Toast.makeText(LoginActivity.this, "Login", Toast.LENGTH_LONG).show();
             /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -170,7 +165,7 @@ public class LoginActivity extends AppCompatActivity {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             //Toast.makeText(this,"ok", Toast.LENGTH_SHORT).show();
             // Signed in successfully, show authenticated UI.
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
             finish();
         } catch (ApiException e) {

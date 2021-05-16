@@ -31,7 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
         bn.setOnNavigationItemSelectedListener(item -> {
             switch(item.getItemId()){
                 case R.id.homeBtn:{
-                    Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SettingsActivity.this, HomeActivity.class);
                     startActivity(intent);
                     overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     break;

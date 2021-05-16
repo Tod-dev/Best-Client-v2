@@ -1,6 +1,5 @@
 package com.example.progettobiancotodaro.ui.login;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -16,17 +15,11 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.example.progettobiancotodaro.MainActivity;
+import com.example.progettobiancotodaro.HomeActivity;
 import com.example.progettobiancotodaro.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
@@ -110,7 +103,7 @@ public class RegisterActivity extends AppCompatActivity {
                         editor.putString("uid", uid);
                         editor.apply();
 
-                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                        Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
                         startActivity(intent);
                     }
                     else{
