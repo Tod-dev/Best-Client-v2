@@ -91,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        User user = new User(emailText, passwordText, pivaText);
+        User user = new User(emailText, pivaText);
 
         auth = FirebaseAuth.getInstance();
 
