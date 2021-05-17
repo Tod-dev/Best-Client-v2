@@ -2,7 +2,6 @@ package com.example.progettobiancotodaro;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -26,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
-import com.example.progettobiancotodaro.ui.login.LoginActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
@@ -52,6 +50,7 @@ public class AddRating extends AppCompatActivity {
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
     SharedPreferences sp;
     String uid;
+    final int MAX_ITEMS = 100;
 
     public void setUid(String uid) {
         this.uid = uid;
@@ -268,7 +267,9 @@ public class AddRating extends AppCompatActivity {
 
         Date curDate = Calendar.getInstance().getTime();
         //LETTURA REGISTRO CHIAMATE
+        int count = 0;
         while(c.moveToNext()){
+            count++;
             boolean skip = false;
             //Log.d("i, array:  ", ""+i + Arrays.toString(ratings.toArray()));
             String number = c.getString(colNumber);
@@ -287,6 +288,7 @@ public class AddRating extends AppCompatActivity {
                     if(diff > 48) skip = true;
                     break;
                 default:
+                    if(count > MAX_ITEMS) skip = true;
                     break;
             }
 
@@ -379,9 +381,9 @@ public class AddRating extends AppCompatActivity {
         boolean insertData = myDBhelper.addData(r.getPhoneNumber(),r.getDate(),r.getRating(), r.getComment());
 
         if (insertData) {
-            toastMessage("Data Successfully Inserted!");
+            toastMessage("Hai dato "+r.getRating()+ " al numero "+r.getPhoneNumber() );
         } else {
-            toastMessage("Something went wrong");
+            toastMessage("Qualcosa è andato storto");
         }
     }
 
