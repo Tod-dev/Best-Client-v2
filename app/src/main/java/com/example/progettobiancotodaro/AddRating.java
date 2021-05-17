@@ -267,7 +267,9 @@ public class AddRating extends AppCompatActivity {
 
         Date curDate = Calendar.getInstance().getTime();
         //LETTURA REGISTRO CHIAMATE
+        int count = 0;
         while(c.moveToNext()){
+            count++;
             boolean skip = false;
             //Log.d("i, array:  ", ""+i + Arrays.toString(ratings.toArray()));
             String number = c.getString(colNumber);
@@ -286,6 +288,7 @@ public class AddRating extends AppCompatActivity {
                     if(diff > 48) skip = true;
                     break;
                 default:
+                    if(count > MAX_ITEMS) skip = true;
                     break;
             }
 
