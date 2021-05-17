@@ -4,13 +4,12 @@
         app:icon="@drawable/ic_baseline_notifications_active_24">
 
         <ListPreference
-            app:defaultValue="@string/toastMessageValue"
+            app:defaultValue="@string/popupValue"
             app:entries="@array/notifications_entries"
             app:entryValues="@array/notifications_values"
             app:key="@string/notification"
             app:title="@string/notification_title"
-            app:useSimpleSummaryProvider="true"
-            />
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
@@ -23,8 +22,7 @@
             app:entryValues="@array/lastcalls_values"
             app:key="@string/lastcalls"
             app:title="@string/lastcalls_title"
-            app:useSimpleSummaryProvider="true"
-            />
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

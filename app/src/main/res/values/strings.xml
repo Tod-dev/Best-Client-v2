@@ -8,6 +8,7 @@
     <string name="settings">Settings</string>
     <string name="toastMessage">Toast Message</string>
     <string name="toastMessageValue">toast_message</string>
+    <string name="popupValue">popup</string>
     <string name="notification">Notification</string>
     <string name="lastcalls">Last Calls</string>
     <string name="piva">Partita IVA</string>
@@ -21,7 +22,7 @@
     <string name="lastcalls_title">Last Calls Time Range</string>
 
     <!-- Messages Preferences -->
-    <string name="NoFilter">None</string>
+    <string name="NoFilter">noFilter</string>
     <string name="notification_title">Default way of notification</string>
 
     <!-- Sync Preferences -->

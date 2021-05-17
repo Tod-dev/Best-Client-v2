@@ -21,8 +21,8 @@
         <ImageView
             android:layout_width="100sp"
             android:layout_height="100sp"
-            android:contentDescription="@string/profile"
             android:background="@drawable/ic_baseline_account_circle_24"
+            android:contentDescription="@string/profile"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,29 +46,15 @@
         android:id="@+id/YourProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="34sp"
-        android:textStyle="bold"
         android:text="@string/your_profile"
         android:textColor="@color/teal_200"
-        app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.523"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.069" />
-
-    <TextView
-        android:id="@+id/emailProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/prompt_email"
-        android:textSize="20sp"
+        android:textSize="34sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
+        app:layout_constraintBottom_toTopOf="@id/emailProfile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.214" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/pivaProfile"
@@ -79,8 +65,23 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintTop_toBottomOf="@+id/emailProfile"
         app:layout_constraintVertical_bias="0.306" />
+
+    <TextView
+        android:id="@+id/emailProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/prompt_email"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/pivaProfile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/YourProfile"
+        app:layout_constraintVertical_bias="0.214" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
