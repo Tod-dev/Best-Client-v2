@@ -381,9 +381,9 @@ public class AddRating extends AppCompatActivity {
         boolean insertData = myDBhelper.addData(r.getPhoneNumber(),r.getDate(),r.getRating(), r.getComment());
 
         if (insertData) {
-            toastMessage("Hai dato "+r.getRating()+ " al numero "+r.getPhoneNumber() );
+            toastMessage("Valutazione inserita correttamente!");
         } else {
-            toastMessage("Qualcosa è andato storto");
+            toastMessage("Qualcosa è andato storto :(");
         }
     }
 
