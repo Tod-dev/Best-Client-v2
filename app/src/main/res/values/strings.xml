@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Rating Manager</string>
+    <string name="app_name">Best Client</string>
     <string name="add_rating">Add Rating</string>
     <string name="arrowback">ArrowBack</string>
     <string name="dialogMessage">Set Rating</string>

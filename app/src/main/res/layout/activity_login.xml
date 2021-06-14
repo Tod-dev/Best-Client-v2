@@ -135,7 +135,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.064"
-        app:srcCompat="@drawable/logo_scritta_bianco" />
+        app:srcCompat="@drawable/logo_red" />
 
     <TextView
         android:id="@+id/NoAccount"

@@ -175,7 +175,7 @@ public class DBhelper extends SQLiteOpenHelper {
         }
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + TABLE_NAME + " SET " + COL_RATING +
-                " = "+r.getRating() +" WHERE "+COL_ID+" = "+id;
+                " = "+r.getRating() + ", "+ COL_COMMENT +" = '"+r.getComment()+"' WHERE "+COL_ID+" = "+id;
         Log.d(TAG, "updateRating: query: " + query);
         Log.d(TAG, "updateRating: Setting rate to " + r.getRating());
         db.execSQL(query);
