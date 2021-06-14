@@ -10,6 +10,7 @@
     <string name="toastMessageValue">toast_message</string>
     <string name="popupValue">popup</string>
     <string name="notification">Notification</string>
+    <string name="notificationValue">notification</string>
     <string name="lastcalls">Last Calls</string>
     <string name="piva">Partita IVA</string>
     <string name="comment">Comment</string>

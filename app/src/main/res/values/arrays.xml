@@ -3,13 +3,13 @@
     <string-array name="notifications_entries">
         <item>Toast Message</item>
         <item>Notification</item>
-        <item>PopUp</item>
+        <!--<item>PopUp</item>-->
     </string-array>
 
     <string-array name="notifications_values">
         <item>toast_message</item>
         <item>notification</item>
-        <item>popup</item>
+        <!--<item>popup</item>-->
     </string-array>
 
     <string-array name="lastcalls_entries">

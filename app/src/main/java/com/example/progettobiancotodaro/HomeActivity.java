@@ -63,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
     DBhelper myDBhelper;
     String[] phoneNumbers;
     String[] dates;
-    String[] ratingString;
+    String[] commentString;
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
     String uid;
     final int MAX_ITEMS = 100;
@@ -162,7 +162,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         /* INSERISCO TUTTI I RATING NELLA LISTVIEW */
-        HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, ratingString);
+        HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, commentString);
         listView.setAdapter(arrayAdapter);
         List<Rating> finalRatings = ratings;
         listView.setOnItemClickListener((parent, view, i1, id) -> {
@@ -306,7 +306,7 @@ public class HomeActivity extends AppCompatActivity {
     public void refreshView(List<Rating> ratings, ListView listView){
         filtroNonMeno2(ratings);
         ratingToString(ratings);
-        HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, ratingString);
+        HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, commentString);
         listView.setAdapter(arrayAdapter);
     }
 
@@ -419,11 +419,6 @@ public class HomeActivity extends AppCompatActivity {
                 notRatedFirst.add(r);
             }
         }
-        for( Rating r: ratings){
-            if(r.getRating() != -1){
-                notRatedFirst.add(r);
-            }
-        }
 
         return notRatedFirst;
 
@@ -432,13 +427,13 @@ public class HomeActivity extends AppCompatActivity {
     public void ratingToString(List<Rating> ratings){
         phoneNumbers = new String[ratings.size()];
         dates = new String[ratings.size()];
-        ratingString = new String[ratings.size()];
+        commentString = new String[ratings.size()];
 
         int i = 0;
         for(Rating ignored : ratings){
             phoneNumbers[i] = ratings.get(i).getPhoneNumber();
             dates[i] = ratings.get(i).getDate();
-            ratingString[i] = ratings.get(i).getComment(); //String.valueOf(ratings.get(i).getRating());
+            commentString[i] = ratings.get(i).getComment(); //String.valueOf(ratings.get(i).getRating());
             i++;
         }
     }
@@ -498,14 +493,14 @@ public class HomeActivity extends AppCompatActivity {
         Context context;
         String[] rPhoneNumber;
         String[] rDate;
-        String[] rRating;
+        String[] rComment;
 
-        MyAdapter(Context context, String[] phoneNumber, String[] date, String[] rating){
+        MyAdapter(Context context, String[] phoneNumber, String[] date, String[] comment){
             super(context,R.layout.rows,R.id.phoneNumber, phoneNumber);
             this.context = context;
             this.rPhoneNumber = phoneNumber;
             this.rDate = date;
-            this.rRating = rating;
+            this.rComment = comment;
         }
 
         @SuppressLint("SetTextI18n")
@@ -519,14 +514,10 @@ public class HomeActivity extends AppCompatActivity {
 
             phoneNumberView.setText(rPhoneNumber[position]);
             dateView.setText(rDate[position]);
-            if(rRating[position].equals("")){
+            if(rComment[position].equals("")){
                 ratingView.setText("No comment");
             }
-            else ratingView.setText(rRating[position]);
-            /*if(rRating[position].equals("-1.0")){
-                ratingView.setText("Rating: -");
-            }
-            else ratingView.setText("Rating: "+rRating[position]);*/
+            else ratingView.setText(rComment[position]);
 
             return row;
         }
