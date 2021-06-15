@@ -42,46 +42,63 @@
         app:layout_constraintVertical_bias="1.0"
         app:menu="@menu/bottom_menu" />
 
-    <TextView
-        android:id="@+id/YourProfile"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="@string/your_profile"
-        android:textColor="@color/teal_200"
-        android:textSize="15dp"
-        app:layout_constraintBottom_toTopOf="@id/emailProfile"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.181">
 
-    <TextView
-        android:id="@+id/pivaProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="@string/piva"
-        android:textSize="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
+        <!--app:layout_constraintBottom_toTopOf="@id/emailProfile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintVertical_bias="0.0"-->
+
+        <TextView
+            android:id="@+id/YourProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20sp"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif"
+            android:text="@string/your_profile"
+            android:textColor="@color/teal_200"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/pivaProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20sp"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif"
+            android:text="@string/piva"
+            android:textSize="15dp" />
+        <!--app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailProfile"
-        app:layout_constraintVertical_bias="0.306" />
+        app:layout_constraintVertical_bias="0.306" -->
 
-    <TextView
-        android:id="@+id/emailProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="@string/prompt_email"
-        android:textSize="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/pivaProfile"
+        <TextView
+            android:id="@+id/emailProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif"
+            android:text="@string/prompt_email"
+            android:textSize="15dp" />
+        <!--app:layout_constraintBottom_toTopOf="@+id/pivaProfile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/YourProfile"
-        app:layout_constraintVertical_bias="0.214" />
+        app:layout_constraintVertical_bias="0.214" />-->
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,32 +21,37 @@
             android:id="@+id/phoneNumber"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="2dp"
             android:fontFamily="sans-serif"
             android:text="@string/phone_number"
             android:textColor="#940102"
-            android:textSize="15dp" />
+            android:textSize="15dp"
+            android:layout_marginStart="5dp" />
 
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="2dp"
             android:fontFamily="sans-serif"
             android:text="@string/date"
             android:textColor="#940102"
-            android:textSize="15dp" />
+            android:textSize="15dp"
+            android:layout_marginStart="5dp" />
 
 
         <TextView
             android:id="@+id/rating"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginLeft="5dp"
             android:fontFamily="sans-serif"
             android:text="@string/rating"
             android:textColor="#7a7a7a"
-            android:textSize="15dp" />
+            android:textSize="15dp"
+            android:layout_marginStart="5dp" />
     </LinearLayout>
 
 
