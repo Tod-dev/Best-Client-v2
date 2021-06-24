@@ -173,9 +173,9 @@ public class IncomingReceiver extends BroadcastReceiver {
                         case "notification":
                             makeNotification(message);
                             break;
-                        /*case "popup":
+                        case "popup":
                             makePopup(number, dialogTxt);
-                            break;*/
+                            break;
                         default:
                             makeNotification(message);
                             break;
