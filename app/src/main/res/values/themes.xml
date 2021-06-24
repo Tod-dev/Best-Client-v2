@@ -12,7 +12,7 @@
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">15dp</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item> -->
         <!-- Customize your theme here. -->
     </style>
     <style name="Theme.AppCompat.Transparent" parent="android:Theme">
