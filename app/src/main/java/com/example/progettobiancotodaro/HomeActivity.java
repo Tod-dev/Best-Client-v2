@@ -144,8 +144,10 @@ public class HomeActivity extends AppCompatActivity {
 
             showRatings();
         }
+        /*
         else
             Toast.makeText(this, "This app couldn't read phone numbers and call log, please allow in settings", Toast.LENGTH_LONG).show();
+         */
     }
 
     public void showRatings(){
