@@ -3,14 +3,11 @@ package com.example.progettobiancotodaro;
 import androidx.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Rating {
-    private static AtomicInteger ID_GENERATOR = new AtomicInteger(1000);
+    //private static AtomicInteger ID_GENERATOR = new AtomicInteger(1000);
    // private int id;
     private String phoneNumber;
     private Date date;

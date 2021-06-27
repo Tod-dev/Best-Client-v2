@@ -24,7 +24,6 @@ import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
-import com.example.progettobiancotodaro.ui.login.LoginActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,6 +43,7 @@ public class IncomingReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
             if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                /*THE PHONE IS RINGING*/
                 this.context = context;
                 myDBhelper = new DBhelper(this.context);
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -71,13 +71,10 @@ public class IncomingReceiver extends BroadcastReceiver {
                 if(email.equals("") || password.equals("")){
                     return;
                 }
-                /*SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                String notificationPreference = preferences.getString("Notification", "Toast Message");
 
-                String message;*/
-
-                /* ESTRAGGO IL NUMERO DEL CHIAMANTE */
+                /* ESTRACT THE NUMBER OF THE CALLER */
                 String onlyNumber=incomingNumber;
+                /*IF THE number w the PREFIX >= 10 -> we read only the LAST 10 character */
                 if(incomingNumber.length() >= 10)
                     onlyNumber = incomingNumber.substring(incomingNumber.length() - 10);
 
@@ -85,14 +82,14 @@ public class IncomingReceiver extends BroadcastReceiver {
             }
         }
 
-        /* DISPLAY DEL TOAST */
+        /* DISPLAY OF TOAST */
         public void makeToast(String message){
             Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
             toast.show();
         }
 
-        /* DISPLAY DELLA NOTIFICA */
+        /* DISPLAY OF NOTIFICATION */
         public void makeNotification(String message){
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
                 NotificationChannel channel = new NotificationChannel("Rating Notification", "Rating Notification", NotificationManager.IMPORTANCE_HIGH);
@@ -111,7 +108,7 @@ public class IncomingReceiver extends BroadcastReceiver {
             notificationCompat.notify(1, builder.build());
         }
 
-        /* DISPLAY DEL POPUP */
+        /* DISPLAY OF POPUP */
         public void makePopup(String title, String dialogTxt){
             Intent intent = new Intent(context, MyAlertDialog.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -120,7 +117,7 @@ public class IncomingReceiver extends BroadcastReceiver {
             context.startActivity(intent);
         }
 
-        //Selects the object from firebase db using phone number and copies it into curRating object
+        /*Selects the object from firebase db using phone number and copies it into curRating object -> than send a notification (setting switch the notification type) */
         public void getRatingFromNumber(String number){
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference ratingsRef = database.getReference("ratingAVG").child(number);

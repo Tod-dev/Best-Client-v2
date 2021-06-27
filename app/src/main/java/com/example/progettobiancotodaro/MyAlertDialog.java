@@ -33,7 +33,7 @@ public class MyAlertDialog extends Activity {
             dialog.setCanceledOnTouchOutside(false);
     }
 
-    //Per evitare di creare troppe istanze - se chiamate ravvicinate
+    /*avoid the creation of more instances*/
     @Override
     public void onDestroy(){
         super.onDestroy();

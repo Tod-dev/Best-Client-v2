@@ -1,11 +1,11 @@
 package com.example.progettobiancotodaro;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,9 +14,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_splash);
 
+        /*HIDE ACTION BAR*/
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
+        /*SPLASH SCREEN 3 seconds*/
         new Handler().postDelayed(() -> {
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
             startActivity(intent);

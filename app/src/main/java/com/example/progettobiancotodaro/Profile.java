@@ -1,8 +1,5 @@
 package com.example.progettobiancotodaro;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +8,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.progettobiancotodaro.ui.login.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -27,9 +27,11 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        /*Action Bar title*/
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(R.string.profile);
 
+        /*MENU*/
         BottomNavigationView bn = findViewById(R.id.bottomMenu);
         bn.setSelectedItemId(R.id.profileBtn);
         bn.setOnNavigationItemSelectedListener(item -> {
@@ -55,6 +57,7 @@ public class Profile extends AppCompatActivity {
             return true;
         });
 
+        /*SET THE USER VALUES*/
         sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
         email = findViewById(R.id.emailProfile);
         piva = findViewById(R.id.pivaProfile);
@@ -74,6 +77,7 @@ public class Profile extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.logout) {
+            /*LOGOUT*/
             sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
 
             @SuppressLint("CommitPrefEdits")

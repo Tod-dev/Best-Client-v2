@@ -79,6 +79,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*Menu*/
         BottomNavigationView bn = findViewById(R.id.bottomMenu);
         bn.setSelectedItemId(R.id.homeBtn);
         bn.setOnNavigationItemSelectedListener(item -> {
@@ -104,6 +105,7 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         });
 
+        /*ActionBar set title*/
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -111,32 +113,21 @@ public class HomeActivity extends AppCompatActivity {
 
         }
 
+        /*Request Permissions*/
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) +
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) +
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, Permissions, 1);
         }
 
-        /*ratingButton = findViewById(R.id.AddRatingButton);
-        ratingButton.setOnClickListener(v -> {
-            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED) &&
-                    (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED)) {
-                //se ha i permessi avvia add rating
-                Intent intent = new Intent(HomeActivity.this, AddRating.class);
-                startActivity(intent);
-            } else
-                Toast.makeText(this, "This app couldn't read phone numbers and call log, please allow in settings", Toast.LENGTH_LONG).show();
-
-        });*/
-
+        /*If we got Permissions -> fetch ratings*/
         if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED) &&
                 (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED)) {
             myDBhelper = new DBhelper(this);
-            //myDBhelper.addColumn();
 
             listView = findViewById(R.id.list);
 
-            //SETTO L'UID
+            /*SET UID*/
             sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
             String uid = sp.getString("uid", "");
             setUid(uid);
@@ -144,14 +135,10 @@ public class HomeActivity extends AppCompatActivity {
 
             showRatings();
         }
-        /*
-        else
-            Toast.makeText(this, "This app couldn't read phone numbers and call log, please allow in settings", Toast.LENGTH_LONG).show();
-         */
     }
 
     public void showRatings(){
-        /* PRENDO TUTTI I RATING */
+        /* GET ALL RATINGS */
         List<Rating> ratings = null;
         try {
             ratings = getAllRatings();
@@ -163,28 +150,32 @@ public class HomeActivity extends AppCompatActivity {
             ratingToString(ratings);
         }
 
-        /* INSERISCO TUTTI I RATING NELLA LISTVIEW */
+        /* INSERT ALL THE RATINGS IN THE LISTVIEW */
         HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, commentString);
         listView.setAdapter(arrayAdapter);
         List<Rating> finalRatings = ratings;
         listView.setOnItemClickListener((parent, view, i1, id) -> {
             Rating k = finalRatings.get(i1);
 
-            /* SE HO GIA' INSERITO QUEL RATING CHIEDO SE LO VUOLE ELIMINARE DALLA LISTA */
+            /* IF I HAVE ALREADY INSERTED THAT RATING -> ASK IF YOU WANT TO DELETE IT */
             if( k.getRating() != -1) {
-                showDialog(1,finalRatings,i1); //Dialog cancella un elemento
+                /*Dialog delete an element*/
+                showDialog(1,finalRatings,i1);
             }else{
-                showDialog(2,finalRatings,i1); //Dialog dai un voto / cancella un elemento
+                /*Dialog give a vote or delete an element*/
+                showDialog(2,finalRatings,i1);
             }
         });
     }
 
+    /*Menu creation -> add button refresh*/
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home_menu, menu);
         menu.findItem(R.id.refresh).setVisible(true);
 
         return super.onCreateOptionsMenu(menu);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -196,6 +187,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void showDialog(int type, List <Rating> finalRatings, int index){
+        /* show a dialog box when a user click on a rating! */
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         if(type == 1 ) { //Dialog cancella un elemento
@@ -299,12 +291,14 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    /*POST NEW RATING TO RATINGBIG TABLE ON FIREBASE (REST)*/
     private void updateDB(RatingBigOnDB r){
         Log.d("ratingonDB:", "Sto USANDO IL DB"); //ratingBig
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("ratingBig");
         mDatabase.push().setValue(r);
     }
 
+    /*EVERY TIME REFRESH BUTTON IS CLICKED -> REFRESH THE LIST OF RATINGS TO DISPLAY*/
     public void refreshView(List<Rating> ratings, ListView listView){
         filtroNonMeno2(ratings);
         ratingToString(ratings);
@@ -312,6 +306,7 @@ public class HomeActivity extends AppCompatActivity {
         listView.setAdapter(arrayAdapter);
     }
 
+    /*FILTER ONLY RATINGS NOT ELIMINATED*/
     private void filtroNonMeno2(List<Rating> r){
         for(Iterator<Rating> k = r.iterator(); k.hasNext();){
             if(k.next().getRating() == -2){
@@ -323,6 +318,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public List<Rating> getAllRatings() throws ParseException {
 
+        /*GET CURSOR FOR THE CALLS LOG*/
         Cursor c = getContentResolver().query(CallLog.Calls.CONTENT_URI, new String[] {"number", "date"}, null, null, "date DESC");
 
         int colNumber = c.getColumnIndex(CallLog.Calls.NUMBER);
@@ -334,20 +330,21 @@ public class HomeActivity extends AppCompatActivity {
         List<Rating> ratings = new ArrayList<>();
 
         Date curDate = Calendar.getInstance().getTime();
-        //LETTURA REGISTRO CHIAMATE
+        /*READ CALLS LOG, LINE BY LINE*/
         int count = 0;
         while(c.moveToNext()){
+            //Log.d("i, array:  ", ""+i + Arrays.toString(ratings.toArray()));
             count++;
             boolean skip = false;
-            //Log.d("i, array:  ", ""+i + Arrays.toString(ratings.toArray()));
+
+            /*NEW RATING*/
             String number = c.getString(colNumber);
             Date date = new Date(Long.parseLong(c.getString(colDate)));
             Rating check = new Rating(number,date);
-            //Log.d("Data: ", ""+c.getString(colDate));
 
             long diffInMillies = Math.abs(date.getTime() - curDate.getTime());
             long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-            //Filtro in base alle impostazioni
+            /*FILTER in case settings say lastN*/
             switch (notificationPreference) {
                 case "last24":
                     if(diff > 24) skip = true;
@@ -360,8 +357,10 @@ public class HomeActivity extends AppCompatActivity {
                     break;
             }
 
+            /*IF THE RATING DOES NOT MATCH SETTINGS DATE*/
             if(skip) continue;
 
+            /*IF THE RATING IS NOT THE FIRST ONE OF ITS TYPE(GROUP): (DAY,PHONE) -> skip*/
             boolean checkIfExist = false;
             for(Rating r: ratings){
                 boolean res = r.group_by(check);
@@ -372,15 +371,16 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
 
+            /*ADD A NEW RATING TO THE LIST*/
             if(!checkIfExist){
                 ratings.add(new Rating(number, date));
             }
         }
         c.close();
 
-        //HO TUTTO IL REGISTRO IN ratings RAGGRUPPATO PER DATA
+        /*ALL THE CALL LOGS IN ratings list grouped by DATA(DAY,PHONE_NUMBER)*/
 
-        //PRENDO I DATI DA SQL lite PER VEDERE QUALI RATING HO GIA' INSERITO E QUALI NO
+        /*GET DATA FROM SQL LITE DB (LOCAL) TO SEE IF I HAVE ALREADY INSERTED SOME RATINGS OR NOT*/
         Cursor data = myDBhelper.getData();
         List<Rating> listData = new ArrayList<>();
         while(data.moveToNext()){
@@ -388,6 +388,7 @@ public class HomeActivity extends AppCompatActivity {
             String date = data.getString(2);
             float rating = data.getFloat(3);
             String comment = data.getString(4);
+            /*IF NOT RATED (-1) or comment inserted -> comment to insert*/
             if(rating != -1 || !comment.equals(""))
                 listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(date), rating, comment));
         }
@@ -395,11 +396,11 @@ public class HomeActivity extends AppCompatActivity {
         for(Rating r: ratings){
             for(Rating j: listData){
                 if(r.group_by(j)){
-                    //aggiorno il rating solo se sul db ne ho già inserito uno lo stesso giorno
+                    /*write in the ratings list the rating if inserted*/
                     if(j.getRating() != -1){
                         r.setRating(j.getRating());
                     }
-                    //Scrivo l'ultimo commento inserito
+                    /*write in the ratings list the last comment inserted*/
                     if(!j.getComment().equals("")){
                         r.setComment(j.getComment());
                     }
@@ -407,26 +408,31 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
-        //filtro solo != -2 -> Iterator
+        //filtro solo != -2 (RATING ELIMINATO) -> Iterator
         filtroNonMeno2(ratings);
 
 
         // Log.d("lista db: ",Arrays.toString(listData.toArray()));
 
-        //SORTING (METTO PRIMA QUELLI DA INSERIRE E POI QUELLI GIA' INSERITI)
+        //SORTING NOT INSERTED FIRST
         List<Rating> notRatedFirst = new ArrayList<>();
 
         for( Rating r: ratings){
+            /*RATING == -1 if NOT RATED YET*/
             if(r.getRating() == -1){
                 notRatedFirst.add(r);
             }
         }
-
+        /*return the list to display*/
         return notRatedFirst;
 
     }
 
     public void ratingToString(List<Rating> ratings){
+        /*
+        *save all the data in 3 parallel arrays of String data
+        *in order to create the listView easily
+        */
         phoneNumbers = new String[ratings.size()];
         dates = new String[ratings.size()];
         commentString = new String[ratings.size()];
@@ -453,7 +459,6 @@ public class HomeActivity extends AppCompatActivity {
     private void toastMessage(String message){
         Toast.makeText(this,message, Toast.LENGTH_SHORT).show();
     }
-
 
     /*
     //Downoads all ratings in the db and puts them into allRatings List
@@ -490,7 +495,8 @@ public class HomeActivity extends AppCompatActivity {
         ratingsRef.child(ratingAVGOnDB.getPhoneNumber()).setValue(ratingAVGOnDB);
     }
     */
-    /* CLASSE PER LA VISIONE PERSONALIZZATA DELLA LIST VIEW */
+
+    /* CUSTOM LIST VIEW */
     class MyAdapter extends ArrayAdapter<String> {
         Context context;
         String[] rPhoneNumber;

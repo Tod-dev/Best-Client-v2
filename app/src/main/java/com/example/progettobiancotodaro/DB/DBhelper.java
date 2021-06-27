@@ -1,21 +1,17 @@
 package com.example.progettobiancotodaro.DB;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.progettobiancotodaro.Rating;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -64,6 +60,8 @@ public class DBhelper extends SQLiteOpenHelper {
     }
 */
 
+
+/* will be called only in case where user updates their app with newer version */
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         String q = "DROP  TABLE IF EXISTS "+ TABLE_NAME;
@@ -131,9 +129,11 @@ public class DBhelper extends SQLiteOpenHelper {
         Date d1 = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(r.getDate());
         while(c.moveToNext()){
             Date d2 =  new SimpleDateFormat("dd/MM/yyyy",Locale.ITALY).parse(c.getString(2));
-            long diffInMillies = 0;
+            long diffInMillies;
             if (d2 != null && d1 != null) {
-                diffInMillies = Math.abs(d2.getTime()-d1.getTime());
+                diffInMillies = Math.abs(d2.getTime() - d1.getTime());
+            }else{
+                return -1;
             }
             long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
             if(diff < r.DAYS_TO_GROUP_BY){
@@ -145,7 +145,7 @@ public class DBhelper extends SQLiteOpenHelper {
         c.close();
         return -1;
     }
-
+/*
     public float getRating(String incomingNumber){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT "+COL_RATING+" FROM "+TABLE_NAME+" WHERE "+COL_CELL+"="+incomingNumber;
@@ -166,7 +166,7 @@ public class DBhelper extends SQLiteOpenHelper {
         return rating / i;
 
     }
-
+*/
     public int updateRating(Rating r) throws ParseException {
         int id = getRatingId(r);
         if(id == -1){
