@@ -40,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
                     break;
                 }
                 case R.id.profileBtn:{
-                    Intent intent = new Intent(SettingsActivity.this, Profile.class);
+                    Intent intent = new Intent(SettingsActivity.this, ProfileActivity.class);
                     startActivity(intent);
                     overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     break;

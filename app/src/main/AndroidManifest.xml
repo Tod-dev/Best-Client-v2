@@ -27,30 +27,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Profile"
+            android:name=".ProfileActivity"
             android:label="@string/profile" />
         <activity
-            android:name=".ui.login.RegisterActivity"
+            android:name=".RegisterActivity"
             android:label="@string/title_activity_login">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.login.LoginActivity" />
+                android:value=".LoginActivity" />
         </activity>
         <activity
-            android:name=".ui.login.LoginActivity"
+            android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"/>
-        <activity android:name=".AddRating">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity" />
-        </activity>
+
         <activity android:name=".HomeActivity"/>
+
         <activity
-            android:name=".MyAlertDialog"
+            android:name=".PopUpActivity"
             android:background="@color/teal_200" />
 
         <receiver

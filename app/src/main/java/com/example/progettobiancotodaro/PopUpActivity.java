@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
-public class MyAlertDialog extends Activity {
+public class PopUpActivity extends Activity {
     AlertDialog dialog;
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void makeDialog(String title, String text){
@@ -47,7 +47,7 @@ public class MyAlertDialog extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE); //hide activity title
-        setContentView(R.layout.rating_avg);
+        setContentView(R.layout.activity_popup);
         Intent intent = getIntent();
         String title = intent.getExtras().getString("title");
         String text = intent.getExtras().getString("text");

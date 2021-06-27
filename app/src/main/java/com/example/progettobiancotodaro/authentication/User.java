@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro.ui.login;
+package com.example.progettobiancotodaro.authentication;
 
 public class User {
     String email;

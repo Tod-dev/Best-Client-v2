@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
+import com.example.progettobiancotodaro.RatingModel.RatingAVGOnDB;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -110,7 +111,7 @@ public class IncomingReceiver extends BroadcastReceiver {
 
         /* DISPLAY OF POPUP */
         public void makePopup(String title, String dialogTxt){
-            Intent intent = new Intent(context, MyAlertDialog.class);
+            Intent intent = new Intent(context, PopUpActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("title", title);
             intent.putExtra("text", dialogTxt);

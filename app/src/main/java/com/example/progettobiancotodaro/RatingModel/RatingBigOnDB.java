@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro;
+package com.example.progettobiancotodaro.RatingModel;
 
 public class RatingBigOnDB {
     private String idEsercente;

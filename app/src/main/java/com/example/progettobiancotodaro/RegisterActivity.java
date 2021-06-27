@@ -1,8 +1,4 @@
-package com.example.progettobiancotodaro.ui.login;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+package com.example.progettobiancotodaro;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,8 +12,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.progettobiancotodaro.HomeActivity;
-import com.example.progettobiancotodaro.R;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.example.progettobiancotodaro.authentication.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,6 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         ActionBar actionBar = getSupportActionBar();
+        /*go back button in action bar*/
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -48,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         piva = findViewById(R.id.piva);
 
+        /*close keyboard if out of focus*/
         ConstraintLayout l = findViewById(R.id.containerRegister);
         l.setOnClickListener(v -> {
             View view = RegisterActivity.this.getCurrentFocus();
@@ -57,8 +58,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        sp = getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
-
         registerBtn = findViewById(R.id.register);
         registerBtn.setOnClickListener(v -> registerUser());
     }
@@ -67,6 +66,8 @@ public class RegisterActivity extends AppCompatActivity {
         String emailText = email.getText().toString();
         String passwordText = password.getText().toString();
         String pivaText = piva.getText().toString();
+
+        sp = getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
 
         if(emailText.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(emailText).matches()){
             email.setError("Please provide a valid email");

@@ -12,10 +12,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.progettobiancotodaro.ui.login.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class Profile extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
 
     SharedPreferences sp;
     TextView email;
@@ -37,13 +36,13 @@ public class Profile extends AppCompatActivity {
         bn.setOnNavigationItemSelectedListener(item -> {
             switch(item.getItemId()){
                 case R.id.homeBtn:{
-                    Intent intent = new Intent(Profile.this, HomeActivity.class);
+                    Intent intent = new Intent(ProfileActivity.this, HomeActivity.class);
                     startActivity(intent);
                     overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     break;
                 }
                 case R.id.settingsBtn:{
-                    Intent intent = new Intent(Profile.this, SettingsActivity.class);
+                    Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
                     startActivity(intent);
                     overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     break;
@@ -88,7 +87,7 @@ public class Profile extends AppCompatActivity {
             editor.putString("uid", "");
             editor.apply();
 
-            Intent intent = new Intent(Profile.this, LoginActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
             startActivity(intent);
             return true;
         }

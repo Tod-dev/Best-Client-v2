@@ -1,4 +1,5 @@
-package com.example.progettobiancotodaro;
+package com.example.progettobiancotodaro.RatingModel;
+
 
 public class RatingAVGOnDB {
     private double ratingAVG;

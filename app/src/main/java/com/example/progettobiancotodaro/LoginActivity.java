@@ -1,4 +1,4 @@
-package  com.example.progettobiancotodaro.ui.login;
+package com.example.progettobiancotodaro;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,13 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.progettobiancotodaro.HomeActivity;
-import com.example.progettobiancotodaro.R;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        /*click outside keyboard close it*/
         ConstraintLayout l = findViewById(R.id.containerLogin);
         l.setOnClickListener(v -> {
             View view = LoginActivity.this.getCurrentFocus();
@@ -121,16 +116,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void getPiva(String uid){
+        /*set piva in preferences from user id setted*/
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ratingsRef = database.getReference("Users").child(uid).child("piva");
-        final String[] piva = new String[1];
 
         ratingsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                piva[0] = dataSnapshot.getValue(String.class);
+                String piva = dataSnapshot.getValue(String.class);
                 SharedPreferences.Editor editor = sp.edit();
-                editor.putString("piva", piva[0]);
+                editor.putString("piva", piva);
                 editor.apply();
             }
 
@@ -141,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
+/* GOOGLE SIGN IN
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -175,4 +170,5 @@ public class LoginActivity extends AppCompatActivity {
             //updateUI(null);
         }
     }
+*/
 }

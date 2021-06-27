@@ -33,7 +33,8 @@ import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
-import com.example.progettobiancotodaro.ui.login.LoginActivity;
+import com.example.progettobiancotodaro.RatingModel.Rating;
+import com.example.progettobiancotodaro.RatingModel.RatingBigOnDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -94,7 +95,7 @@ public class HomeActivity extends AppCompatActivity {
                     break;
                 }
                 case R.id.profileBtn:{
-                    Intent intent = new Intent(HomeActivity.this, Profile.class);
+                    Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
                     startActivity(intent);
                     overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     break;

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.progettobiancotodaro.Rating;
+import com.example.progettobiancotodaro.RatingModel.Rating;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
