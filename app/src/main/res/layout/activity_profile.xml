@@ -21,8 +21,7 @@
         <ImageView
             android:layout_width="100sp"
             android:layout_height="100sp"
-            android:background="@drawable/ic_baseline_account_circle_24"
-            android:contentDescription="@string/profile"
+            android:background="@drawable/ic_baseline_account_circle_24_white"            android:contentDescription="@string/profile"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
