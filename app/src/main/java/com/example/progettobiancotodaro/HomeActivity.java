@@ -2,6 +2,7 @@ package com.example.progettobiancotodaro;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +11,7 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -57,7 +59,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // GoogleSignInClient mGoogleSignInClient;
     Button ratingButton;
-    String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.READ_CALL_LOG};
+    String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
     SharedPreferences sp;
     ListView listView;
     DBhelper myDBhelper;
@@ -66,6 +68,7 @@ public class HomeActivity extends AppCompatActivity {
     String[] commentString;
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
     String uid;
+    List<Contact> contacts = null;
     final int MAX_ITEMS = 100;
     //final String uri = "http://worldtimeapi.org/api/timezone/Europe/Rome";
 
@@ -110,13 +113,14 @@ public class HomeActivity extends AppCompatActivity {
 
         if (actionBar != null) {
             actionBar.setTitle(R.string.home);
-
         }
 
         /*Request Permissions*/
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) +
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) +
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) +
+                ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
+        {
             ActivityCompat.requestPermissions(this, Permissions, 1);
         }
 
@@ -132,9 +136,23 @@ public class HomeActivity extends AppCompatActivity {
             String uid = sp.getString("uid", "");
             setUid(uid);
             //toastMessage(uid);
-
+            contacts = fetchContacts();
+            for( Contact c : contacts)
+                Log.d("CONTACTS: ",c.toString());
             showRatings();
         }
+    }
+
+    public static String filterOnlyDigits(String s){
+        StringBuilder sb = new StringBuilder(s);
+        for(int i =0;i<sb.length();i++){
+            if(!(sb.charAt(i) >= '0' && sb.charAt(i) <= '9')){
+                //not digit
+                sb.deleteCharAt(i);
+                i--;
+            }
+        }
+        return sb.toString();
     }
 
     public void showRatings(){
@@ -166,6 +184,50 @@ public class HomeActivity extends AppCompatActivity {
                     showDialog(2, finalRatings, i1);
                 }
             });
+    }
+
+    public List<Contact> fetchContacts(){
+        List<Contact> contacts = new ArrayList<>();
+        /*controllo se sono in rubrica*/
+        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
+            //solo se ho i permessi di accesso alla rubrica
+            ContentResolver contentResolver = getContentResolver();
+            try (Cursor cursor = contentResolver.query(
+                    ContactsContract.Contacts.CONTENT_URI
+                    , null
+                    , null
+                    , null
+                    , null)) {
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        Contact contact = new Contact();
+                        String contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                        contact.name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
+                        if (hasPhoneNumber > 0) {
+                            Cursor phoneCursor = contentResolver.query(
+                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+                                    , null
+                                    , ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?"
+                                    , new String[]{contact_id}
+                                    , null);
+                            if (phoneCursor != null) {
+                                phoneCursor.moveToNext();
+                                String phoneinContact = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                contact.phone = filterOnlyDigits(phoneinContact);
+                            }
+                            if (phoneCursor != null) phoneCursor.close();
+                        }
+                        //contact.image = ContactPhoto(contact_id);
+                        contacts.add(contact);
+                    }
+                    //ho tutti i contatti in contacts
+                }
+            } catch (Exception ignored) {
+            }
+
+        }
+        return contacts;
     }
 
     /*Menu creation -> add button refresh*/
@@ -298,10 +360,12 @@ public class HomeActivity extends AppCompatActivity {
 
     /*EVERY TIME REFRESH BUTTON IS CLICKED -> REFRESH THE LIST OF RATINGS TO DISPLAY*/
     public void refreshView(List<RatingLocal> ratings, ListView listView){
-        filtroNonMeno2(ratings);
-        ratingToString(ratings);
-        HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, commentString);
-        listView.setAdapter(arrayAdapter);
+        if(ratings != null && listView != null){
+            filtroNonMeno2(ratings);
+            ratingToString(ratings);
+            HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, commentString);
+            listView.setAdapter(arrayAdapter);
+        }
     }
 
     /*FILTER ONLY RATINGS NOT ELIMINATED*/
@@ -421,9 +485,26 @@ public class HomeActivity extends AppCompatActivity {
                 notRatedFirst.add(r);
             }
         }
+
         /*return the list to display*/
         return notRatedFirst;
 
+    }
+
+
+    public class Contact {
+        String name = "";
+        String phone = "";
+        //Bitmap image = null;
+
+
+        @Override
+        public String toString() {
+            return "Contact{" +
+                    "name='" + name + '\'' +
+                    ", phone='" + phone + '\'' +
+                    '}';
+        }
     }
 
     public void ratingToString(List<RatingLocal> ratings){
@@ -518,7 +599,20 @@ public class HomeActivity extends AppCompatActivity {
             TextView dateView = row.findViewById(R.id.date);
             TextView ratingView = row.findViewById(R.id.rating);
 
-            phoneNumberView.setText(rPhoneNumber[position]);
+            String actualNumber = rPhoneNumber[position];
+
+            for (Contact c : contacts){
+                //scorro tutti i contatti che sono riuscito a leggere dalla rubrica
+                Log.d("CONTACTS: ","confronto :'"+c.phone+"'=='"+actualNumber+"'");
+                if(c.phone.equals(actualNumber)){
+                    //ho trovato un numero in rubrica !
+                    //scrivo il nome e non il numero!
+                    actualNumber = c.name;
+                    Log.d("CONTACTS: ","scrivo :'"+c.name+"'");
+                }
+            }
+
+            phoneNumberView.setText(actualNumber);
             dateView.setText(rDate[position]);
             if(rComment[position].equals("")){
                 ratingView.setText("No comment");

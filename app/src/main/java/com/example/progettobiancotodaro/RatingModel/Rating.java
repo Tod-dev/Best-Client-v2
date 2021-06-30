@@ -102,6 +102,7 @@ public abstract class  Rating implements  Voto{
         String date = rating.getDate();
 
         if (!numero.equals(rating.numero)) return false;
+        //RAGGRUPPO PER GIORNO
         return Year(this.date).equals(Year(date)) && Month(this.date).equals(Month(date)) && Day(this.date).equals(Day(date));
     }
 

@@ -12,7 +12,6 @@ import com.example.progettobiancotodaro.RatingModel.RatingLocal;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class DBhelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
@@ -125,17 +124,13 @@ public class DBhelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME+ " WHERE "+COL_CELL+" = "+r.getNumero();
         Cursor c = db.rawQuery(query, null);
-        Date d1 = Rating.formatter.parse(r.getDate());
         while(c.moveToNext()){
             Date d2= Rating.formatter.parse(c.getString(2));
-            long diffInMillies;
-            if (d2 != null && d1 != null) {
-                diffInMillies = Math.abs(d2.getTime() - d1.getTime());
-            }else{
+            boolean same = r.group_by(new RatingLocal(r.getNumero(),d2));
+            if (d2 == null) {
                 return -1;
             }
-            long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-            if(diff < r.DAYS_TO_GROUP_BY){
+            if(same){
                 int val = c.getInt(0);
                 c.close();
                 return val;
