@@ -68,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
     String[] commentString;
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
     String uid;
-    List<Contact> contacts = null;
+    public static List<Contact> contacts = null;
     final int MAX_ITEMS = 100;
     //final String uri = "http://worldtimeapi.org/api/timezone/Europe/Rome";
 

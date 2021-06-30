@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -62,6 +63,7 @@ public class IncomingReceiver extends BroadcastReceiver {
 
     private class CallListener extends PhoneStateListener{
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         public void onCallStateChanged(int state, String incomingNumber){
 
             if (incomingNumber.length() > 0 && state == TelephonyManager.CALL_STATE_RINGING) {
@@ -119,11 +121,22 @@ public class IncomingReceiver extends BroadcastReceiver {
         }
 
         /*Selects the object from firebase db using phone number and copies it into curRating object -> than send a notification (setting switch the notification type) */
+        @RequiresApi(api = Build.VERSION_CODES.O)
         public void getRatingFromNumber(String number){
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference ratingsRef = database.getReference("ratingAVG").child(number);
 
+            //CONTROLLO SE IL NUMERO è in rubrica -> lo sostituisco
 
+            for(HomeActivity.Contact c : HomeActivity.contacts){
+                if(HomeActivity.filterOnlyDigits(number).equals(HomeActivity.filterOnlyDigits(c.phone))){
+                    //ho trovato il contatto
+                    number = c.name;
+                    break;
+                }
+            }
+
+            String finalNumber = number;
             ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -132,7 +145,7 @@ public class IncomingReceiver extends BroadcastReceiver {
                     String message;
                     String dialogTxt;
                     if(dataSnapshot.getValue() == null){
-                        message = number + ": Number not rated";
+                        message = finalNumber + ": Number not rated";
                         dialogTxt=message;
                         //curRating = new RatingOnDB(number,"notRated");
                         //Toast.makeText(AddRating.this, "null", Toast.LENGTH_SHORT).show();
@@ -147,7 +160,7 @@ public class IncomingReceiver extends BroadcastReceiver {
                         }
                         */
                         if(rating == 0){
-                            message = number+": 0 stars!";
+                            message = finalNumber +": 0 stars!";
                             dialogTxt="0 stars!";
                         }
                         else{
@@ -157,7 +170,7 @@ public class IncomingReceiver extends BroadcastReceiver {
                             for(int i = 0; i < roundRating; i++){
                                 feedBack.append("⭐");
                             }
-                            message = number+ " "+feedBack.toString();
+                            message = finalNumber + " "+feedBack.toString();
                             dialogTxt=feedBack.toString();
 
                         }
@@ -172,7 +185,7 @@ public class IncomingReceiver extends BroadcastReceiver {
                             makeNotification(message);
                             break;
                         case "popup":
-                            makePopup(number, dialogTxt);
+                            makePopup(finalNumber, dialogTxt);
                             break;
                         default:
                             makeNotification(message);
