@@ -1,7 +1,7 @@
 package com.example.progettobiancotodaro.RatingModel;
 
 
-public class RatingAVGOnDB{
+public class RatingAVGOnDB implements Voto{
     private double ratingAVG;
 
 

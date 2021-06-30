@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public abstract class  Rating {
+public abstract class  Rating implements  Voto{
 
     //ATTRIBUTES common to ratingLocal and RatingBIGONDB
     private String numero;
