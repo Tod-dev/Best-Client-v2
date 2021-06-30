@@ -8,11 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.progettobiancotodaro.RatingModel.Rating;
+import com.example.progettobiancotodaro.RatingModel.RatingLocal;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class DBhelper extends SQLiteOpenHelper {
@@ -88,7 +87,7 @@ public class DBhelper extends SQLiteOpenHelper {
         return result != -1;
     }
 */
-    public boolean addData(String cell, String date, float rating, String comment) {
+    public boolean addData(String cell, String date, double rating, String comment) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
        // contentValues.put(COL_ID, id);
@@ -122,13 +121,13 @@ public class DBhelper extends SQLiteOpenHelper {
         return db.rawQuery(query, null);
     }
 
-    public int getRatingId(Rating r) throws ParseException {
+    public int getRatingId(RatingLocal r) throws ParseException {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_NAME+ " WHERE "+COL_CELL+" = "+r.getPhoneNumber();
+        String query = "SELECT * FROM " + TABLE_NAME+ " WHERE "+COL_CELL+" = "+r.getNumero();
         Cursor c = db.rawQuery(query, null);
-        Date d1 = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(r.getDate());
+        Date d1 = Rating.formatter.parse(r.getDate());
         while(c.moveToNext()){
-            Date d2 =  new SimpleDateFormat("dd/MM/yyyy",Locale.ITALY).parse(c.getString(2));
+            Date d2= Rating.formatter.parse(c.getString(2));
             long diffInMillies;
             if (d2 != null && d1 != null) {
                 diffInMillies = Math.abs(d2.getTime() - d1.getTime());
@@ -167,7 +166,7 @@ public class DBhelper extends SQLiteOpenHelper {
 
     }
 */
-    public int updateRating(Rating r) throws ParseException {
+    public int updateRating(RatingLocal r) throws ParseException  {
         int id = getRatingId(r);
         if(id == -1){
             Log.d(TAG, " CAN'T FIND ID");
@@ -175,9 +174,9 @@ public class DBhelper extends SQLiteOpenHelper {
         }
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + TABLE_NAME + " SET " + COL_RATING +
-                " = "+r.getRating() + ", "+ COL_COMMENT +" = '"+r.getComment()+"' WHERE "+COL_ID+" = "+id;
+                " = "+r.getVoto() + ", "+ COL_COMMENT +" = '"+r.getCommento()+"' WHERE "+COL_ID+" = "+id;
         Log.d(TAG, "updateRating: query: " + query);
-        Log.d(TAG, "updateRating: Setting rate to " + r.getRating());
+        Log.d(TAG, "updateRating: Setting rate to " + r.getVoto());
         db.execSQL(query);
         return 0;
     }

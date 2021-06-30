@@ -6,124 +6,103 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Rating {
-    //private static AtomicInteger ID_GENERATOR = new AtomicInteger(1000);
-   // private int id;
-    private String phoneNumber;
-    private Date date;
-    private String comment = "";
-    private float rating = -1;
-    public final int DAYS_TO_GROUP_BY = 1;
+public abstract class  Rating {
 
-    public Rating(String phoneNumber, Date date, float rating, String comment){
-        this.phoneNumber = phoneNumber.length() <= 10 ? phoneNumber :  phoneNumber.substring(phoneNumber.length()-10);
-        this.date = date;
-        this.rating = rating;
-        this.comment = comment;
-       // this.id = ID_GENERATOR.getAndIncrement();
+    //ATTRIBUTES common to ratingLocal and RatingBIGONDB
+    private String numero;
+    private String date;
+    private String commento;//optional
+    private double voto;
+    // double voto;
+    //private long id;
+
+    //utils -> per comodità di utilizzo ci salviamo la data come stringa formattata -> coerente con la stringa in SQLlite
+    //uso lo stesso format in tutta l'app!
+    public static final SimpleDateFormat formatter  = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ITALIAN); //formatter.format(date);
+
+    public Rating(String numero, Date date, double voto, String commento){
+        this.voto = voto;
+        //rating con voto e commento, data sotto forma di date
+        this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
+        this.date = formatter.format(date);
+        this.commento = commento;
+        // this.id = ID_GENERATOR.getAndIncrement();
     }
 
-    public Rating(String phoneNumber, Date date){
-        this.phoneNumber = phoneNumber.length() <= 10 ? phoneNumber :  phoneNumber.substring(phoneNumber.length()-10);
-        this.date = date;
-      //  this.id = ID_GENERATOR.getAndIncrement();
+
+    public Rating(String numero, Date date){
+        this.voto = -1;// not rated
+        //nuovo rating senza voto e senza commento
+        this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
+        this.date = formatter.format(date);
+        this.commento ="";
+        //  this.id = ID_GENERATOR.getAndIncrement();
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public double getVoto() {
+        return voto;
+    }
+
+    public String getNumero() {
+        return numero;
     }
 
     public String getDate(){
-        SimpleDateFormat format = new SimpleDateFormat("dd/M/yyyy HH:mm", Locale.ITALIAN);
-
-        return format.format(date);
+        return this.date;
     }
 
-    public Date getRealDate(){
-        return date;
+
+    public String getCommento(){
+        return commento;
     }
 
-    public String getYear(){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy", Locale.ITALIAN);
 
-        return format.format(date);
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 
-    public String getMonth(){
-        SimpleDateFormat format = new SimpleDateFormat("M", Locale.ITALIAN);
-
-        return format.format(date);
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getDay(){
-        SimpleDateFormat format = new SimpleDateFormat("dd", Locale.ITALIAN);
-
-        return format.format(date);
+    public void setVoto(double voto) {
+        this.voto = voto;
     }
 
-    public float getRating() {
-        return rating;
+
+
+    public static String Year(String s) {
+        return s.substring(6,10);
     }
 
-    public void setRating(float rating){
-        this.rating = rating;
+    public static String Month(String s){
+        return s.substring(3,5);
     }
 
-    public String getComment(){
-        return comment;
+    public static String Day(String s){
+        return s.substring(0,2);
     }
 
-    public void setComment(String comment){
-        this.comment = comment;
+
+    public void setCommento(String commento){
+        this.commento = commento;
     }
 
     @NonNull
     public String toString(){
-        String ratingString =  rating == -1 ? "-" : String.valueOf(rating);
-        return "Number: "+phoneNumber+", Date: "+getDate()+", Current Rating: "+ ratingString+", Comment: "+comment;
+        String ratingString =   this.voto == -1 ? "-" : String.valueOf(this.voto);
+        return "Number: "+ this.numero +", Date: "+this.date+", Current Rating: "+ ratingString+", Comment: "+ this.commento;
     }
 
-    /*
-    public String getStringInstance(){
-        String ratingString =  rating == -1 ? "-" : String.valueOf(rating);
-        return "{id:"+ id +", Number: "+phoneNumber+", Date: "+getDate()+", Current Rating: "+ ratingString+"}";
-    }
-    */
-    public boolean group_by(Object o) {
+    public boolean group_by(Object o)  {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Rating rating = (Rating) o;
+        String date = rating.getDate();
 
-        if (!phoneNumber.equals(rating.phoneNumber)) return false;
-        return getYear().equals(rating.getYear()) && getMonth().equals(rating.getMonth()) && getDay().equals(rating.getDay());
-        /*long diffInMillies = Math.abs(date.getTime() - rating.date.getTime());
-        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-        return diff < DAYS_TO_GROUP_BY;*/
+        if (!numero.equals(rating.numero)) return false;
+        return Year(this.date).equals(Year(date)) && Month(this.date).equals(Month(date)) && Day(this.date).equals(Day(date));
     }
 
-    public boolean group_by_number(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Rating rating = (Rating) o;
-
-        return phoneNumber.equals(rating.phoneNumber);
-    }
-    /*
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Rating rating = (Rating) o;
-
-        return id == rating.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return id;
-    }
-    */
 }

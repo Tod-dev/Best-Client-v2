@@ -1,7 +1,7 @@
 package com.example.progettobiancotodaro.RatingModel;
 
 
-public class RatingAVGOnDB {
+public class RatingAVGOnDB{
     private double ratingAVG;
 
 
@@ -10,13 +10,13 @@ public class RatingAVGOnDB {
     }
 
 
-    public double getRating(){
+    public double getVoto(){
         return this.ratingAVG;
     }
 
 
-    public void setRating(double ratingAVG){
-        this.ratingAVG = ratingAVG;
+    public void setVoto(double voto){
+        this.ratingAVG = voto;
     }
 
     @Override

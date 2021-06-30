@@ -35,6 +35,7 @@ import androidx.preference.PreferenceManager;
 import com.example.progettobiancotodaro.DB.DBhelper;
 import com.example.progettobiancotodaro.RatingModel.Rating;
 import com.example.progettobiancotodaro.RatingModel.RatingBigOnDB;
+import com.example.progettobiancotodaro.RatingModel.RatingLocal;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -42,13 +43,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -140,7 +139,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void showRatings(){
         /* GET ALL RATINGS */
-        List<Rating> ratings = null;
+        List<RatingLocal> ratings = null;
         try {
             ratings = getAllRatings();
         } catch (ParseException e) {
@@ -151,22 +150,22 @@ public class HomeActivity extends AppCompatActivity {
             ratingToString(ratings);
         }
 
-        /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-        HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, commentString);
-        listView.setAdapter(arrayAdapter);
-        List<Rating> finalRatings = ratings;
-        listView.setOnItemClickListener((parent, view, i1, id) -> {
-            Rating k = finalRatings.get(i1);
+            /* INSERT ALL THE RATINGS IN THE LISTVIEW */
+            HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, commentString);
+            listView.setAdapter(arrayAdapter);
+            List<RatingLocal> finalRatings = ratings;
+            listView.setOnItemClickListener((parent, view, i1, id) -> {
+                RatingLocal k = finalRatings.get(i1);
 
-            /* IF I HAVE ALREADY INSERTED THAT RATING -> ASK IF YOU WANT TO DELETE IT */
-            if( k.getRating() != -1) {
-                /*Dialog delete an element*/
-                showDialog(1,finalRatings,i1);
-            }else{
-                /*Dialog give a vote or delete an element*/
-                showDialog(2,finalRatings,i1);
-            }
-        });
+                /* IF I HAVE ALREADY INSERTED THAT RATING -> ASK IF YOU WANT TO DELETE IT */
+                if (k.getVoto() != -1) {
+                    /*Dialog delete an element*/
+                    showDialog(1, finalRatings, i1);
+                } else {
+                    /*Dialog give a vote or delete an element*/
+                    showDialog(2, finalRatings, i1);
+                }
+            });
     }
 
     /*Menu creation -> add button refresh*/
@@ -187,7 +186,7 @@ public class HomeActivity extends AppCompatActivity {
         return false;
     }
 
-    private void showDialog(int type, List <Rating> finalRatings, int index){
+    private void showDialog(int type, List <RatingLocal> finalRatings, int index){
         /* show a dialog box when a user click on a rating! */
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -197,7 +196,7 @@ public class HomeActivity extends AppCompatActivity {
             builder.setView(viewDialog)
                     .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
                         float nuovoRating = -2;
-                        finalRatings.get(index).setRating(nuovoRating);
+                        finalRatings.get(index).setVoto(nuovoRating);
                         try {
                             UpdateData(finalRatings.get(index), false);
                         } catch (ParseException e) {
@@ -220,8 +219,8 @@ public class HomeActivity extends AppCompatActivity {
             ImageView deleteButton = viewDialog.findViewById(R.id.delete);
             ImageView commentButton = viewDialog.findViewById(R.id.commentLogo);
 
-            if(!finalRatings.get(index).getComment().equals("")){
-                commentText.setText(finalRatings.get(index).getComment());
+            if(!finalRatings.get(index).getCommento().equals("")){
+                commentText.setText(finalRatings.get(index).getCommento());
             }
 
             builder.setView(viewDialog)
@@ -229,11 +228,11 @@ public class HomeActivity extends AppCompatActivity {
                         float nuovoRating =  ratingbar.getRating();
 
                         if(!Objects.requireNonNull(comment.getEditText()).getText().toString().equals("")){
-                            finalRatings.get(index).setComment(comment.getEditText().getText().toString());
+                            finalRatings.get(index).setCommento(comment.getEditText().getText().toString());
                         }
                         if(nuovoRating != 0){
                             //se ho inserito un rating modifico il db firebase
-                            finalRatings.get(index).setRating(nuovoRating);
+                            finalRatings.get(index).setVoto(nuovoRating);
                             try {
                                 UpdateData(finalRatings.get(index), true);
                             } catch (ParseException e) {
@@ -269,18 +268,16 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void UpdateData(Rating r,boolean db) throws ParseException {
+    private void UpdateData(RatingLocal r, boolean db) throws ParseException {
         /* AGGIORNA I DATI SUL DB SQLITE E SU FIREBASE */
         Date date = new Date();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        //System.out.println(formatter.format(date));
-        RatingBigOnDB remoteRating = new RatingBigOnDB(uid,formatter.format(date),r.getRating(),r.getPhoneNumber(),r.getComment());
+        RatingBigOnDB remoteRating = new RatingBigOnDB(uid,date,r.getVoto(),r.getNumero(),r.getCommento());
 
         if(db)
             updateDB(remoteRating);
 
-        if(r.getRating() > 0){
-            r.setRating(-2);
+        if(r.getVoto() > 0){
+            r.setVoto(-2);
         }
 
         int ret = myDBhelper.updateRating(r);
@@ -300,7 +297,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /*EVERY TIME REFRESH BUTTON IS CLICKED -> REFRESH THE LIST OF RATINGS TO DISPLAY*/
-    public void refreshView(List<Rating> ratings, ListView listView){
+    public void refreshView(List<RatingLocal> ratings, ListView listView){
         filtroNonMeno2(ratings);
         ratingToString(ratings);
         HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, commentString);
@@ -308,16 +305,16 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /*FILTER ONLY RATINGS NOT ELIMINATED*/
-    private void filtroNonMeno2(List<Rating> r){
-        for(Iterator<Rating> k = r.iterator(); k.hasNext();){
-            if(k.next().getRating() == -2){
+    private void filtroNonMeno2(List<RatingLocal> r){
+        for(Iterator<RatingLocal> k = r.iterator(); k.hasNext();){
+            if(k.next().getVoto() == -2){
                 k.remove();
             }
         }
     }
 
 
-    public List<Rating> getAllRatings() throws ParseException {
+    public List<RatingLocal> getAllRatings() throws ParseException {
 
         /*GET CURSOR FOR THE CALLS LOG*/
         Cursor c = getContentResolver().query(CallLog.Calls.CONTENT_URI, new String[] {"number", "date"}, null, null, "date DESC");
@@ -328,7 +325,7 @@ public class HomeActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String notificationPreference = preferences.getString("Last Calls", "None");
 
-        List<Rating> ratings = new ArrayList<>();
+        List<RatingLocal> ratings = new ArrayList<>();
 
         Date curDate = Calendar.getInstance().getTime();
         /*READ CALLS LOG, LINE BY LINE*/
@@ -341,7 +338,7 @@ public class HomeActivity extends AppCompatActivity {
             /*NEW RATING*/
             String number = c.getString(colNumber);
             Date date = new Date(Long.parseLong(c.getString(colDate)));
-            Rating check = new Rating(number,date);
+            RatingLocal check = new RatingLocal(number,date);
 
             long diffInMillies = Math.abs(date.getTime() - curDate.getTime());
             long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
@@ -363,7 +360,7 @@ public class HomeActivity extends AppCompatActivity {
 
             /*IF THE RATING IS NOT THE FIRST ONE OF ITS TYPE(GROUP): (DAY,PHONE) -> skip*/
             boolean checkIfExist = false;
-            for(Rating r: ratings){
+            for(RatingLocal r: ratings){
                 boolean res = r.group_by(check);
                 //Log.d("CHECK_CONFRONTO: ", ""+res);
                 if(res){
@@ -374,7 +371,7 @@ public class HomeActivity extends AppCompatActivity {
 
             /*ADD A NEW RATING TO THE LIST*/
             if(!checkIfExist){
-                ratings.add(new Rating(number, date));
+                ratings.add(new RatingLocal(number, date));
             }
         }
         c.close();
@@ -383,7 +380,7 @@ public class HomeActivity extends AppCompatActivity {
 
         /*GET DATA FROM SQL LITE DB (LOCAL) TO SEE IF I HAVE ALREADY INSERTED SOME RATINGS OR NOT*/
         Cursor data = myDBhelper.getData();
-        List<Rating> listData = new ArrayList<>();
+        List<RatingLocal> listData = new ArrayList<>();
         while(data.moveToNext()){
             String cell = data.getString(1);
             String date = data.getString(2);
@@ -391,19 +388,19 @@ public class HomeActivity extends AppCompatActivity {
             String comment = data.getString(4);
             /*IF NOT RATED (-1) or comment inserted -> comment to insert*/
             if(rating != -1 || !comment.equals(""))
-                listData.add(new Rating(cell,new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY).parse(date), rating, comment));
+                listData.add(new RatingLocal(cell, Rating.formatter.parse(date), rating, comment));
         }
 
-        for(Rating r: ratings){
-            for(Rating j: listData){
+        for(RatingLocal r: ratings){
+            for(RatingLocal j: listData){
                 if(r.group_by(j)){
                     /*write in the ratings list the rating if inserted*/
-                    if(j.getRating() != -1){
-                        r.setRating(j.getRating());
+                    if(j.getVoto() != -1){
+                        r.setVoto(j.getVoto());
                     }
                     /*write in the ratings list the last comment inserted*/
-                    if(!j.getComment().equals("")){
-                        r.setComment(j.getComment());
+                    if(!j.getCommento().equals("")){
+                        r.setCommento(j.getCommento());
                     }
                 }
             }
@@ -416,11 +413,11 @@ public class HomeActivity extends AppCompatActivity {
         // Log.d("lista db: ",Arrays.toString(listData.toArray()));
 
         //SORTING NOT INSERTED FIRST
-        List<Rating> notRatedFirst = new ArrayList<>();
+        List<RatingLocal> notRatedFirst = new ArrayList<>();
 
-        for( Rating r: ratings){
+        for( RatingLocal r: ratings){
             /*RATING == -1 if NOT RATED YET*/
-            if(r.getRating() == -1){
+            if(r.getVoto() == -1){
                 notRatedFirst.add(r);
             }
         }
@@ -429,7 +426,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public void ratingToString(List<Rating> ratings){
+    public void ratingToString(List<RatingLocal> ratings){
         /*
         *save all the data in 3 parallel arrays of String data
         *in order to create the listView easily
@@ -439,16 +436,16 @@ public class HomeActivity extends AppCompatActivity {
         commentString = new String[ratings.size()];
 
         int i = 0;
-        for(Rating ignored : ratings){
-            phoneNumbers[i] = ratings.get(i).getPhoneNumber();
+        for(RatingLocal ignored : ratings){
+            phoneNumbers[i] = ratings.get(i).getNumero();
             dates[i] = ratings.get(i).getDate();
-            commentString[i] = ratings.get(i).getComment(); //String.valueOf(ratings.get(i).getRating());
+            commentString[i] = ratings.get(i).getCommento(); //String.valueOf(ratings.get(i).getRating());
             i++;
         }
     }
 
-    public void AddData(Rating r) {
-        boolean insertData = myDBhelper.addData(r.getPhoneNumber(),r.getDate(),r.getRating(), r.getComment());
+    public void AddData(RatingLocal r) {
+        boolean insertData = myDBhelper.addData(r.getNumero(),r.getDate(),r.getVoto(), r.getCommento());
 
         if (insertData) {
             toastMessage("Valutazione inserita correttamente!");
