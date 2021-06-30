@@ -10,6 +10,13 @@
         android:visible="false" />
 
     <item
+        android:id="@+id/contacts"
+        android:icon="@drawable/ic_baseline_contact_phone_24"
+        android:title="@string/contacts"
+        app:showAsAction="ifRoom"
+        android:visible="false" />
+
+    <item
         android:id="@+id/refresh"
         android:icon="@drawable/ic_baseline_refresh_24"
         android:title="@string/refresh"

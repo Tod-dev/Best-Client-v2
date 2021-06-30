@@ -234,6 +234,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home_menu, menu);
         menu.findItem(R.id.refresh).setVisible(true);
+        menu.findItem(R.id.contacts).setVisible(true);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -243,6 +244,12 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.refresh) {
             showRatings();
+            return true;
+        }
+
+        if (item.getItemId() == R.id.contacts) {
+            Intent intent = new Intent(HomeActivity.this, ContactsActivity.class);
+            startActivity(intent);
             return true;
         }
         return false;

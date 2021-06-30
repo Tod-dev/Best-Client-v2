@@ -20,6 +20,11 @@
         android:theme="@style/Theme.ProgettoBiancoTodaro"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".ContactsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomeActivity" />
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,14 +44,11 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
-            />
+            android:label="@string/title_activity_login" />
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"/>
-
-        <activity android:name=".HomeActivity"/>
-
+            android:label="@string/title_activity_settings" />
+        <activity android:name=".HomeActivity" />
         <activity
             android:name=".PopUpActivity"
             android:background="@color/teal_200" />

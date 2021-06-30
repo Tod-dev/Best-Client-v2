@@ -54,4 +54,6 @@
     <string name="profile">Profile</string>
     <string name="your_profile">Your Profile</string>
     <string name="refresh">Refresh</string>
+    <string name="contacts">Contacts</string>
+    <string name="name">Name</string>
 </resources>
