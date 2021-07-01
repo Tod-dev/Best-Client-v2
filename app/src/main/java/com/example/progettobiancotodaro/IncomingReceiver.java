@@ -26,11 +26,14 @@ import androidx.preference.PreferenceManager;
 
 import com.example.progettobiancotodaro.DB.DBhelper;
 import com.example.progettobiancotodaro.RatingModel.RatingAVGOnDB;
+import com.example.progettobiancotodaro.components.Contact;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import static com.example.progettobiancotodaro.Utils.filterOnlyDigits;
 
 public class IncomingReceiver extends BroadcastReceiver {
     //final String OUR_ACTION = "android.intent.action.PHONE_STATE";
@@ -128,10 +131,10 @@ public class IncomingReceiver extends BroadcastReceiver {
 
             //CONTROLLO SE IL NUMERO è in rubrica -> lo sostituisco
 
-            for(HomeActivity.Contact c : HomeActivity.contacts){
-                if(HomeActivity.filterOnlyDigits(number).equals(HomeActivity.filterOnlyDigits(c.phone))){
+            for(Contact c : HomeActivity.contacts){
+                if(filterOnlyDigits(number).equals(filterOnlyDigits(c.getPhone()))){
                     //ho trovato il contatto
-                    number = c.name;
+                    number = c.getName();
                     break;
                 }
             }

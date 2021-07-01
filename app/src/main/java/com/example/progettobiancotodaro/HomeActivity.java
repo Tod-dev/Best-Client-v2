@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
@@ -38,20 +36,23 @@ import com.example.progettobiancotodaro.DB.DBhelper;
 import com.example.progettobiancotodaro.RatingModel.Rating;
 import com.example.progettobiancotodaro.RatingModel.RatingBigOnDB;
 import com.example.progettobiancotodaro.RatingModel.RatingLocal;
+import com.example.progettobiancotodaro.components.Contact;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import static com.example.progettobiancotodaro.Utils.fetchContacts;
+import static com.example.progettobiancotodaro.Utils.filtroNonMeno2;
+import static com.example.progettobiancotodaro.Utils.toastMessage;
+import static com.example.progettobiancotodaro.Utils.updateDB;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -136,24 +137,15 @@ public class HomeActivity extends AppCompatActivity {
             String uid = sp.getString("uid", "");
             setUid(uid);
             //toastMessage(uid);
-            contacts = fetchContacts();
+            ContentResolver contentResolver = getContentResolver();
+            contacts = fetchContacts(contentResolver,this);
             for( Contact c : contacts)
                 Log.d("CONTACTS: ",c.toString());
             showRatings();
         }
     }
 
-    public static String filterOnlyDigits(String s){
-        StringBuilder sb = new StringBuilder(s);
-        for(int i =0;i<sb.length();i++){
-            if(!(sb.charAt(i) >= '0' && sb.charAt(i) <= '9')){
-                //not digit
-                sb.deleteCharAt(i);
-                i--;
-            }
-        }
-        return sb.toString();
-    }
+
 
     public void showRatings(){
         /* GET ALL RATINGS */
@@ -186,49 +178,7 @@ public class HomeActivity extends AppCompatActivity {
             });
     }
 
-    public List<Contact> fetchContacts(){
-        List<Contact> contacts = new ArrayList<>();
-        /*controllo se sono in rubrica*/
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
-            //solo se ho i permessi di accesso alla rubrica
-            ContentResolver contentResolver = getContentResolver();
-            try (Cursor cursor = contentResolver.query(
-                    ContactsContract.Contacts.CONTENT_URI
-                    , null
-                    , null
-                    , null
-                    , null)) {
-                if (cursor != null && cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        Contact contact = new Contact();
-                        String contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                        contact.name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
-                        if (hasPhoneNumber > 0) {
-                            Cursor phoneCursor = contentResolver.query(
-                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-                                    , null
-                                    , ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?"
-                                    , new String[]{contact_id}
-                                    , null);
-                            if (phoneCursor != null) {
-                                phoneCursor.moveToNext();
-                                String phoneinContact = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                contact.phone = filterOnlyDigits(phoneinContact);
-                            }
-                            if (phoneCursor != null) phoneCursor.close();
-                        }
-                        //contact.image = ContactPhoto(contact_id);
-                        contacts.add(contact);
-                    }
-                    //ho tutti i contatti in contacts
-                }
-            } catch (Exception ignored) {
-            }
 
-        }
-        return contacts;
-    }
 
     /*Menu creation -> add button refresh*/
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -358,12 +308,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    /*POST NEW RATING TO RATINGBIG TABLE ON FIREBASE (REST)*/
-    private void updateDB(RatingBigOnDB r){
-        Log.d("ratingonDB:", "Sto USANDO IL DB"); //ratingBig
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("ratingBig");
-        mDatabase.push().setValue(r);
-    }
+
 
     /*EVERY TIME REFRESH BUTTON IS CLICKED -> REFRESH THE LIST OF RATINGS TO DISPLAY*/
     public void refreshView(List<RatingLocal> ratings, ListView listView){
@@ -375,14 +320,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    /*FILTER ONLY RATINGS NOT ELIMINATED*/
-    private void filtroNonMeno2(List<RatingLocal> r){
-        for(Iterator<RatingLocal> k = r.iterator(); k.hasNext();){
-            if(k.next().getVoto() == -2){
-                k.remove();
-            }
-        }
-    }
+
 
 
     public List<RatingLocal> getAllRatings() throws ParseException {
@@ -503,21 +441,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    public class Contact {
-        String name = "";
-        String phone = "";
-        //Bitmap image = null;
-
-
-        @Override
-        public String toString() {
-            return "Contact{" +
-                    "name='" + name + '\'' +
-                    ", phone='" + phone + '\'' +
-                    '}';
-        }
-    }
-
     public void ratingToString(List<RatingLocal> ratings){
         /*
         *save all the data in 3 parallel arrays of String data
@@ -540,51 +463,11 @@ public class HomeActivity extends AppCompatActivity {
         boolean insertData = myDBhelper.addData(r.getNumero(),r.getDate(),r.getVoto(), r.getCommento());
 
         if (insertData) {
-            toastMessage("Valutazione inserita correttamente!");
+            toastMessage("Valutazione inserita correttamente!",this);
         } else {
-            toastMessage("Qualcosa è andato storto :(");
+            toastMessage("Qualcosa è andato storto :(",this);
         }
     }
-
-    private void toastMessage(String message){
-        Toast.makeText(this,message, Toast.LENGTH_SHORT).show();
-    }
-
-    /*
-    //Downoads all ratings in the db and puts them into allRatings List
-    public void getAllRatingsFromDB(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("ratings");
-        //allRatings.clear();
-
-        ratingsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot d : dataSnapshot.getChildren()){
-                    RatingAVGOnDB r = d.getValue(RatingAVGOnDB.class);
-                    allRatings.add(r);
-                    //Toast.makeText(AddRating.this, "Sono in lettura"+r.toString(), Toast.LENGTH_LONG).show();
-                }
-                //Toast.makeText(AddRating.this, "Sono in lettura"+allRatings.get(0).toString(), Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Log.w("Main", "Failed to read value.", error.toException());
-            }
-        });
-    }
-    */
-    /*
-    //Adds a new rating on db
-    public void AddNewRating(RatingAVGOnDB ratingAVGOnDB){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("ratings");
-
-        ratingsRef.child(ratingAVGOnDB.getPhoneNumber()).setValue(ratingAVGOnDB);
-    }
-    */
 
     /* CUSTOM LIST VIEW */
     class MyAdapter extends ArrayAdapter<String> {
@@ -614,12 +497,12 @@ public class HomeActivity extends AppCompatActivity {
 
             for (Contact c : contacts){
                 //scorro tutti i contatti che sono riuscito a leggere dalla rubrica
-                Log.d("CONTACTS: ","confronto :'"+c.phone+"'=='"+actualNumber+"'");
-                if(c.phone.equals(actualNumber)){
+                Log.d("CONTACTS: ","confronto :'"+c.getPhone()+"'=='"+actualNumber+"'");
+                if(c.getPhone().equals(actualNumber)){
                     //ho trovato un numero in rubrica !
                     //scrivo il nome e non il numero!
-                    actualNumber = c.name;
-                    Log.d("CONTACTS: ","scrivo :'"+c.name+"'");
+                    actualNumber = c.getName();
+                    Log.d("CONTACTS: ","scrivo :'"+c.getName()+"'");
                 }
             }
 
@@ -649,50 +532,3 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 }
-    /*
-    private void requestData() {
-        Log.d("REQUEST DATA:","SONO IN REQUEST DATA");
-        RequestPackage requestPackage = new RequestPackage();
-        requestPackage.setMethod("GET");
-        requestPackage.setUrl(uri);
-
-        Downloader downloader = new Downloader(); //Instantiation of the Async task
-        //that’s defined below
-
-        downloader.execute(requestPackage);
-    }
-*/
-    /*
-    private static class Downloader extends AsyncTask<RequestPackage, String, String> {
-        @Override
-        protected String doInBackground(RequestPackage... params) {
-            return HttpManager.getData(params[0]);
-        }
-
-        //The String that is returned in the doInBackground() method is sent to the
-        // onPostExecute() method below. The String should contain JSON data.
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                Log.d("DOWNLOADER:","SONO IN DOWNLOADER : "+result);
-                //We need to convert the string in result to a JSONObject
-                if(result == null) return;
-                JSONObject jsonObject = new JSONObject(result);
-                Log.d("JSON:",jsonObject.toString());
-                //The “ask” value below is a field in the JSON Object that was
-                //retrieved from the BitcoinAverage API. It contains the current
-                //bitcoin price
-                long unixTime = jsonObject.getLong("unixtime");
-                unixTime *= 1000; //timestamp in ms
-                Log.d("Data:",""+unixTime);
-                BigToAvg.update(unixTime);
-
-                //Now we can use the value in the mPriceTextView
-                //mPriceTextView.setText(price);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-}*/

@@ -1,22 +1,13 @@
 package com.example.progettobiancotodaro;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,14 +18,19 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.example.progettobiancotodaro.DB.DBhelper;
 import com.example.progettobiancotodaro.RatingModel.Rating;
 import com.example.progettobiancotodaro.RatingModel.RatingBigOnDB;
 import com.example.progettobiancotodaro.RatingModel.RatingLocal;
+import com.example.progettobiancotodaro.components.Contact;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -43,9 +39,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-public class ContactsActivity extends AppCompatActivity {
+import static com.example.progettobiancotodaro.Utils.updateDB;
 
-    public static List<Contact> contacts = null;
+public class ContactsActivity extends AppCompatActivity {
     SharedPreferences sp;
     String[] name;
     String[] phoneNumber;
@@ -74,7 +70,6 @@ public class ContactsActivity extends AppCompatActivity {
         listView = findViewById(R.id.listcontacts);
 
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-
             showRatings();
         }
         else Toast.makeText(this, "This app hasn't access to phone numbers, allow in settings", Toast.LENGTH_LONG).show();
@@ -84,7 +79,6 @@ public class ContactsActivity extends AppCompatActivity {
     public void showRatings(){
         myDBhelper = new DBhelper(this);
         //prendo tutti i contatti dalla rubrica
-        contacts = fetchContacts();
 
         //cerco i contatti a cui ho già dato una valutazione, avranno rating = -3
         Cursor data = myDBhelper.getData();
@@ -104,11 +98,11 @@ public class ContactsActivity extends AppCompatActivity {
         }
 
         //creo un arrayList listData che conterrà solo i contatti per cui non è stato inserito un rating
-        for(Iterator<Contact> i = contacts.iterator(); i.hasNext();){
+        for(Iterator<Contact> i = HomeActivity.contacts.iterator(); i.hasNext();){
             boolean presente = false;
             Contact c = (Contact) i.next();
             for(RatingLocal r: alreadyInserted){
-                if(c.phone.equals(r.getNumero())){
+                if(c.getPhone().equals(r.getNumero())){
                     presente = true;
                     break;
                 }
@@ -118,14 +112,14 @@ public class ContactsActivity extends AppCompatActivity {
 
         //costruisco la lista dei contatti da visualizzare, ovvero quelli che non sono già stati valutati
 
-        name = new String[contacts.size()];
-        phoneNumber = new String[contacts.size()];
+        name = new String[ HomeActivity.contacts.size()];
+        phoneNumber = new String[ HomeActivity.contacts.size()];
 
         //salvo i nomi e i numeri di telefono nei vettori
         int index = 0;
-        for (Contact c : contacts) {
-            name[index] = c.name;
-            phoneNumber[index] = c.phone;
+        for (Contact c :  HomeActivity.contacts) {
+            name[index] = c.getName();
+            phoneNumber[index] = c.getPhone();
             index++;
         }
 
@@ -190,72 +184,6 @@ public class ContactsActivity extends AppCompatActivity {
 
     }
 
-    /*POST NEW RATING TO RATINGBIG TABLE ON FIREBASE (REST)*/
-    private void updateDB(RatingBigOnDB r){
-        Log.d("ratingonDB:", "Sto USANDO IL DB"); //ratingBig
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("ratingBig");
-        mDatabase.push().setValue(r);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public List<Contact> fetchContacts(){
-        List<Contact> contacts = new ArrayList<>();
-        /*controllo se sono in rubrica*/
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
-            //solo se ho i permessi di accesso alla rubrica
-            ContentResolver contentResolver = getContentResolver();
-            try (Cursor cursor = contentResolver.query(
-                    ContactsContract.Contacts.CONTENT_URI
-                    , null
-                    , null
-                    , null
-                    , ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" ASC")) {
-                if (cursor != null && cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        Contact contact = new Contact();
-                        String contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                        contact.name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
-                        if (hasPhoneNumber > 0) {
-                            Cursor phoneCursor = contentResolver.query(
-                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-                                    , null
-                                    , ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?"
-                                    , new String[]{contact_id}
-                                    , null);
-                            if (phoneCursor != null) {
-                                phoneCursor.moveToNext();
-                                String phoneinContact = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                contact.phone = HomeActivity.filterOnlyDigits(phoneinContact);
-                            }
-                            if (phoneCursor != null) phoneCursor.close();
-                        }
-                        //contact.image = ContactPhoto(contact_id);
-                        contacts.add(contact);
-                    }
-                    //ho tutti i contatti in contacts
-                }
-            } catch (Exception ignored) {
-            }
-
-        }
-        return contacts;
-    }
-
-    public class Contact {
-        String name = "";
-        String phone = "";
-        //Bitmap image = null;
-
-
-        @Override
-        public String toString() {
-            return "Contact{" +
-                    "name='" + name + '\'' +
-                    ", phone='" + phone + '\'' +
-                    '}';
-        }
-    }
 
     class MyAdapter extends ArrayAdapter<String> {
         Context context;
