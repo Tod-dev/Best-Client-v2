@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro;
+package it.bestclient.android;
 
 import android.Manifest;
 import android.content.ContentResolver;
@@ -18,10 +18,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
-import com.example.progettobiancotodaro.DB.DBhelper;
-import com.example.progettobiancotodaro.RatingModel.RatingBigOnDB;
-import com.example.progettobiancotodaro.RatingModel.RatingLocal;
-import com.example.progettobiancotodaro.components.Contact;
+import it.bestclient.android.DB.DBhelper;
+import it.bestclient.android.RatingModel.RatingBigOnDB;
+import it.bestclient.android.RatingModel.RatingLocal;
+import it.bestclient.android.components.Contact;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;

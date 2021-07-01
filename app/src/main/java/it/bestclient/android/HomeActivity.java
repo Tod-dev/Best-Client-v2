@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro;
+package it.bestclient.android;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -29,10 +29,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
-import com.example.progettobiancotodaro.DB.DBhelper;
-import com.example.progettobiancotodaro.RatingModel.Rating;
-import com.example.progettobiancotodaro.RatingModel.RatingLocal;
-import com.example.progettobiancotodaro.components.Contact;
+import it.bestclient.android.DB.DBhelper;
+import it.bestclient.android.RatingModel.Rating;
+import it.bestclient.android.RatingModel.RatingLocal;
+import it.bestclient.android.components.Contact;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.ParseException;
@@ -42,8 +42,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.example.progettobiancotodaro.Utils.fetchContacts;
-import static com.example.progettobiancotodaro.Utils.filtroNonMeno2;
+import static it.bestclient.android.Utils.fetchContacts;
+import static it.bestclient.android.Utils.filtroNonMeno2;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)

@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro.httpRequest;
+package it.bestclient.android.httpRequest;
 
 import java.io.BufferedReader;
 import java.io.IOException;

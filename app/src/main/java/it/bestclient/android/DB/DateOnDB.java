@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro.DB;
+package it.bestclient.android.DB;
 
 import android.annotation.SuppressLint;
 

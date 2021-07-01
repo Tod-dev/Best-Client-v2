@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro;
+package it.bestclient.android;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -24,16 +24,16 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
-import com.example.progettobiancotodaro.DB.DBhelper;
-import com.example.progettobiancotodaro.RatingModel.RatingAVGOnDB;
-import com.example.progettobiancotodaro.components.Contact;
+import it.bestclient.android.DB.DBhelper;
+import it.bestclient.android.RatingModel.RatingAVGOnDB;
+import it.bestclient.android.components.Contact;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import static com.example.progettobiancotodaro.Utils.filterOnlyDigits;
+import static it.bestclient.android.Utils.filterOnlyDigits;
 
 public class IncomingReceiver extends BroadcastReceiver {
     //final String OUR_ACTION = "android.intent.action.PHONE_STATE";

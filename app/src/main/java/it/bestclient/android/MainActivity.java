@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro;
+package it.bestclient.android;
 
 import android.content.Intent;
 import android.os.Bundle;

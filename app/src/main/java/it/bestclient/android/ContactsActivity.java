@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro;
+package it.bestclient.android;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -18,20 +18,18 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.example.progettobiancotodaro.DB.DBhelper;
-import com.example.progettobiancotodaro.RatingModel.Rating;
-import com.example.progettobiancotodaro.RatingModel.RatingLocal;
-import com.example.progettobiancotodaro.components.Contact;
+import it.bestclient.android.DB.DBhelper;
+import it.bestclient.android.RatingModel.Rating;
+import it.bestclient.android.RatingModel.RatingLocal;
+import it.bestclient.android.components.Contact;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 public class ContactsActivity extends AppCompatActivity {

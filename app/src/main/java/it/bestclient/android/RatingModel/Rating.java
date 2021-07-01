@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro.RatingModel;
+package it.bestclient.android.RatingModel;
 
 import androidx.annotation.NonNull;
 

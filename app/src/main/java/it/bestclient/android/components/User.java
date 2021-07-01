@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro.components;
+package it.bestclient.android.components;
 
 public class User {
     String email;

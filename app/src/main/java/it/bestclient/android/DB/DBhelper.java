@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro.DB;
+package it.bestclient.android.DB;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.progettobiancotodaro.RatingModel.Rating;
-import com.example.progettobiancotodaro.RatingModel.RatingLocal;
+import it.bestclient.android.RatingModel.Rating;
+import it.bestclient.android.RatingModel.RatingLocal;
 
 import java.text.ParseException;
 import java.util.Date;

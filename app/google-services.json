@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "341030057278",
-    "firebase_url": "https://rating-manager-default-rtdb.europe-west1.firebasedatabase.app",
-    "project_id": "rating-manager",
-    "storage_bucket": "rating-manager.appspot.com"
+    "project_number": "86285695265",
+    "project_id": "best-client-c5159",
+    "storage_bucket": "best-client-c5159.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:341030057278:android:ca274070ebc9d7bbfce86f",
+        "mobilesdk_app_id": "1:86285695265:android:30baf82e2ab340d786e660",
         "android_client_info": {
-          "package_name": "com.example.progettobiancotodaro"
+          "package_name": "it.bestclient.android"
         }
       },
       "oauth_client": [
         {
-          "client_id": "341030057278-ntunei712e6uiin9p0vgt979ul9ma32o.apps.googleusercontent.com",
+          "client_id": "86285695265-lrrofe9n6d9cc11fb9ro7qaed9u9qs3p.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCsHqpv99rIpSfRB5wJIS8xaqUV9UpGAXM"
+          "current_key": "AIzaSyA_qi5NCleCwdtgJehBlIJbN-bKb7O7M6c"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "341030057278-ntunei712e6uiin9p0vgt979ul9ma32o.apps.googleusercontent.com",
+              "client_id": "86285695265-lrrofe9n6d9cc11fb9ro7qaed9u9qs3p.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

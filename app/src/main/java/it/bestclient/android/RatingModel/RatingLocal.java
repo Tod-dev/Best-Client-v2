@@ -1,4 +1,4 @@
-package com.example.progettobiancotodaro.RatingModel;
+package it.bestclient.android.RatingModel;
 
 import java.util.Date;
 
