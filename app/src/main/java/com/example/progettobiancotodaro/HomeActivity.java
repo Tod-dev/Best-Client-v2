@@ -453,10 +453,14 @@ public class HomeActivity extends AppCompatActivity {
         Cursor data = myDBhelper.getData();
         List<RatingLocal> listData = new ArrayList<>();
         while(data.moveToNext()){
-            String cell = data.getString(1);
-            String date = data.getString(2);
-            float rating = data.getFloat(3);
-            String comment = data.getString(4);
+            String cell = data.getString(data.getColumnIndex("number"));
+            String date = data.getString(data.getColumnIndex("data"));
+            float rating = data.getFloat(data.getColumnIndex("rating"));
+            String comment = data.getString(data.getColumnIndex("comment"));
+
+            //IF rating = -3 ignora perchè si riferisce ad un contatto
+            if(rating == -3) continue;
+
             /*IF NOT RATED (-1) or comment inserted -> comment to insert*/
             if(rating != -1 || !comment.equals(""))
                 listData.add(new RatingLocal(cell, Rating.formatter.parse(date), rating, comment));
