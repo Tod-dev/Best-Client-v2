@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -161,7 +162,7 @@ public class Utils {
                         float nuovoRating =  ratingbar.getRating();
 
                         if(!Objects.requireNonNull(comment.getEditText()).getText().toString().equals("")){
-                            r.setCommento(comment.getEditText().getText().toString());
+                            r.setCommento(removeQuotes(comment.getEditText().getText().toString()));
                         }
                         if(nuovoRating != 0){
                             //se ho inserito un rating modifico il db firebase
@@ -215,7 +216,7 @@ public class Utils {
                 float rating = ratingbar.getRating(); //valutazione inserita
                 String commento = commentText.getText().toString();  //commento inserito
                 r.setVoto(rating);
-                r.setCommento(commento);
+                r.setCommento(removeQuotes(commento));
 
                 try {
                     UpdateData(context, r, true, myDBhelper, uid);
@@ -264,4 +265,10 @@ public class Utils {
             Log.d("DATA IN LOCALE", "UpdateData: ");
         }
     }
+
+    public static String removeQuotes(String text) {
+
+        return text.replaceAll("'", "");
+    }
+
 }

@@ -51,8 +51,8 @@ public class HomeActivity extends AppCompatActivity {
 
     // GoogleSignInClient mGoogleSignInClient;
     Button ratingButton;
-    String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
     SharedPreferences sp;
+    @SuppressLint("StaticFieldLeak")
     static ListView listView;
     static DBhelper myDBhelper;
     static String[] phoneNumbers;
@@ -63,10 +63,6 @@ public class HomeActivity extends AppCompatActivity {
     public static List<Contact> contacts = null;
     static final int MAX_ITEMS = 100;
     //final String uri = "http://worldtimeapi.org/api/timezone/Europe/Rome";
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -107,15 +103,6 @@ public class HomeActivity extends AppCompatActivity {
             actionBar.setTitle(R.string.home);
         }
 
-        /*Request Permissions*/
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) +
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) +
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) +
-                ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this, Permissions, 1);
-        }
-
         /*If we got Permissions -> fetch ratings*/
         if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED) &&
                 (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED)) {
@@ -125,8 +112,7 @@ public class HomeActivity extends AppCompatActivity {
 
             /*SET UID*/
             sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
-            String uid = sp.getString("uid", "");
-            setUid(uid);
+            HomeActivity.uid = sp.getString("uid", "");
             //toastMessage(uid);
             ContentResolver contentResolver = getContentResolver();
             contacts = fetchContacts(contentResolver,this);

@@ -1,9 +1,12 @@
 package it.bestclient.android;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -15,8 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,8 +31,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class LoginActivity extends AppCompatActivity {
     int RC_SIGN_IN = 0;
+    String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
     Button loginBtn;
     EditText email;
     EditText password;
@@ -38,6 +46,15 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        /*Request Permissions*/
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) +
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) +
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) +
+                ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, Permissions, 1);
+        }
 
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
