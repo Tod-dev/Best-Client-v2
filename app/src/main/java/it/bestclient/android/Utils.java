@@ -247,9 +247,9 @@ public class Utils {
         if(db)
             updateDB(remoteRating);
 
-        if(r.getVoto() > 0){
+        /*if(r.getVoto() > 0){
             r.setVoto(-2);
-        }
+        }*/
 
         int ret = myDBhelper.updateRating(r);
         if(ret == -1){

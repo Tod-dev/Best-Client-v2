@@ -301,17 +301,24 @@ public class HomeActivity extends AppCompatActivity {
         // Log.d("lista db: ",Arrays.toString(listData.toArray()));
 
         //SORTING NOT INSERTED FIRST
-        List<RatingLocal> notRatedFirst = new ArrayList<>();
+        /*List<RatingLocal> notRatedFirst = new ArrayList<>();
 
         for( RatingLocal r: ratings){
-            /*RATING == -1 if NOT RATED YET*/
+            //RATING == -1 if NOT RATED YET
             if(r.getVoto() == -1){
                 notRatedFirst.add(r);
             }
         }
 
+        for( RatingLocal r: ratings){
+            //RATING == -1 if NOT RATED YET
+            if(r.getVoto() != -1){
+                notRatedFirst.add(r);
+            }
+        }*/
+
         /*return the list to display*/
-        return notRatedFirst;
+        return ratings;
 
     }
 
