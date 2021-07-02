@@ -26,4 +26,11 @@ public class RatingBigOnDB extends Rating{
         this.idEsercente = idEsercente;
     }
 
+    @Override
+    public String toString() {
+        return "RatingBigOnDB{" +
+                super.toString() +
+                "idEsercente='" + idEsercente + '\'' +
+                '}';
+    }
 }

@@ -45,7 +45,7 @@ public class Utils {
 
     /*POST NEW RATING TO RATINGBIG TABLE ON FIREBASE (REST)*/
     public static void updateDB(RatingBigOnDB r){
-        Log.d("ratingonDB:", "Sto USANDO IL DB"); //ratingBig
+        Log.d("ratingonDB:", "Sto USANDO IL DB: scrivo: "+ r.toString() ); //ratingBig
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("ratingBig");
         mDatabase.push().setValue(r);
     }
