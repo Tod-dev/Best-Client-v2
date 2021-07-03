@@ -23,6 +23,7 @@ public class DBhelper extends SQLiteOpenHelper {
     public static final String COL_CELL="number";
     public static final String COL_DATE="data";
     public static final String COL_COMMENT="comment";
+    public static final String COL_FIREBASE_KEY="firebase_key";
 
     public DBhelper(Context context) {
         super(context, DBNAME, null, 1);
@@ -37,7 +38,8 @@ public class DBhelper extends SQLiteOpenHelper {
                 COL_CELL+" TEXT ," +
                 COL_DATE+" TEXT ," +
                 COL_COMMENT+" TEXT ,"+
-                COL_RATING+" REAL "+
+                COL_RATING+" REAL ,"+
+                COL_FIREBASE_KEY+" TEXT " +
                 ")";
         db.execSQL(q);
     }
@@ -86,20 +88,21 @@ public class DBhelper extends SQLiteOpenHelper {
         return result != -1;
     }
 */
-    public boolean addData(String cell, String date, double rating, String comment) {
+    public boolean addData(RatingLocal r) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-       // contentValues.put(COL_ID, id);
-        contentValues.put(COL_CELL, cell);
-        contentValues.put(COL_DATE, date);
-        contentValues.put(COL_RATING, rating);
-        contentValues.put(COL_COMMENT, comment);
+        contentValues.put(COL_CELL, r.getNumero());
+        contentValues.put(COL_DATE, r.getDate());
+        contentValues.put(COL_RATING, r.getVoto());
+        contentValues.put(COL_COMMENT, r.getCommento());
+        contentValues.put(COL_FIREBASE_KEY, r.get_firebase_key());
 
         Log.d(TAG, "addData: " +
-             //   "Adding _id: " + id +
-                "Adding Number: " + cell +
-                " and Data: " +date+
-                " and RATING: " +rating+
+                "Adding Number: " + r.getNumero() +
+                " and Data: " +r.getDate()+
+                " and RATING: " +r.getVoto()+
+                " and COMMENT: " +r.getCommento()+
+                " and FIREBASE KEY: " +r.get_firebase_key()+
                 " to: " + TABLE_NAME);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
@@ -168,8 +171,11 @@ public class DBhelper extends SQLiteOpenHelper {
             return -1;
         }
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + TABLE_NAME + " SET " + COL_RATING +
-                " = "+r.getVoto() + ", "+ COL_COMMENT +" = '"+r.getCommento()+"' WHERE "+COL_ID+" = "+id;
+        String query = "UPDATE " + TABLE_NAME
+                + " SET " + COL_RATING + " = "+r.getVoto() + ", "
+                + COL_COMMENT +" = '"+r.getCommento() + "', "
+                + COL_FIREBASE_KEY +" = '"+r.get_firebase_key()+ "'"
+                +" WHERE "+COL_ID+" = "+id;
         Log.d(TAG, "updateRating: query: " + query);
         Log.d(TAG, "updateRating: Setting rate to " + r.getVoto());
         db.execSQL(query);

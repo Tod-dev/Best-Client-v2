@@ -22,6 +22,8 @@ import it.bestclient.android.DB.DBhelper;
 import it.bestclient.android.RatingModel.RatingBigOnDB;
 import it.bestclient.android.RatingModel.RatingLocal;
 import it.bestclient.android.components.Contact;
+
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
@@ -45,10 +47,17 @@ public class Utils {
     }
 
     /*POST NEW RATING TO RATINGBIG TABLE ON FIREBASE (REST)*/
-    public static void updateDB(RatingBigOnDB r){
-        Log.d("ratingonDB:", "Sto USANDO IL DB: scrivo: "+ r.toString() ); //ratingBig
+    public static String updateDB(RatingBigOnDB r, String key){
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("ratingBig");
-        mDatabase.push().setValue(r);
+        Log.d("ratingonDB:", "CHIAVE RICEVUTA KEY: "+ key); //ratingBig + KEY
+        if(key.isEmpty()){
+            //se non ho una chiave ne creo una nuova
+            key = mDatabase.push().getKey();
+        }
+        Log.d("ratingonDB:", "Sto USANDO IL DB: scrivo: "+ r.toString()+ " KEY: "+ key); //ratingBig + KEY
+        //write new RATINGBIG
+        mDatabase.child(key).setValue(r);
+        return key;
     }
 
 
@@ -243,9 +252,11 @@ public class Utils {
         /* AGGIORNA I DATI SUL DB SQLITE E SU FIREBASE */
         Date date = new Date();
         RatingBigOnDB remoteRating = new RatingBigOnDB(uid,date,r.getVoto(),r.getNumero(),r.getCommento());
-
-        if(db)
-            updateDB(remoteRating);
+        String key=r.get_firebase_key();
+        if(db){
+            key = updateDB(remoteRating,key);
+            r.set_firebase_key(key);
+        }
 
         /*if(r.getVoto() > 0){
             r.setVoto(-2);
@@ -253,7 +264,7 @@ public class Utils {
 
         int ret = myDBhelper.updateRating(r);
         if(ret == -1){
-            boolean insertData = myDBhelper.addData(r.getNumero(),r.getDate(),r.getVoto(), r.getCommento());
+            boolean insertData = myDBhelper.addData(r);
 
             if (insertData) {
                 toastMessage("Valutazione inserita correttamente!",context);

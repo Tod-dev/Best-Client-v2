@@ -5,11 +5,23 @@ import java.util.Date;
 public class RatingLocal extends Rating{
     /* THIS CLASS REPRESENT RATINGS IN LOCAL DB SQLite AND in the APP */
 
-    public RatingLocal(String numero, Date date, float voto, String commento) {
+    private String firebase_key;
+
+    public RatingLocal(String numero, Date date, float voto, String commento,String firebase_key) {
         super(numero, date, voto, commento);
+        this.firebase_key = firebase_key;
+    }
+
+    public void set_firebase_key(String firebase_key) {
+        this.firebase_key = firebase_key;
+    }
+
+    public String get_firebase_key() {
+        return firebase_key;
     }
 
     public RatingLocal(String numero, Date date) {
         super(numero, date);
+        this.firebase_key = "";
     }
 }

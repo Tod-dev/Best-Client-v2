@@ -147,10 +147,12 @@ public class HomeActivity extends AppCompatActivity {
             /* IF I HAVE ALREADY INSERTED THAT RATING -> ASK IF YOU WANT TO DELETE IT */
             if (k.getVoto() != -1) {
                 /*Dialog delete an element*/
-                Utils.showDialog(context, 1, finalRatings.get(i1), myDBhelper, uid);
+                //Utils.showDialog(context, 1, finalRatings.get(i1), myDBhelper, uid);
+                /*Dialog give a vote or delete an element*/
+                Utils.showDialog(context, 2, k, myDBhelper, uid);
             } else {
                 /*Dialog give a vote or delete an element*/
-                Utils.showDialog(context, 2, finalRatings.get(i1), myDBhelper, uid);
+                Utils.showDialog(context, 2, k, myDBhelper, uid);
             }
         });
     }
@@ -266,17 +268,18 @@ public class HomeActivity extends AppCompatActivity {
         Cursor data = myDBhelper.getData();
         List<RatingLocal> listData = new ArrayList<>();
         while(data.moveToNext()){
-            String cell = data.getString(data.getColumnIndex("number"));
-            String date = data.getString(data.getColumnIndex("data"));
-            float rating = data.getFloat(data.getColumnIndex("rating"));
-            String comment = data.getString(data.getColumnIndex("comment"));
+            String cell = data.getString(data.getColumnIndex(DBhelper.COL_CELL));
+            String date = data.getString(data.getColumnIndex(DBhelper.COL_DATE));
+            float rating = data.getFloat(data.getColumnIndex(DBhelper.COL_RATING));
+            String comment = data.getString(data.getColumnIndex(DBhelper.COL_COMMENT));
+            String firebaseKey = data.getString(data.getColumnIndex(DBhelper.COL_FIREBASE_KEY));
 
             //IF rating = -3 ignora perchè si riferisce ad un contatto
             if(rating == -3) continue;
 
             /*IF NOT RATED (-1) or comment inserted -> comment to insert*/
             if(rating != -1 || !comment.equals(""))
-                listData.add(new RatingLocal(cell, Rating.formatter.parse(date), rating, comment));
+                listData.add(new RatingLocal(cell, Rating.formatter.parse(date), rating, comment,firebaseKey));
         }
 
         for(RatingLocal r: ratings){
@@ -289,6 +292,10 @@ public class HomeActivity extends AppCompatActivity {
                     /*write in the ratings list the last comment inserted*/
                     if(!j.getCommento().equals("")){
                         r.setCommento(j.getCommento());
+                    }
+                    /*write in the ratings list the firebase key of the comment */
+                    if(!j.get_firebase_key().equals("")){
+                        r.set_firebase_key(j.get_firebase_key());
                     }
                 }
             }
