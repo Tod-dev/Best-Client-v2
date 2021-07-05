@@ -56,4 +56,5 @@
     <string name="refresh">Refresh</string>
     <string name="contacts">Contacts</string>
     <string name="name">Name</string>
+    <string name="ratingAVG">RatingAVG</string>
 </resources>

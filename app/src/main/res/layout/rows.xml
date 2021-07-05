@@ -41,6 +41,16 @@
             android:textSize="15dp"
             android:layout_marginStart="5dp" />
 
+        <TextView
+            android:id="@+id/comment"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:fontFamily="sans-serif"
+            android:text="@string/comment"
+            android:textColor="#7a7a7a"
+            android:textSize="15dp"
+            android:layout_marginStart="5dp" />
 
         <TextView
             android:id="@+id/rating"
@@ -49,6 +59,17 @@
             android:layout_marginLeft="5dp"
             android:fontFamily="sans-serif"
             android:text="@string/rating"
+            android:textColor="#7a7a7a"
+            android:textSize="15dp"
+            android:layout_marginStart="5dp" />
+
+        <TextView
+            android:id="@+id/ratingAVG"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:fontFamily="sans-serif"
+            android:text="@string/ratingAVG"
             android:textColor="#7a7a7a"
             android:textSize="15dp"
             android:layout_marginStart="5dp" />

@@ -58,6 +58,8 @@ public class HomeActivity extends AppCompatActivity {
     static String[] phoneNumbers;
     static String[] dates;
     static String[] commentString;
+    static String[] ratingString;
+    static String[] ratingAVGString;
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
     static String uid;
     public static List<Contact> contacts = null;
@@ -134,11 +136,11 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         if (ratings != null) {
-            ratingToString(ratings);
+            ratingToString(ratings, context);
         }
 
         /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-        HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(context, phoneNumbers, dates, commentString);
+        HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(context, phoneNumbers, dates, commentString, ratingString, ratingAVGString);
         listView.setAdapter(arrayAdapter);
         List<RatingLocal> finalRatings = ratings;
         listView.setOnItemClickListener((parent, view, i1, id) -> {
@@ -188,14 +190,14 @@ public class HomeActivity extends AppCompatActivity {
 
 
     /*EVERY TIME REFRESH BUTTON IS CLICKED -> REFRESH THE LIST OF RATINGS TO DISPLAY*/
-    public void refreshView(List<RatingLocal> ratings, ListView listView){
+    /*public void refreshView(List<RatingLocal> ratings, ListView listView){
         if(ratings != null && listView != null){
             filtroNonMeno2(ratings);
             ratingToString(ratings);
-            HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, commentString);
+            HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(this, phoneNumbers, dates, commentString, ratingString, ratingAVGString);
             listView.setAdapter(arrayAdapter);
         }
-    }
+    }*/
 
 
 
@@ -330,7 +332,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    public static void ratingToString(List<RatingLocal> ratings){
+    public static void ratingToString(List<RatingLocal> ratings, Context context){
         /*
         *save all the data in 3 parallel arrays of String data
         *in order to create the listView easily
@@ -338,14 +340,19 @@ public class HomeActivity extends AppCompatActivity {
         phoneNumbers = new String[ratings.size()];
         dates = new String[ratings.size()];
         commentString = new String[ratings.size()];
+        ratingString = new String[ratings.size()];
+        ratingAVGString = new String[ratings.size()];
 
         int i = 0;
-        for(RatingLocal ignored : ratings){
+        for(RatingLocal r : ratings){
             phoneNumbers[i] = ratings.get(i).getNumero();
             dates[i] = ratings.get(i).getDate();
             commentString[i] = ratings.get(i).getCommento(); //String.valueOf(ratings.get(i).getRating());
+            ratingString[i] = String.valueOf(ratings.get(i).getVoto());
+            Utils.getRatingAVG(r, i, context); //prendo il rating AVG del numero corrente
             i++;
         }
+
     }
 
     /* CUSTOM LIST VIEW */
@@ -354,13 +361,17 @@ public class HomeActivity extends AppCompatActivity {
         String[] rPhoneNumber;
         String[] rDate;
         String[] rComment;
+        String[] rRating;
+        String[] rRatingAVG;
 
-        MyAdapter(Context context, String[] phoneNumber, String[] date, String[] comment){
+        MyAdapter(Context context, String[] phoneNumber, String[] date, String[] comment, String[] ratings, String[] ratingsAVG){
             super(context,R.layout.rows,R.id.phoneNumber, phoneNumber);
             this.context = context;
             this.rPhoneNumber = phoneNumber;
             this.rDate = date;
             this.rComment = comment;
+            this.rRating = ratings;
+            this.rRatingAVG = ratingsAVG;
         }
 
         @SuppressLint("SetTextI18n")
@@ -370,7 +381,9 @@ public class HomeActivity extends AppCompatActivity {
             View row = layoutInflater.inflate(R.layout.rows, parent, false);
             TextView phoneNumberView = row.findViewById(R.id.phoneNumber);
             TextView dateView = row.findViewById(R.id.date);
+            TextView commentView = row.findViewById(R.id.comment);
             TextView ratingView = row.findViewById(R.id.rating);
+            TextView ratingAVGView = row.findViewById(R.id.ratingAVG);
 
             String actualNumber = rPhoneNumber[position];
 
@@ -388,9 +401,16 @@ public class HomeActivity extends AppCompatActivity {
             phoneNumberView.setText(actualNumber);
             dateView.setText(rDate[position]);
             if(rComment[position].equals("")){
-                ratingView.setText("No comment");
+                commentView.setText("No comment");
             }
-            else ratingView.setText(rComment[position]);
+            else commentView.setText(rComment[position]);
+
+            if(rRating[position].equals("-1.0")){
+                ratingView.setText("Current rating: - ");
+            }
+            else ratingView.setText("Current rating: "+rRating[position]);
+
+            ratingAVGView.setText("AVG rating: "+rRatingAVG[position]);
 
             return row;
         }

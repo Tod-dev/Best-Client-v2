@@ -3,6 +3,7 @@ package it.bestclient.android;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -14,11 +15,14 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 import it.bestclient.android.DB.DBhelper;
+import it.bestclient.android.RatingModel.RatingAVGOnDB;
 import it.bestclient.android.RatingModel.RatingBigOnDB;
 import it.bestclient.android.RatingModel.RatingLocal;
 import it.bestclient.android.components.Contact;
@@ -26,8 +30,11 @@ import it.bestclient.android.components.Contact;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.StringCharacterIterator;
@@ -166,13 +173,18 @@ public class Utils {
                 commentText.setText(r.getCommento());
             }
 
+            if(r.getVoto() > 0){
+                ratingbar.setRating((float) r.getVoto());
+            }
+
             builder.setView(viewDialog)
                     .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
                         float nuovoRating =  ratingbar.getRating();
 
-                        if(!Objects.requireNonNull(comment.getEditText()).getText().toString().equals("")){
-                            r.setCommento(removeQuotes(comment.getEditText().getText().toString()));
-                        }
+
+                        r.setCommento(removeQuotes(comment.getEditText().getText().toString()));
+
+
                         if(nuovoRating != 0){
                             //se ho inserito un rating modifico il db firebase
                             r.setVoto(nuovoRating);
@@ -183,13 +195,12 @@ public class Utils {
                             }
                         }
                         else{
-                            if(!comment.getEditText().getText().toString().equals("")){
-                                try {
-                                    UpdateData(context, r, false, myDBhelper, uid);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
+                            try {
+                                UpdateData(context, r, false, myDBhelper, uid);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
                             }
+
                         }
 
                         HomeActivity.showRatings(context);
@@ -282,4 +293,32 @@ public class Utils {
         return text.replaceAll("'", "");
     }
 
+    public static void getRatingAVG(RatingLocal r, int index, Context context){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ratingsRef = database.getReference("ratingAVG").child(r.getNumero());
+
+        ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.getValue() == null){
+                    HomeActivity.ratingAVGString[index] = " - ";
+                }
+                else{
+                    double val = dataSnapshot.getValue(Double.class);
+                    HomeActivity.ratingAVGString[index] = String.valueOf(val);
+                }
+
+                HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(context, HomeActivity.phoneNumbers, HomeActivity.dates, HomeActivity.commentString, HomeActivity.ratingString, HomeActivity.ratingAVGString);
+                HomeActivity.listView.setAdapter(arrayAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+                Log.w("Main", "Failed to read value.", error.toException());
+            }
+        });
+    }
 }
