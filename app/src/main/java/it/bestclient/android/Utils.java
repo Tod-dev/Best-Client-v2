@@ -26,6 +26,7 @@ import it.bestclient.android.RatingModel.RatingAVGOnDB;
 import it.bestclient.android.RatingModel.RatingBigOnDB;
 import it.bestclient.android.RatingModel.RatingLocal;
 import it.bestclient.android.components.Contact;
+import it.bestclient.android.components.RowAdapter;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -293,7 +294,7 @@ public class Utils {
         return text.replaceAll("'", "");
     }
 
-    public static void getRatingAVG(RatingLocal r, int index, Context context){
+    public static void getRatingAVG(RatingLocal r, int index, Context context, int type){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ratingsRef = database.getReference("ratingAVG").child(r.getNumero());
 
@@ -303,15 +304,24 @@ public class Utils {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.getValue() == null){
-                    HomeActivity.ratingAVGString[index] = " - ";
+                    if(type == 1){
+                        HomeActivity.ratingAVGString[index] = " - ";
+                    }
+
                 }
                 else{
-                    double val = dataSnapshot.getValue(Double.class);
-                    HomeActivity.ratingAVGString[index] = String.valueOf(val);
+                    if(type == 1){
+                        double val = dataSnapshot.getValue(Double.class);
+                        HomeActivity.ratingAVGString[index] = String.valueOf(val);
+                    }
+
                 }
 
-                HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(context, HomeActivity.phoneNumbers, HomeActivity.dates, HomeActivity.commentString, HomeActivity.ratingString, HomeActivity.ratingAVGString);
-                HomeActivity.listView.setAdapter(arrayAdapter);
+                if(type == 1){
+                    RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.dates, HomeActivity.commentString, HomeActivity.ratingString, HomeActivity.ratingAVGString);
+                    HomeActivity.listView.setAdapter(arrayAdapter);
+                }
+
             }
 
             @Override

@@ -18,7 +18,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/phoneNumber"
+            android:id="@+id/field1"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -30,7 +30,7 @@
             android:layout_marginStart="5dp" />
 
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/field2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -42,7 +42,7 @@
             android:layout_marginStart="5dp" />
 
         <TextView
-            android:id="@+id/comment"
+            android:id="@+id/field3"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -53,7 +53,7 @@
             android:layout_marginStart="5dp" />
 
         <TextView
-            android:id="@+id/rating"
+            android:id="@+id/field4"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -64,7 +64,7 @@
             android:layout_marginStart="5dp" />
 
         <TextView
-            android:id="@+id/ratingAVG"
+            android:id="@+id/field5"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"

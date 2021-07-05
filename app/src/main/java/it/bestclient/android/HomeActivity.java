@@ -33,6 +33,8 @@ import it.bestclient.android.DB.DBhelper;
 import it.bestclient.android.RatingModel.Rating;
 import it.bestclient.android.RatingModel.RatingLocal;
 import it.bestclient.android.components.Contact;
+import it.bestclient.android.components.RowAdapter;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.ParseException;
@@ -140,7 +142,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-        HomeActivity.MyAdapter arrayAdapter = new HomeActivity.MyAdapter(context, phoneNumbers, dates, commentString, ratingString, ratingAVGString);
+        RowAdapter arrayAdapter = new RowAdapter(context, phoneNumbers, dates, commentString, ratingString, ratingAVGString);
         listView.setAdapter(arrayAdapter);
         List<RatingLocal> finalRatings = ratings;
         listView.setOnItemClickListener((parent, view, i1, id) -> {
@@ -349,14 +351,14 @@ public class HomeActivity extends AppCompatActivity {
             dates[i] = ratings.get(i).getDate();
             commentString[i] = ratings.get(i).getCommento(); //String.valueOf(ratings.get(i).getRating());
             ratingString[i] = String.valueOf(ratings.get(i).getVoto());
-            Utils.getRatingAVG(r, i, context); //prendo il rating AVG del numero corrente
+            Utils.getRatingAVG(r, i, context, 1); //prendo il rating AVG del numero corrente
             i++;
         }
 
     }
 
     /* CUSTOM LIST VIEW */
-    static class MyAdapter extends ArrayAdapter<String> {
+    /*static class MyAdapter extends ArrayAdapter<String> {
         Context context;
         String[] rPhoneNumber;
         String[] rDate;
@@ -414,7 +416,7 @@ public class HomeActivity extends AppCompatActivity {
 
             return row;
         }
-    }
+    }*/
 
     @Override
     protected void onStart() {
