@@ -36,6 +36,9 @@ public class ContactsActivity extends AppCompatActivity {
     SharedPreferences sp;
     static String[] name;
     static String[] phoneNumber;
+    static String[] commentString;
+    static String[] ratingString;
+    static String[] ratingAVGString;
     static ListView listView;
     static DBhelper myDBhelper;
     static String uid;
@@ -75,52 +78,50 @@ public class ContactsActivity extends AppCompatActivity {
         Cursor data = myDBhelper.getData();
         List<RatingLocal> alreadyInserted = new ArrayList<>();
         while(data.moveToNext()){
-            String cell = data.getString(data.getColumnIndex("number"));
-            String date = data.getString(data.getColumnIndex("data"));
-            float rating = data.getFloat(data.getColumnIndex("rating"));
-            if(rating == -3) {
-                try {
-                    alreadyInserted.add(new RatingLocal(cell, Rating.formatter.parse(date)));
-                } catch (ParseException e) {
-                    //errore nel parsing della data
-                    e.printStackTrace();
-                }
-            }
+            String cell = data.getString(data.getColumnIndex(DBhelper.COL_CELL));
+            String date = data.getString(data.getColumnIndex(DBhelper.COL_DATE));
+            float rating = data.getFloat(data.getColumnIndex(DBhelper.COL_RATING));
+            String commento = data.getString(data.getColumnIndex(DBhelper.COL_COMMENT));
+            String firebase_key = data.getString(data.getColumnIndex(DBhelper.COL_FIREBASE_KEY));
+
+            //alreadyInserted.add(new RatingLocal(cell, Rating.formatter.parse(date)));
+            if (date.isEmpty())
+                alreadyInserted.add(new RatingLocal(cell,null,rating,commento,firebase_key));
         }
 
-        //creo un arrayList listData che conterrà solo i contatti per cui non è stato inserito un rating
-        /*for(Iterator<Contact> i = HomeActivity.contacts.iterator(); i.hasNext();){
-            boolean presente = false;
-            Contact c = (Contact) i.next();
-            for(RatingLocal r: alreadyInserted){
-                if(c.getPhone().equals(r.getNumero())){
-                    presente = true;
-                    break;
-                }
-            }
-            if(presente) i.remove();    //rimuovo il contatto già inserito
-        }*/
 
-        //costruisco la lista dei contatti da visualizzare, ovvero quelli che non sono già stati valutati
+        int size = HomeActivity.contacts.size();
+        name = new String[size];
+        phoneNumber = new String[ size];
+        commentString= new String[ size];
+        ratingString= new String[ size];
+        ratingAVGString= new String[ size];
 
-        name = new String[ HomeActivity.contacts.size()];
-        phoneNumber = new String[ HomeActivity.contacts.size()];
 
-        //salvo i nomi e i numeri di telefono nei vettori
+
+        //Per ogni contatto controllo se è già stato inserito
         int index = 0;
         for (Contact c :  HomeActivity.contacts) {
             name[index] = c.getName();
             phoneNumber[index] = c.getPhone();
+            for(RatingLocal r : alreadyInserted){
+                if (phoneNumber[index].equals(r.getNumero())) {
+                    commentString[index]=r.getCommento();
+                    ratingString[index]= String.valueOf(r.getVoto());
+                    Utils.getRatingAVG(r,index,context);
+                }
+            }
+
             index++;
         }
 
         //mostro la lista
-        ContactsActivity.MyAdapter arrayAdapter = new ContactsActivity.MyAdapter(context, name, phoneNumber);
+        ContactsActivity.MyAdapter arrayAdapter = new ContactsActivity.MyAdapter(context, name, phoneNumber,commentString,ratingString,ratingAVGString);
         listView.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            currentDate = Calendar.getInstance().getTime();   //data corrente
-            RatingLocal r = new RatingLocal(phoneNumber[position], currentDate);
+            //currentDate = Calendar.getInstance().getTime();   //data corrente
+            RatingLocal r = new RatingLocal(phoneNumber[position], null);
             Utils.showDialog(context, 3, r, myDBhelper, uid);
         });
     }
@@ -129,12 +130,18 @@ public class ContactsActivity extends AppCompatActivity {
         Context context;
         String[] rPhoneNumber;
         String[] name;
+        String[] commentString;
+        String [] ratingString;
+        String [] ratingAVGString;
 
-        MyAdapter(Context context, String[] name, String[] phoneNumber){
+        MyAdapter(Context context, String[] name, String[] phoneNumber,String[] commentString,String[]ratingString,String[]ratingAVGString){
             super(context,R.layout.rows_contacts,R.id.phone, phoneNumber);
             this.context = context;
             this.rPhoneNumber = phoneNumber;
             this.name = name;
+            this.commentString = commentString;
+            this.ratingString = ratingString;
+            this.ratingAVGString = ratingAVGString;
         }
 
         @SuppressLint("SetTextI18n")
