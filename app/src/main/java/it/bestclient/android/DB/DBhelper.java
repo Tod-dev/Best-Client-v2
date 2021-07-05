@@ -127,18 +127,37 @@ public class DBhelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME+ " WHERE "+COL_CELL+" = "+r.getNumero();
         Cursor c = db.rawQuery(query, null);
-        while(c.moveToNext()){
-            Date d2= Rating.formatter.parse(c.getString(2));
-            boolean same = r.group_by(new RatingLocal(r.getNumero(),d2));
-            if (d2 == null) {
-                return -1;
-            }
-            if(same){
-                int val = c.getInt(0);
-                c.close();
-                return val;
+
+        if(r.getDate().equals("")){
+            while(c.moveToNext()){
+                String dateString = c.getString(2);
+                if(!dateString.equals("")) continue;
+
+                if(r.getNumero().equals(c.getString(c.getColumnIndex(COL_CELL)))){
+                    int val = c.getInt(0);
+                    c.close();
+                    return val;
+                }
             }
         }
+        else{
+            while(c.moveToNext()){
+                String dateString = c.getString(2);
+                if(dateString.equals("")) continue;
+
+                Date d2 = Rating.formatter.parse(dateString);
+                boolean same = r.group_by(new RatingLocal(r.getNumero(),d2));
+                if (d2 == null) {
+                    return -1;
+                }
+                if(same){
+                    int val = c.getInt(0);
+                    c.close();
+                    return val;
+                }
+            }
+        }
+
         c.close();
         return -1;
     }

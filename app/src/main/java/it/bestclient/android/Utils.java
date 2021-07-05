@@ -161,7 +161,7 @@ public class Utils {
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-        else if (type == 2) { //Dialog dai un voto / cancella un elemento
+        else { //Dialog dai un voto / cancella un elemento
             builder.setTitle(R.string.dialogMessage);
             View viewDialog = inflater.inflate(R.layout.rating_stars, null);
             TextInputLayout comment = viewDialog.findViewById(R.id.comment);
@@ -204,7 +204,10 @@ public class Utils {
 
                         }
 
-                        HomeActivity.showRatings(context);
+                        if(type == 2)
+                            HomeActivity.showRatings(context);
+                        else
+                            ContactsActivity.showRatings(context);
                         //refreshView(r, listView);
 
                         //ratings.get(i1).setRating(rating.getRating());
@@ -222,41 +225,6 @@ public class Utils {
                 commentButton.setVisibility(View.INVISIBLE);
             });
 
-        }
-        else if(type == 3){
-            builder.setTitle(R.string.dialogMessage);
-            View viewDialog = inflater.inflate(R.layout.rating_stars, null);
-            TextInputLayout comment = viewDialog.findViewById(R.id.comment);
-            TextInputEditText commentText = viewDialog.findViewById(R.id.commentText);
-            RatingBar ratingbar = viewDialog.findViewById(R.id.ratingStars);
-            ImageView deleteButton = viewDialog.findViewById(R.id.delete);
-            deleteButton.setVisibility(View.INVISIBLE);
-            ImageView commentButton = viewDialog.findViewById(R.id.commentLogo);
-
-            builder.setView(viewDialog).setPositiveButton(R.string.positiveButton, (dialog, which) -> {
-                float rating = ratingbar.getRating(); //valutazione inserita
-                String commento = commentText.getText().toString();  //commento inserito
-                r.setVoto(rating);
-                r.setCommento(removeQuotes(commento));
-
-                try {
-                    UpdateData(context, r, true, myDBhelper, uid);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                ContactsActivity.showRatings(context);
-
-                dialog.dismiss();
-            }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
-
-            AlertDialog dialog = builder.create();
-            dialog.show();
-
-            commentButton.setOnClickListener(v -> {
-                comment.setVisibility(View.VISIBLE);
-                commentButton.setVisibility(View.INVISIBLE);
-            });
         }
     }
 
@@ -307,12 +275,16 @@ public class Utils {
                     if(type == 1){
                         HomeActivity.ratingAVGString[index] = " - ";
                     }
+                    else ContactsActivity.ratingAVGString[index] = " - ";
 
                 }
                 else{
+                    double val = dataSnapshot.getValue(Double.class);
                     if(type == 1){
-                        double val = dataSnapshot.getValue(Double.class);
                         HomeActivity.ratingAVGString[index] = String.valueOf(val);
+                    }
+                    else {
+                        ContactsActivity.ratingAVGString[index] = String.valueOf(val);
                     }
 
                 }
@@ -320,6 +292,10 @@ public class Utils {
                 if(type == 1){
                     RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.dates, HomeActivity.commentString, HomeActivity.ratingString, HomeActivity.ratingAVGString);
                     HomeActivity.listView.setAdapter(arrayAdapter);
+                }
+                else{
+                    RowAdapter arrayAdapter = new RowAdapter(context, ContactsActivity.name, ContactsActivity.phoneNumber, ContactsActivity.commentString, ContactsActivity.ratingString, ContactsActivity.ratingAVGString);
+                    ContactsActivity.listView.setAdapter(arrayAdapter);
                 }
 
             }

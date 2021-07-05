@@ -65,12 +65,15 @@ public class RowAdapter extends ArrayAdapter<String> {
         }
         else field3View.setText(field3[position]);
 
-        if(field4[position].equals("-1.0")){
+        if(field4[position].equals("-1.0") || field4[position].equals(""))
             field4View.setText("Current rating: -");
-        }
-        else field4View.setText("Current rating: "+field4[position]);
+        else
+            field4View.setText("Current rating: "+field4[position]);
 
-        field5View.setText("AVG rating: "+field5[position]);
+        if(field5[position] == null || field5[position].equals(""))
+            field5View.setText("AVG rating: -");
+        else
+            field5View.setText("AVG rating: "+field5[position]);
 
         return row;
     }

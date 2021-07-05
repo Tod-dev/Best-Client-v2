@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.inputmethodservice.Keyboard;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,9 +26,11 @@ import it.bestclient.android.DB.DBhelper;
 import it.bestclient.android.RatingModel.Rating;
 import it.bestclient.android.RatingModel.RatingLocal;
 import it.bestclient.android.components.Contact;
+import it.bestclient.android.components.RowAdapter;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +42,7 @@ public class ContactsActivity extends AppCompatActivity {
     static String[] commentString;
     static String[] ratingString;
     static String[] ratingAVGString;
+    @SuppressLint("StaticFieldLeak")
     static ListView listView;
     static DBhelper myDBhelper;
     static String uid;
@@ -59,7 +63,7 @@ public class ContactsActivity extends AppCompatActivity {
 
         //salvo l'uid dell'utente che sta valutando
         sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
-        this.uid = sp.getString("uid", "");
+        uid = sp.getString("uid", "");
 
         listView = findViewById(R.id.listcontacts);
 
@@ -97,6 +101,11 @@ public class ContactsActivity extends AppCompatActivity {
         ratingString= new String[ size];
         ratingAVGString= new String[ size];
 
+        Arrays.fill(name,"");
+        Arrays.fill(phoneNumber,"");
+        Arrays.fill(commentString,"");
+        Arrays.fill(ratingString,"");
+        Arrays.fill(ratingAVGString,"");
 
 
         //Per ogni contatto controllo se è già stato inserito
@@ -108,7 +117,7 @@ public class ContactsActivity extends AppCompatActivity {
                 if (phoneNumber[index].equals(r.getNumero())) {
                     commentString[index]=r.getCommento();
                     ratingString[index]= String.valueOf(r.getVoto());
-                    Utils.getRatingAVG(r,index,context);
+                    Utils.getRatingAVG(r, index, context, 2);
                 }
             }
 
@@ -116,17 +125,32 @@ public class ContactsActivity extends AppCompatActivity {
         }
 
         //mostro la lista
-        ContactsActivity.MyAdapter arrayAdapter = new ContactsActivity.MyAdapter(context, name, phoneNumber,commentString,ratingString,ratingAVGString);
+        RowAdapter arrayAdapter = new RowAdapter(context, name, phoneNumber, commentString, ratingString, ratingAVGString);
         listView.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             //currentDate = Calendar.getInstance().getTime();   //data corrente
             RatingLocal r = new RatingLocal(phoneNumber[position], null);
+            r.setCommento(commentString[position]);
+            String key = getKey(r, alreadyInserted);
+            if(key != null){
+                r.set_firebase_key(key);
+            }
+
+            if(!ratingString[position].equals("")) r.setVoto(Float.parseFloat(ratingString[position]));
             Utils.showDialog(context, 3, r, myDBhelper, uid);
         });
     }
 
-    static class MyAdapter extends ArrayAdapter<String> {
+    public static String getKey(RatingLocal r, List<RatingLocal> alreadyInserted){
+        for(RatingLocal inserted: alreadyInserted){
+            if(r.getNumero().equals(inserted.getNumero())) return inserted.get_firebase_key();
+        }
+
+        return null;
+    }
+
+    /*static class MyAdapter extends ArrayAdapter<String> {
         Context context;
         String[] rPhoneNumber;
         String[] name;
@@ -157,5 +181,5 @@ public class ContactsActivity extends AppCompatActivity {
 
             return row;
         }
-    }
+    }*/
 }

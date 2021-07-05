@@ -24,4 +24,8 @@ public class RatingLocal extends Rating{
         super(numero, date);
         this.firebase_key = "";
     }
+
+    public String toString(){
+        return super.toString()+", Key: "+this.firebase_key;
+    }
 }

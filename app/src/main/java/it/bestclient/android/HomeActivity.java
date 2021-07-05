@@ -282,12 +282,18 @@ public class HomeActivity extends AppCompatActivity {
             if(rating == -3) continue;
 
             /*IF NOT RATED (-1) or comment inserted -> comment to insert*/
-            if(rating != -1 || !comment.equals(""))
-                listData.add(new RatingLocal(cell, Rating.formatter.parse(date), rating, comment,firebaseKey));
+            if(rating != -1 || !comment.equals("")){
+                if(date.equals(""))
+                    listData.add(new RatingLocal(cell, null, rating, comment,firebaseKey));
+                else
+                    listData.add(new RatingLocal(cell, Rating.formatter.parse(date), rating, comment,firebaseKey));
+            }
+
         }
 
         for(RatingLocal r: ratings){
             for(RatingLocal j: listData){
+                if(j.getDate().equals("")) continue;
                 if(r.group_by(j)){
                     /*write in the ratings list the rating if inserted*/
                     if(j.getVoto() != -1){

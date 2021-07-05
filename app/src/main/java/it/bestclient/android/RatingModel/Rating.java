@@ -37,7 +37,10 @@ public abstract class  Rating implements  Voto{
         this.voto = -1;// not rated
         //nuovo rating senza voto e senza commento
         this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
-        this.date = formatter.format(date);
+        if(date == null)
+            this.date = "";
+        else
+            this.date = formatter.format(date);
         this.commento ="";
         //  this.id = ID_GENERATOR.getAndIncrement();
     }
