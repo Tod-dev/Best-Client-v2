@@ -24,7 +24,10 @@ public abstract class  Rating implements  Voto{
         this.voto = voto;
         //rating con voto e commento, data sotto forma di date
         this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
-        this.date = formatter.format(date);
+        if(date == null)
+            this.date = "";
+        else
+            this.date = formatter.format(date);
         this.commento = commento;
         // this.id = ID_GENERATOR.getAndIncrement();
     }
