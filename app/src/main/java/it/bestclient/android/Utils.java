@@ -41,6 +41,7 @@ import java.text.ParseException;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -279,7 +280,8 @@ public class Utils {
     public static void getRatingAVG(RatingLocal r, int index, Context context, int type){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ratingsRef = database.getReference("ratingAVG").child(r.getNumero());
-
+        //Log.d("CONTATCT-DEBUG",r.getNumero());
+        Log.d("CONTATCT-DEBUG-rating",r.toString());
         ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -293,15 +295,18 @@ public class Utils {
 
                 }
                 else{
-                    double val = dataSnapshot.getValue(Double.class);
-                    val = Math.round(val*100.0)/100.0;  //arrotondo il rating a due cifre decimali
-                    if(type == 1){
-                        HomeActivity.ratingAVGString[index] = displayRatingStars(val);
-                    }
-                    else {
-                        ContactsActivity.ratingAVGString[index] = displayRatingStars(val);
-                    }
+                    if(!(r.getNumero().isEmpty())){
+                        Log.d("CONTATCT-DEBUG",ratingsRef.toString()+" "+dataSnapshot.getValue()+" "+r.toString());
+                        double val = dataSnapshot.getValue(Double.class);
+                        val = Math.round(val*100.0)/100.0;  //arrotondo il rating a due cifre decimali
+                        if(type == 1){
+                            HomeActivity.ratingAVGString[index] = displayRatingStars(val);
+                        }
+                        else {
+                            ContactsActivity.ratingAVGString[index] = displayRatingStars(val);
+                        }
 
+                    }
                 }
 
                 if(type == 1){

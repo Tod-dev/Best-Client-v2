@@ -107,7 +107,6 @@ public class ContactsActivity extends AppCompatActivity {
             name[index] = c.getName();
             phoneNumber[index] = c.getPhone();
 
-            Utils.getRatingAVG(new RatingLocal(c.getPhone(), null), index, context, 2);
             for(RatingLocal r : alreadyInserted){
                 if (phoneNumber[index].equals(r.getNumero())) {
                     commentString[index]=r.getCommento();
@@ -116,13 +115,14 @@ public class ContactsActivity extends AppCompatActivity {
                     voto = r.getVoto();
                 }
             }
+            RatingLocal k;
             if (voto == -5){
-                finalRatings.add(new RatingLocal(phoneNumber[index],null));
-
+                k= new RatingLocal(phoneNumber[index],null);
             }else{
-                finalRatings.add(new RatingLocal(phoneNumber[index],null,voto,commentString[index],firebaseKey));
-
+                k = new RatingLocal(phoneNumber[index],null,voto,commentString[index],firebaseKey);
             }
+            Utils.getRatingAVG(k, index, context, 2);
+            finalRatings.add(k);
             index++;
         }
 
