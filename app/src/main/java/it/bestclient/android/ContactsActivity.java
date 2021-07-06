@@ -107,6 +107,10 @@ public class ContactsActivity extends AppCompatActivity {
             name[index] = c.getName();
             phoneNumber[index] = c.getPhone();
 
+            if(phoneNumber[index].isEmpty()){//salto in questo caso, non voglio un contatto vuoto
+                continue;
+            }
+
             for(RatingLocal r : alreadyInserted){
                 if (phoneNumber[index].equals(r.getNumero())) {
                     commentString[index]=r.getCommento();

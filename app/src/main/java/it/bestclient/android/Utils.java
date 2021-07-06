@@ -281,7 +281,7 @@ public class Utils {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ratingsRef = database.getReference("ratingAVG").child(r.getNumero());
         //Log.d("CONTATCT-DEBUG",r.getNumero());
-        Log.d("CONTATCT-DEBUG-rating",r.toString());
+        //Log.d("CONTATCT-DEBUG-rating",r.toString());
         ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override

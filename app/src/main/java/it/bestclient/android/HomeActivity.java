@@ -241,6 +241,12 @@ public class HomeActivity extends AppCompatActivity {
             /*NEW RATING*/
             String number = c.getString(colNumber);
             Date date = new Date(Long.parseLong(c.getString(colDate)));
+
+
+            if(number.isEmpty()){//salto in questo caso, non voglio un contatto vuoto
+                continue;
+            }
+
             RatingLocal check = new RatingLocal(number,date);
 
             long diffInMillies = Math.abs(date.getTime() - curDate.getTime());
