@@ -214,6 +214,12 @@ public class Utils {
                         //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                     }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
+
+            if(type == 3){
+                //nei contatti rendo invisibile il tasto di eliminazione del rating
+                deleteButton.setVisibility(View.INVISIBLE);
+            }
+
             AlertDialog dialog = builder.create();
             dialog.show();
             deleteButton.setOnClickListener(v -> {
@@ -280,6 +286,7 @@ public class Utils {
                 }
                 else{
                     double val = dataSnapshot.getValue(Double.class);
+                    val = Math.round(val*100.0)/100.0;  //arrotondo il rating a due cifre decimali
                     if(type == 1){
                         HomeActivity.ratingAVGString[index] = String.valueOf(val);
                     }

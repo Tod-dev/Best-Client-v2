@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
@@ -107,26 +108,34 @@ public class HomeActivity extends AppCompatActivity {
             actionBar.setTitle(R.string.home);
         }
 
+        listView = findViewById(R.id.list);
+        myDBhelper = new DBhelper(this);
+        /*SET UID*/
+        sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+        HomeActivity.uid = sp.getString("uid", "");
+
         /*If we got Permissions -> fetch ratings*/
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED) &&
-                (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED)) {
-            myDBhelper = new DBhelper(this);
-
-            listView = findViewById(R.id.list);
-
-            /*SET UID*/
-            sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
-            HomeActivity.uid = sp.getString("uid", "");
-            //toastMessage(uid);
-            ContentResolver contentResolver = getContentResolver();
-            contacts = fetchContacts(contentResolver,this);
-            for( Contact c : contacts)
-                Log.d("CONTACTS: ",c.toString());
+        if (checkPermissions()) {
             showRatings(this);
         }
     }
 
+    public boolean checkPermissions(){
+        if((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED) &&
+                (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) &&
+                (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)){
 
+            ContentResolver contentResolver = getContentResolver();
+            contacts = fetchContacts(contentResolver,this);
+            for( Contact c : contacts)
+                Log.d("CONTACTS: ",c.toString());
+
+            return true;
+        }
+
+        Toast.makeText(this, "This app hasn't access to phone numbers, call log or contacts, allow in settings", Toast.LENGTH_LONG).show();
+        return false;
+    }
 
     public static void showRatings(Context context){
         /* GET ALL RATINGS */
@@ -175,8 +184,11 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.refresh) {
-            showRatings(this);
-            return true;
+            if(checkPermissions()){
+                showRatings(this);
+                return true;
+            }
+            return false;
         }
 
         if (item.getItemId() == R.id.contacts) {

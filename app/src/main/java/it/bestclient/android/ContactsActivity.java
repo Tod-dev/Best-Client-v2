@@ -113,11 +113,12 @@ public class ContactsActivity extends AppCompatActivity {
         for (Contact c :  HomeActivity.contacts) {
             name[index] = c.getName();
             phoneNumber[index] = c.getPhone();
+
+            Utils.getRatingAVG(new RatingLocal(c.getPhone(), null), index, context, 2);
             for(RatingLocal r : alreadyInserted){
                 if (phoneNumber[index].equals(r.getNumero())) {
                     commentString[index]=r.getCommento();
                     ratingString[index]= String.valueOf(r.getVoto());
-                    Utils.getRatingAVG(r, index, context, 2);
                 }
             }
 
