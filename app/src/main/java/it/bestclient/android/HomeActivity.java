@@ -45,6 +45,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static it.bestclient.android.Utils.displayRatingStars;
 import static it.bestclient.android.Utils.fetchContacts;
 import static it.bestclient.android.Utils.filtroNonMeno2;
 
@@ -368,7 +369,7 @@ public class HomeActivity extends AppCompatActivity {
             phoneNumbers[i] = ratings.get(i).getNumero();
             dates[i] = ratings.get(i).getDate();
             commentString[i] = ratings.get(i).getCommento(); //String.valueOf(ratings.get(i).getRating());
-            ratingString[i] = String.valueOf(ratings.get(i).getVoto());
+            ratingString[i] = displayRatingStars(ratings.get(i).getVoto());
             Utils.getRatingAVG(r, i, context, 1); //prendo il rating AVG del numero corrente
             i++;
         }

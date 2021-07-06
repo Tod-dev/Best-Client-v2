@@ -6,15 +6,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.inputmethodservice.Keyboard;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -23,16 +17,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import it.bestclient.android.DB.DBhelper;
-import it.bestclient.android.RatingModel.Rating;
 import it.bestclient.android.RatingModel.RatingLocal;
 import it.bestclient.android.components.Contact;
 import it.bestclient.android.components.RowAdapter;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class ContactsActivity extends AppCompatActivity {
@@ -46,7 +36,7 @@ public class ContactsActivity extends AppCompatActivity {
     static ListView listView;
     static DBhelper myDBhelper;
     static String uid;
-    static Date currentDate;   //data corrente
+    //static Date currentDate;   //data corrente
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -107,10 +97,13 @@ public class ContactsActivity extends AppCompatActivity {
         Arrays.fill(ratingString,"");
         Arrays.fill(ratingAVGString,"");
 
-
+        List<RatingLocal> finalRatings = new ArrayList<>();
         //Per ogni contatto controllo se è già stato inserito
         int index = 0;
+        double voto;
+        String firebaseKey="";
         for (Contact c :  HomeActivity.contacts) {
+            voto = -5;//rating non inserito
             name[index] = c.getName();
             phoneNumber[index] = c.getPhone();
 
@@ -118,31 +111,30 @@ public class ContactsActivity extends AppCompatActivity {
             for(RatingLocal r : alreadyInserted){
                 if (phoneNumber[index].equals(r.getNumero())) {
                     commentString[index]=r.getCommento();
-                    ratingString[index]= String.valueOf(r.getVoto());
+                    ratingString[index]= Utils.displayRatingStars(r.getVoto());
+                    firebaseKey = r.get_firebase_key();
+                    voto = r.getVoto();
                 }
             }
+            if (voto == -5){
+                finalRatings.add(new RatingLocal(phoneNumber[index],null));
 
+            }else{
+                finalRatings.add(new RatingLocal(phoneNumber[index],null,voto,commentString[index],firebaseKey));
+
+            }
             index++;
         }
 
         //mostro la lista
         RowAdapter arrayAdapter = new RowAdapter(context, name, phoneNumber, commentString, ratingString, ratingAVGString);
         listView.setAdapter(arrayAdapter);
-
         listView.setOnItemClickListener((parent, view, position, id) -> {
             //currentDate = Calendar.getInstance().getTime();   //data corrente
-            RatingLocal r = new RatingLocal(phoneNumber[position], null);
-            r.setCommento(commentString[position]);
-            String key = getKey(r, alreadyInserted);
-            if(key != null){
-                r.set_firebase_key(key);
-            }
-
-            if(!ratingString[position].equals("")) r.setVoto(Float.parseFloat(ratingString[position]));
+            RatingLocal r = finalRatings.get(position);
             Utils.showDialog(context, 3, r, myDBhelper, uid);
         });
-    }
-
+    }/*
     public static String getKey(RatingLocal r, List<RatingLocal> alreadyInserted){
         for(RatingLocal inserted: alreadyInserted){
             if(r.getNumero().equals(inserted.getNumero())) return inserted.get_firebase_key();
@@ -150,7 +142,7 @@ public class ContactsActivity extends AppCompatActivity {
 
         return null;
     }
-
+*/
     /*static class MyAdapter extends ArrayAdapter<String> {
         Context context;
         String[] rPhoneNumber;

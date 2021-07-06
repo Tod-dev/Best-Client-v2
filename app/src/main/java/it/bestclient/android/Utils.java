@@ -133,6 +133,14 @@ public class Utils {
         return sb.toString();
     }
 
+    public static String displayRatingStars(double rating){
+        StringBuilder s= new StringBuilder();
+        for(long i = 0 ; i < Math.round(rating);i++){
+            s.append("⭐");
+        }
+        return s.toString();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void showDialog(Context context, int type, RatingLocal r, DBhelper myDBhelper, String uid){
         /* show a dialog box when a user click on a rating! */
@@ -288,10 +296,10 @@ public class Utils {
                     double val = dataSnapshot.getValue(Double.class);
                     val = Math.round(val*100.0)/100.0;  //arrotondo il rating a due cifre decimali
                     if(type == 1){
-                        HomeActivity.ratingAVGString[index] = String.valueOf(val);
+                        HomeActivity.ratingAVGString[index] = displayRatingStars(val);
                     }
                     else {
-                        ContactsActivity.ratingAVGString[index] = String.valueOf(val);
+                        ContactsActivity.ratingAVGString[index] = displayRatingStars(val);
                     }
 
                 }

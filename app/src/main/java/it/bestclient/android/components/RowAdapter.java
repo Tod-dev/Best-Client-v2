@@ -58,6 +58,8 @@ public class RowAdapter extends ArrayAdapter<String> {
             }
         }
 
+
+
         field1View.setText(actualNumber);
         field2View.setText(field2[position]);
         if(field3[position].equals("")){
@@ -66,14 +68,14 @@ public class RowAdapter extends ArrayAdapter<String> {
         else field3View.setText(field3[position]);
 
         if(field4[position].equals("-1.0") || field4[position].equals(""))
-            field4View.setText("Current rating: -");
+            field4View.setText("Rating assegnato: -");
         else
-            field4View.setText("Current rating: "+field4[position]);
+            field4View.setText("Rating assegnato: "+field4[position]);
 
         if(field5[position] == null || field5[position].equals(""))
-            field5View.setText("AVG rating: -");
+            field5View.setText("Rating Medio: -");
         else
-            field5View.setText("AVG rating: "+field5[position]);
+            field5View.setText("Rating Medio: "+field5[position]);
 
         return row;
     }

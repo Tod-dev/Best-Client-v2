@@ -7,7 +7,7 @@ public class RatingLocal extends Rating{
 
     private String firebase_key;
 
-    public RatingLocal(String numero, Date date, float voto, String commento,String firebase_key) {
+    public RatingLocal(String numero, Date date, double voto, String commento,String firebase_key) {
         super(numero, date, voto, commento);
         this.firebase_key = firebase_key;
     }
