@@ -1,6 +1,6 @@
 package it.bestclient.android.components;
 
-public class Contact {
+public class Contact implements Comparable<Contact>{
     private String name;
     private String phone;
     //Bitmap image = null;
@@ -38,5 +38,10 @@ public class Contact {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Override
+    public int compareTo(Contact o) {
+        return this.getName().compareTo(o.getName());
     }
 }

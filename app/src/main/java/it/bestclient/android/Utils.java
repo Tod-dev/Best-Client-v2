@@ -40,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.ParseException;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -110,6 +111,7 @@ public class Utils {
             }
 
         }
+        Collections.sort(contacts);
         return contacts;
     }
 
