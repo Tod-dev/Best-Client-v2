@@ -23,4 +23,14 @@
         <item>last48</item>
         <item>noFilter</item>
     </string-array>
+
+    <string-array name="display_rating_entries">
+        <item>Number</item>
+        <item>Stars</item>
+    </string-array>
+
+    <string-array name="display_rating_values">
+        <item>number</item>
+        <item>stars</item>
+    </string-array>
 </resources>

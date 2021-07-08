@@ -98,11 +98,11 @@ public class Utils {
                                 phoneCursor.moveToNext();
                                 String phoneinContact = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                                 contact.setPhone(filterOnlyDigits(phoneinContact));
+                                contacts.add(contact);
                             }
                             if (phoneCursor != null) phoneCursor.close();
                         }
                         //contact.image = ContactPhoto(contact_id);
-                        contacts.add(contact);
                     }
                     //ho tutti i contatti in contacts
                 }
@@ -136,8 +136,12 @@ public class Utils {
 
     public static String displayRatingStars(double rating){
         StringBuilder s= new StringBuilder();
-        for(long i = 0 ; i < Math.round(rating);i++){
+        double resto = rating-Math.floor(rating);
+        for(long i = 0 ; i < Math.floor(rating);i++){
             s.append("⭐");
+        }
+        if(resto > 0){
+            s.append("☆");
         }
         return s.toString();
     }
@@ -277,7 +281,7 @@ public class Utils {
         return text.replaceAll("'", "");
     }
 
-    public static void getRatingAVG(RatingLocal r, int index, Context context, int type){
+    public static void getRatingAVG(RatingLocal r, int index, Context context, int type, String preferences){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ratingsRef = database.getReference("ratingAVG").child(r.getNumero());
         //Log.d("CONTATCT-DEBUG",r.getNumero());
@@ -300,10 +304,16 @@ public class Utils {
                         double val = dataSnapshot.getValue(Double.class);
                         val = Math.round(val*100.0)/100.0;  //arrotondo il rating a due cifre decimali
                         if(type == 1){
-                            HomeActivity.ratingAVGString[index] = displayRatingStars(val);
+                            if(preferences.equals("stars"))
+                                HomeActivity.ratingAVGString[index] = displayRatingStars(val);
+                            else
+                                HomeActivity.ratingAVGString[index] = String.valueOf(val);
                         }
                         else {
-                            ContactsActivity.ratingAVGString[index] = displayRatingStars(val);
+                            if(preferences.equals("stars"))
+                                ContactsActivity.ratingAVGString[index] = displayRatingStars(val);
+                            else
+                                ContactsActivity.ratingAVGString[index] = String.valueOf(val);
                         }
 
                     }

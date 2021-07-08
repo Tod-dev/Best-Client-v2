@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 import it.bestclient.android.DB.DBhelper;
 import it.bestclient.android.RatingModel.RatingLocal;
@@ -24,6 +25,8 @@ import it.bestclient.android.components.RowAdapter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static it.bestclient.android.Utils.displayRatingStars;
 
 public class ContactsActivity extends AppCompatActivity {
     SharedPreferences sp;
@@ -111,10 +114,16 @@ public class ContactsActivity extends AppCompatActivity {
                 continue;
             }
 
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            String displayPreference = preferences.getString("Display Rating", "number");
+
             for(RatingLocal r : alreadyInserted){
                 if (phoneNumber[index].equals(r.getNumero())) {
                     commentString[index]=r.getCommento();
-                    ratingString[index]= Utils.displayRatingStars(r.getVoto());
+                    if(displayPreference.equals("stars"))
+                        ratingString[index] = displayRatingStars(r.getVoto());
+                    else
+                        ratingString[index] = String.valueOf(r.getVoto());
                     firebaseKey = r.get_firebase_key();
                     voto = r.getVoto();
                 }
@@ -125,7 +134,7 @@ public class ContactsActivity extends AppCompatActivity {
             }else{
                 k = new RatingLocal(phoneNumber[index],null,voto,commentString[index],firebaseKey);
             }
-            Utils.getRatingAVG(k, index, context, 2);
+            Utils.getRatingAVG(k, index, context, 2, displayPreference);
             finalRatings.add(k);
             index++;
         }

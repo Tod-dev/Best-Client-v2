@@ -26,4 +26,17 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/display_rating"
+        app:icon="@drawable/ic_baseline_star_24">
+
+        <ListPreference
+            app:defaultValue="@string/number"
+            app:entries="@array/display_rating_entries"
+            app:entryValues="@array/display_rating_values"
+            app:key="@string/display_rating"
+            app:title="@string/display_rating_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>v
+
 </PreferenceScreen>

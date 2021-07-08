@@ -364,6 +364,10 @@ public class HomeActivity extends AppCompatActivity {
         *save all the data in 3 parallel arrays of String data
         *in order to create the listView easily
         */
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String displayPreference = preferences.getString("Display Rating", "number");
+
         phoneNumbers = new String[ratings.size()];
         dates = new String[ratings.size()];
         commentString = new String[ratings.size()];
@@ -375,8 +379,13 @@ public class HomeActivity extends AppCompatActivity {
             phoneNumbers[i] = ratings.get(i).getNumero();
             dates[i] = ratings.get(i).getDate();
             commentString[i] = ratings.get(i).getCommento(); //String.valueOf(ratings.get(i).getRating());
-            ratingString[i] = displayRatingStars(ratings.get(i).getVoto());
-            Utils.getRatingAVG(r, i, context, 1); //prendo il rating AVG del numero corrente
+
+            if(displayPreference.equals("stars"))
+                ratingString[i] = displayRatingStars(ratings.get(i).getVoto());
+            else
+                ratingString[i] = String.valueOf(ratings.get(i).getVoto());
+
+            Utils.getRatingAVG(r, i, context, 1, displayPreference); //prendo il rating AVG del numero corrente
             i++;
         }
 
