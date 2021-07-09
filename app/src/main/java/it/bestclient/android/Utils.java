@@ -60,7 +60,7 @@ public class Utils {
     public static String updateDB(RatingBigOnDB r, String key){
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("ratingBig");
         Log.d("ratingonDB:", "CHIAVE RICEVUTA KEY: "+ key); //ratingBig + KEY
-        if(key.isEmpty()){
+        if(key.equals("")){
             //se non ho una chiave ne creo una nuova
             key = mDatabase.push().getKey();
         }

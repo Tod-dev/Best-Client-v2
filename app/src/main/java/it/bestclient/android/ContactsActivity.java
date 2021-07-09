@@ -82,7 +82,7 @@ public class ContactsActivity extends AppCompatActivity {
             String firebase_key = data.getString(data.getColumnIndex(DBhelper.COL_FIREBASE_KEY));
 
             //alreadyInserted.add(new RatingLocal(cell, Rating.formatter.parse(date)));
-            if (date.isEmpty())
+            if (date.equals(""))
                 alreadyInserted.add(new RatingLocal(cell,null,rating,commento,firebase_key));
         }
 
