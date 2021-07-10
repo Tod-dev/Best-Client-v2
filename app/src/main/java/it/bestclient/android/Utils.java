@@ -45,6 +45,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -75,6 +76,8 @@ public class Utils {
 
     public static List<Contact> fetchContacts(ContentResolver contentResolver, Context k){
         Set<Contact> contacts = new TreeSet<>();    //con un set impedisco l'inserimento di contatti duplicati
+        Map<String, String> numberInserted = new HashMap<>();   //numeri già inseriti
+
         /*controllo se sono in rubrica*/
         if ((ContextCompat.checkSelfPermission(k, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
             //solo se ho i permessi di accesso alla rubrica
@@ -100,8 +103,12 @@ public class Utils {
                             if (phoneCursor != null) {
                                 phoneCursor.moveToNext();
                                 String phoneinContact = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                contact.setPhone(filterOnlyDigits(phoneinContact));
-                                contacts.add(contact);
+                                if(!numberInserted.containsKey(phoneinContact)) {
+                                    //non è stato trovato un contatto con stesso numero
+                                    contact.setPhone(filterOnlyDigits(phoneinContact));
+                                    contacts.add(contact);
+                                    numberInserted.put(phoneinContact, phoneinContact);
+                                }
                             }
                             if (phoneCursor != null) phoneCursor.close();
                         }
