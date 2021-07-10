@@ -158,16 +158,7 @@ public class HomeActivity extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, i1, id) -> {
             RatingLocal k = finalRatings.get(i1);
 
-            /* IF I HAVE ALREADY INSERTED THAT RATING -> ASK IF YOU WANT TO DELETE IT */
-            if (k.getVoto() != -1) {
-                /*Dialog delete an element*/
-                //Utils.showDialog(context, 1, finalRatings.get(i1), myDBhelper, uid);
-                /*Dialog give a vote or delete an element*/
-                Utils.showDialog(context, 2, k, myDBhelper, uid);
-            } else {
-                /*Dialog give a vote or delete an element*/
-                Utils.showDialog(context, 2, k, myDBhelper, uid);
-            }
+            Utils.showDialog(context, 2, k, myDBhelper, uid);
         });
     }
 

@@ -90,15 +90,18 @@ public class ContactsActivity extends AppCompatActivity {
         int size = HomeActivity.contacts.size();
         name = new String[size];
         phoneNumber = new String[ size];
-        commentString= new String[ size];
-        ratingString= new String[ size];
-        ratingAVGString= new String[ size];
+        commentString = new String[ size];
+        ratingString = new String[ size];
+        ratingAVGString = new String[ size];
 
         Arrays.fill(name,"");
         Arrays.fill(phoneNumber,"");
         Arrays.fill(commentString,"");
         Arrays.fill(ratingString,"");
         Arrays.fill(ratingAVGString,"");
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String displayPreference = preferences.getString("Display Rating", "number");
 
         List<RatingLocal> finalRatings = new ArrayList<>();
         //Per ogni contatto controllo se è già stato inserito
@@ -110,12 +113,9 @@ public class ContactsActivity extends AppCompatActivity {
             name[index] = c.getName();
             phoneNumber[index] = c.getPhone();
 
-            if(phoneNumber[index].isEmpty()){//salto in questo caso, non voglio un contatto vuoto
+            /*if(phoneNumber[index].isEmpty()){//salto in questo caso, non voglio un contatto vuoto
                 continue;
-            }
-
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-            String displayPreference = preferences.getString("Display Rating", "number");
+            }*/
 
             for(RatingLocal r : alreadyInserted){
                 if (phoneNumber[index].equals(r.getNumero())) {
@@ -130,8 +130,10 @@ public class ContactsActivity extends AppCompatActivity {
             }
             RatingLocal k;
             if (voto == -5){
-                k= new RatingLocal(phoneNumber[index],null);
+                //rating non ancora inserito
+                k = new RatingLocal(phoneNumber[index],null);
             }else{
+                //rating già inserito per questo contatto
                 k = new RatingLocal(phoneNumber[index],null,voto,commentString[index],firebaseKey);
             }
             Utils.getRatingAVG(k, index, context, 2, displayPreference);

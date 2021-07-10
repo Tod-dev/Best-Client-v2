@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Utils {
     /**
@@ -72,7 +74,7 @@ public class Utils {
 
 
     public static List<Contact> fetchContacts(ContentResolver contentResolver, Context k){
-        List<Contact> contacts = new ArrayList<>();
+        Set<Contact> contacts = new TreeSet<>();    //con un set impedisco l'inserimento di contatti duplicati
         /*controllo se sono in rubrica*/
         if ((ContextCompat.checkSelfPermission(k, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
             //solo se ho i permessi di accesso alla rubrica
@@ -111,8 +113,9 @@ public class Utils {
             }
 
         }
-        Collections.sort(contacts);
-        return contacts;
+        //Collections.sort(contacts);
+        return new ArrayList<>(contacts);
+        //return ret;
     }
 
     /*FILTER ONLY RATINGS NOT ELIMINATED*/

@@ -167,12 +167,17 @@ public class IncomingReceiver extends BroadcastReceiver {
                             dialogTxt="0 stars!";
                         }
                         else{
-                            int roundRating = (int) Math.round(rating);
+                            int roundRating = (int) Math.floor(rating);
                             StringBuilder feedBack = new StringBuilder();
 
+                            double resto = rating-Math.floor(rating);
                             for(int i = 0; i < roundRating; i++){
                                 feedBack.append("⭐");
                             }
+                            if(resto > 0){
+                                feedBack.append("☆");
+                            }
+
                             message = finalNumber + " "+feedBack.toString();
                             dialogTxt=feedBack.toString();
 
