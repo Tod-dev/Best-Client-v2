@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static it.bestclient.android.Utils.displayRatingStars;
@@ -67,6 +68,7 @@ public class HomeActivity extends AppCompatActivity {
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
     static String uid;
     public static List<Contact> contacts = null;
+    public static Map<String, String> contactMap = null;
     static final int MAX_ITEMS = 100;
     //final String uri = "http://worldtimeapi.org/api/timezone/Europe/Rome";
 

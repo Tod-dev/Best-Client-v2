@@ -24,6 +24,7 @@ import it.bestclient.android.components.RowAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static it.bestclient.android.Utils.displayRatingStars;
@@ -59,6 +60,7 @@ public class ContactsActivity extends AppCompatActivity {
         uid = sp.getString("uid", "");
 
         listView = findViewById(R.id.listcontacts);
+        myDBhelper = new DBhelper(this);
 
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             showRatings(this);
@@ -68,9 +70,27 @@ public class ContactsActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void showRatings(Context context){
-        myDBhelper = new DBhelper(context);
         //prendo tutti i contatti dalla rubrica
 
+        List<RatingLocal> ratings;
+        ratings = getAllRatings();
+
+        if(ratings != null){
+            ratingToString(ratings, context);
+        }
+
+        //mostro la lista
+        RowAdapter arrayAdapter = new RowAdapter(context, name, phoneNumber, commentString, ratingString, ratingAVGString);
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            //currentDate = Calendar.getInstance().getTime();   //data corrente
+            RatingLocal r = ratings.get(position);
+            Utils.showDialog(context, 3, r, myDBhelper, uid);
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static List<RatingLocal> getAllRatings(){
         //cerco i contatti a cui ho già dato una valutazione, avranno rating = -3
         Cursor data = myDBhelper.getData();
         List<RatingLocal> alreadyInserted = new ArrayList<>();
@@ -81,75 +101,70 @@ public class ContactsActivity extends AppCompatActivity {
             String commento = data.getString(data.getColumnIndex(DBhelper.COL_COMMENT));
             String firebase_key = data.getString(data.getColumnIndex(DBhelper.COL_FIREBASE_KEY));
 
-            //alreadyInserted.add(new RatingLocal(cell, Rating.formatter.parse(date)));
             if (date.equals(""))
                 alreadyInserted.add(new RatingLocal(cell,null,rating,commento,firebase_key));
         }
 
+        List<RatingLocal> ratings = new ArrayList<>();
+        for(Contact c: HomeActivity.contacts){
+            boolean presente = false;
+            for(RatingLocal r: alreadyInserted){
+                if(r.getNumero().equals(c.getPhone())){
+                    presente = true;
+                    ratings.add(r);
+                    break;
+                }
+            }
 
-        int size = HomeActivity.contacts.size();
-        name = new String[size];
-        phoneNumber = new String[ size];
-        commentString = new String[ size];
-        ratingString = new String[ size];
-        ratingAVGString = new String[ size];
+            //aggiungo alla lista di rating i contatti che non sono stati valutati
+            if(!presente){
+                ratings.add(new RatingLocal(c.getPhone(), null));
+            }
+        }
 
-        Arrays.fill(name,"");
-        Arrays.fill(phoneNumber,"");
-        Arrays.fill(commentString,"");
-        Arrays.fill(ratingString,"");
-        Arrays.fill(ratingAVGString,"");
+        return ratings;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void ratingToString(List<RatingLocal> ratings, Context context){
+        /*
+         *save all the data in 3 parallel arrays of String data
+         *in order to create the listView easily
+         */
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String displayPreference = preferences.getString("Display Rating", "number");
 
-        List<RatingLocal> finalRatings = new ArrayList<>();
-        //Per ogni contatto controllo se è già stato inserito
-        int index = 0;
-        double voto;
-        String firebaseKey="";
-        for (Contact c :  HomeActivity.contacts) {
-            voto = -5;//rating non inserito
-            name[index] = c.getName();
-            phoneNumber[index] = c.getPhone();
+        int size = HomeActivity.contacts.size();
+        name = new String[size];
+        phoneNumber = new String[size];
+        commentString = new String[size];
+        ratingString = new String[size];
+        ratingAVGString = new String[size];
 
-            /*if(phoneNumber[index].isEmpty()){//salto in questo caso, non voglio un contatto vuoto
-                continue;
-            }*/
+        int i = 0;
+        for(RatingLocal r : ratings){
+            name[i] = HomeActivity.contacts.get(i).getName();
+            phoneNumber[i] = ratings.get(i).getNumero();
+            if(r.getVoto() == -1){
+                commentString[i] = "";
+                ratingString[i] = "-1.0";
+            }
+            else{
+                commentString[i] = ratings.get(i).getCommento();
+                if(displayPreference.equals("stars"))
+                    ratingString[i] = displayRatingStars(ratings.get(i).getVoto());
+                else
+                    ratingString[i] = String.valueOf(ratings.get(i).getVoto());
+            }
 
-            for(RatingLocal r : alreadyInserted){
-                if (phoneNumber[index].equals(r.getNumero())) {
-                    commentString[index]=r.getCommento();
-                    if(displayPreference.equals("stars"))
-                        ratingString[index] = displayRatingStars(r.getVoto());
-                    else
-                        ratingString[index] = String.valueOf(r.getVoto());
-                    firebaseKey = r.get_firebase_key();
-                    voto = r.getVoto();
-                }
-            }
-            RatingLocal k;
-            if (voto == -5){
-                //rating non ancora inserito
-                k = new RatingLocal(phoneNumber[index],null);
-            }else{
-                //rating già inserito per questo contatto
-                k = new RatingLocal(phoneNumber[index],null,voto,commentString[index],firebaseKey);
-            }
-            Utils.getRatingAVG(k, index, context, 2, displayPreference);
-            finalRatings.add(k);
-            index++;
+            Utils.getRatingAVG(r, i, context, 2, displayPreference); //prendo il rating AVG del numero corrente
+            i++;
         }
 
-        //mostro la lista
-        RowAdapter arrayAdapter = new RowAdapter(context, name, phoneNumber, commentString, ratingString, ratingAVGString);
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            //currentDate = Calendar.getInstance().getTime();   //data corrente
-            RatingLocal r = finalRatings.get(position);
-            Utils.showDialog(context, 3, r, myDBhelper, uid);
-        });
-    }/*
+    }
+
+    /*
     public static String getKey(RatingLocal r, List<RatingLocal> alreadyInserted){
         for(RatingLocal inserted: alreadyInserted){
             if(r.getNumero().equals(inserted.getNumero())) return inserted.get_firebase_key();

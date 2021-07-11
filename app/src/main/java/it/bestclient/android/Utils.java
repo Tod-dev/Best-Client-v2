@@ -74,9 +74,10 @@ public class Utils {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static List<Contact> fetchContacts(ContentResolver contentResolver, Context k){
         Set<Contact> contacts = new TreeSet<>();    //con un set impedisco l'inserimento di contatti duplicati
-        Map<String, String> numberInserted = new HashMap<>();   //numeri già inseriti
+        HomeActivity.contactMap = new HashMap<>();   //numeri già inseriti
 
         /*controllo se sono in rubrica*/
         if ((ContextCompat.checkSelfPermission(k, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
@@ -103,11 +104,11 @@ public class Utils {
                             if (phoneCursor != null) {
                                 phoneCursor.moveToNext();
                                 String phoneinContact = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                if(!numberInserted.containsKey(phoneinContact)) {
+                                if(!HomeActivity.contactMap.containsKey(phoneinContact)) {
                                     //non è stato trovato un contatto con stesso numero
                                     contact.setPhone(filterOnlyDigits(phoneinContact));
                                     contacts.add(contact);
-                                    numberInserted.put(phoneinContact, phoneinContact);
+                                    HomeActivity.contactMap.put(phoneinContact, phoneinContact);
                                 }
                             }
                             if (phoneCursor != null) phoneCursor.close();
