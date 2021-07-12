@@ -37,7 +37,7 @@ public class Contact implements Comparable<Contact>{
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        this.phone = phone.length() <= 10 ? phone :  phone.substring(phone.length()-10);
     }
 
     @Override
