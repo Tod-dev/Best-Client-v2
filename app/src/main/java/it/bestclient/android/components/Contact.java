@@ -21,7 +21,7 @@ public class Contact implements Comparable<Contact>{
 
     public Contact(String name, String phone) {
         this.name = name;
-        this.phone = phone;
+        this.phone = phone.length() <= 10 ? phone :  phone.substring(phone.length()-10);
     }
 
     public String getName() {

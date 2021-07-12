@@ -16,6 +16,7 @@
     <string name="comment">Comment</string>
     <string name="settingsChoice">How to get phone number rating</string>
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="font_family_sans_serif">sans-serif</string>
 
     <!-- Preference Titles -->
     <string name="notifications_header">Notifications</string>
