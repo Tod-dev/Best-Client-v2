@@ -3,7 +3,6 @@ package it.bestclient.android;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -19,16 +18,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
 
 import it.bestclient.android.DB.DBhelper;
-import it.bestclient.android.RatingModel.RatingAVGOnDB;
 import it.bestclient.android.RatingModel.RatingBigOnDB;
 import it.bestclient.android.RatingModel.RatingLocal;
 import it.bestclient.android.components.Contact;
 import it.bestclient.android.components.RowAdapter;
 
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -38,15 +34,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
-import java.text.StringCharacterIterator;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -160,7 +152,7 @@ public class Utils {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static void showDialog(Context context, int type, RatingLocal r, DBhelper myDBhelper, String uid){
+    public static void showDialog(Context context, int type, RatingLocal r){
         /* show a dialog box when a user click on a rating! */
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -172,7 +164,7 @@ public class Utils {
                         float nuovoRating = -2;
                         r.setVoto(nuovoRating);
                         try {
-                            UpdateData(context, r, false, myDBhelper, uid);
+                            UpdateData(context, r, false);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -216,14 +208,14 @@ public class Utils {
                             //se ho inserito un rating modifico il db firebase
                             r.setVoto(nuovoRating);
                             try {
-                                UpdateData(context, r, true, myDBhelper, uid);
+                                UpdateData(context, r, true);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                         }
                         else{
                             try {
-                                UpdateData(context, r, false, myDBhelper, uid);
+                                UpdateData(context, r, false);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -250,7 +242,7 @@ public class Utils {
             dialog.show();
             deleteButton.setOnClickListener(v -> {
                 dialog.dismiss();
-                showDialog(context, 1,r, myDBhelper, uid);
+                showDialog(context, 1, r);
             });
             commentButton.setOnClickListener(v -> {
                 comment.setVisibility(View.VISIBLE);
@@ -260,9 +252,11 @@ public class Utils {
         }
     }
 
-    public static void UpdateData(Context context, RatingLocal r, boolean db, DBhelper myDBhelper, String uid) throws ParseException {
+    public static void UpdateData(Context context, RatingLocal r, boolean db) throws ParseException {
         /* AGGIORNA I DATI SUL DB SQLITE E SU FIREBASE */
         Date date = new Date();
+        DBhelper myDBhelper = new DBhelper(context);
+        String uid = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE).getString("uid", "");
         RatingBigOnDB remoteRating = new RatingBigOnDB(uid,date,r.getVoto(),r.getNumero(),r.getCommento());
         String key=r.get_firebase_key();
         if(db){
@@ -334,11 +328,11 @@ public class Utils {
 
                 if(type == 1){
                     RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.dates, HomeActivity.commentString, HomeActivity.ratingString, HomeActivity.ratingAVGString);
-                    HomeActivity.listView.setAdapter(arrayAdapter);
+                    HomeActivity.recyclerView.setAdapter(arrayAdapter);
                 }
                 else{
                     RowAdapter arrayAdapter = new RowAdapter(context, ContactsActivity.name, ContactsActivity.phoneNumber, ContactsActivity.commentString, ContactsActivity.ratingString, ContactsActivity.ratingAVGString);
-                    ContactsActivity.listView.setAdapter(arrayAdapter);
+                    ContactsActivity.recyclerView.setAdapter(arrayAdapter);
                 }
 
             }

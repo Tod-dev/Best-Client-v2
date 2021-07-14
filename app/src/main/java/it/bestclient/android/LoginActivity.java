@@ -33,7 +33,6 @@ import com.google.firebase.database.ValueEventListener;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class LoginActivity extends AppCompatActivity {
-    int RC_SIGN_IN = 0;
     String[] Permissions = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS};
     Button loginBtn;
     EditText email;

@@ -12,23 +12,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import it.bestclient.android.DB.DBhelper;
 import it.bestclient.android.RatingModel.Rating;
@@ -55,10 +49,10 @@ import static it.bestclient.android.Utils.filtroNonMeno2;
 public class HomeActivity extends AppCompatActivity {
 
     // GoogleSignInClient mGoogleSignInClient;
-    Button ratingButton;
     SharedPreferences sp;
     @SuppressLint("StaticFieldLeak")
-    static ListView listView;
+    //static ListView listView;
+    static RecyclerView recyclerView;
     static DBhelper myDBhelper;
     static String[] phoneNumbers;
     static String[] dates;
@@ -66,10 +60,10 @@ public class HomeActivity extends AppCompatActivity {
     static String[] ratingString;
     static String[] ratingAVGString;
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
-    static String uid;
     public static List<Contact> contacts = null;
     public static Map<String, String> contactMap = null;
     static final int MAX_ITEMS = 100;
+    public static List<RatingLocal> ratings;
     //final String uri = "http://worldtimeapi.org/api/timezone/Europe/Rome";
 
     @SuppressLint("NonConstantResourceId")
@@ -111,11 +105,8 @@ public class HomeActivity extends AppCompatActivity {
             actionBar.setTitle(R.string.home);
         }
 
-        listView = findViewById(R.id.list);
+        recyclerView = findViewById(R.id.list);
         myDBhelper = new DBhelper(this);
-        /*SET UID*/
-        sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
-        HomeActivity.uid = sp.getString("uid", "");
 
         /*If we got Permissions -> fetch ratings*/
         if (checkPermissions()) {
@@ -142,7 +133,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public static void showRatings(Context context){
         /* GET ALL RATINGS */
-        List<RatingLocal> ratings = null;
+        ratings = null;
         try {
             ratings = getAllRatings(context);
         } catch (ParseException e) {
@@ -151,17 +142,17 @@ public class HomeActivity extends AppCompatActivity {
 
         if (ratings != null) {
             ratingToString(ratings, context);
+            /* INSERT ALL THE RATINGS IN THE LISTVIEW */
+            RowAdapter arrayAdapter = new RowAdapter(context, phoneNumbers, dates, commentString, ratingString, ratingAVGString);
+            recyclerView.setAdapter(arrayAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
-
-        /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-        RowAdapter arrayAdapter = new RowAdapter(context, phoneNumbers, dates, commentString, ratingString, ratingAVGString);
-        listView.setAdapter(arrayAdapter);
-        List<RatingLocal> finalRatings = ratings;
-        listView.setOnItemClickListener((parent, view, i1, id) -> {
+        //List<RatingLocal> finalRatings = ratings;
+        /*recyclerView.setOnItemClickListener((parent, view, i1, id) -> {
             RatingLocal k = finalRatings.get(i1);
 
             Utils.showDialog(context, 2, k, myDBhelper, uid);
-        });
+        });*/
     }
 
 
@@ -221,7 +212,7 @@ public class HomeActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String notificationPreference = preferences.getString("Last Calls", "None");
 
-        List<RatingLocal> ratings = new ArrayList<>();
+        List<RatingLocal> ratingsRet = new ArrayList<>();
 
         Date curDate = Calendar.getInstance().getTime();
         /*READ CALLS LOG, LINE BY LINE*/
@@ -262,7 +253,7 @@ public class HomeActivity extends AppCompatActivity {
 
             /*IF THE RATING IS NOT THE FIRST ONE OF ITS TYPE(GROUP): (DAY,PHONE) -> skip*/
             boolean checkIfExist = false;
-            for(RatingLocal r: ratings){
+            for(RatingLocal r: ratingsRet){
                 boolean res = r.group_by(check);
                 //Log.d("CHECK_CONFRONTO: ", ""+res);
                 if(res){
@@ -273,7 +264,7 @@ public class HomeActivity extends AppCompatActivity {
 
             /*ADD A NEW RATING TO THE LIST*/
             if(!checkIfExist){
-                ratings.add(new RatingLocal(number, date));
+                ratingsRet.add(new RatingLocal(number, date));
             }
         }
         c.close();
@@ -303,7 +294,7 @@ public class HomeActivity extends AppCompatActivity {
 
         }
 
-        for(RatingLocal r: ratings){
+        for(RatingLocal r: ratingsRet){
             for(RatingLocal j: listData){
                 if(j.getDate().equals("")) continue;
                 if(r.group_by(j)){
@@ -324,7 +315,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         //filtro solo != -2 (RATING ELIMINATO) -> Iterator
-        filtroNonMeno2(ratings);
+        filtroNonMeno2(ratingsRet);
 
 
         // Log.d("lista db: ",Arrays.toString(listData.toArray()));
@@ -347,8 +338,7 @@ public class HomeActivity extends AppCompatActivity {
         }*/
 
         /*return the list to display*/
-        return ratings;
-
+        return ratingsRet;
     }
 
 

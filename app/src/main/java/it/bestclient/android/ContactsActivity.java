@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -16,6 +15,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import it.bestclient.android.DB.DBhelper;
 import it.bestclient.android.RatingModel.RatingLocal;
@@ -23,23 +24,20 @@ import it.bestclient.android.components.Contact;
 import it.bestclient.android.components.RowAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static it.bestclient.android.Utils.displayRatingStars;
 
 public class ContactsActivity extends AppCompatActivity {
-    SharedPreferences sp;
     static String[] name;
     static String[] phoneNumber;
     static String[] commentString;
     static String[] ratingString;
     static String[] ratingAVGString;
     @SuppressLint("StaticFieldLeak")
-    static ListView listView;
+    static RecyclerView recyclerView;
     static DBhelper myDBhelper;
-    static String uid;
+    public static List<RatingLocal> ratings;
     //static Date currentDate;   //data corrente
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -55,11 +53,7 @@ public class ContactsActivity extends AppCompatActivity {
             actionBar.setTitle(R.string.contacts);
         }
 
-        //salvo l'uid dell'utente che sta valutando
-        sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
-        uid = sp.getString("uid", "");
-
-        listView = findViewById(R.id.listcontacts);
+        recyclerView = findViewById(R.id.listcontacts);
         myDBhelper = new DBhelper(this);
 
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
@@ -72,7 +66,7 @@ public class ContactsActivity extends AppCompatActivity {
     public static void showRatings(Context context){
         //prendo tutti i contatti dalla rubrica
 
-        List<RatingLocal> ratings;
+
         ratings = getAllRatings();
 
         if(ratings != null){
@@ -81,12 +75,13 @@ public class ContactsActivity extends AppCompatActivity {
 
         //mostro la lista
         RowAdapter arrayAdapter = new RowAdapter(context, name, phoneNumber, commentString, ratingString, ratingAVGString);
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener((parent, view, position, id) -> {
+        recyclerView.setAdapter(arrayAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        /*recyclerView.setOnItemClickListener((parent, view, position, id) -> {
             //currentDate = Calendar.getInstance().getTime();   //data corrente
             RatingLocal r = ratings.get(position);
             Utils.showDialog(context, 3, r, myDBhelper, uid);
-        });
+        });*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
