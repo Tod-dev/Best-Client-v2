@@ -71,12 +71,12 @@ public class ContactsActivity extends AppCompatActivity {
 
         if(ratings != null){
             ratingToString(ratings, context);
+            //mostro la lista
+            RowAdapter arrayAdapter = new RowAdapter(context, name, phoneNumber, commentString, ratingString, ratingAVGString);
+            recyclerView.setAdapter(arrayAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
 
-        //mostro la lista
-        RowAdapter arrayAdapter = new RowAdapter(context, name, phoneNumber, commentString, ratingString, ratingAVGString);
-        recyclerView.setAdapter(arrayAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         /*recyclerView.setOnItemClickListener((parent, view, position, id) -> {
             //currentDate = Calendar.getInstance().getTime();   //data corrente
             RatingLocal r = ratings.get(position);

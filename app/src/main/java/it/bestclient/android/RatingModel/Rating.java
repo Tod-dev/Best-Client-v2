@@ -18,7 +18,7 @@ public abstract class  Rating implements  Voto{
 
     //utils -> per comodità di utilizzo ci salviamo la data come stringa formattata -> coerente con la stringa in SQLlite
     //uso lo stesso format in tutta l'app!
-    public static final SimpleDateFormat formatter  = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ITALIAN); //formatter.format(date);
+    public static final SimpleDateFormat formatter  = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ITALIAN); //formatter.format(date);
 
     public Rating(String numero, Date date, double voto, String commento){
         this.voto = voto;
