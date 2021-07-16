@@ -83,13 +83,13 @@ public class HomeActivity extends AppCompatActivity {
                 case R.id.settingsBtn:{
                     Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
                     startActivity(intent);
-                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
                     break;
                 }
                 case R.id.profileBtn:{
                     Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
                     startActivity(intent);
-                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    overridePendingTransition(R.anim.to_right_in, R.anim.to_left_out);
                     break;
                 }
                 default: break;

@@ -38,13 +38,13 @@ public class ProfileActivity extends AppCompatActivity {
                 case R.id.homeBtn:{
                     Intent intent = new Intent(ProfileActivity.this, HomeActivity.class);
                     startActivity(intent);
-                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
                     break;
                 }
                 case R.id.settingsBtn:{
                     Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
                     startActivity(intent);
-                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
                     break;
                 }
                 case R.id.profileBtn:{

@@ -33,7 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
                 case R.id.homeBtn:{
                     Intent intent = new Intent(SettingsActivity.this, HomeActivity.class);
                     startActivity(intent);
-                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    overridePendingTransition(R.anim.to_right_in, R.anim.to_left_out);
                     break;
                 }
                 case R.id.settingsBtn:{
@@ -42,7 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
                 case R.id.profileBtn:{
                     Intent intent = new Intent(SettingsActivity.this, ProfileActivity.class);
                     startActivity(intent);
-                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    overridePendingTransition(R.anim.to_right_in, R.anim.to_left_out);
                     break;
                 }
                 default: break;
