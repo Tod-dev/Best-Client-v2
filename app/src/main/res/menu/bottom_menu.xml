@@ -2,6 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:title="@string/entrata"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:id="@+id/entrata"/>
+
+    <item
+        android:title="@string/uscita"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:id="@+id/uscita"/>
+
+
+
+    <item
         android:title="@string/settings"
         android:icon="@drawable/ic_baseline_settings_24"
         android:id="@+id/settingsBtn"/>
