@@ -90,12 +90,14 @@ public class Rating implements Voto{
         this.commento = commento;
     }
 
-    @NonNull
-    public String toString(){
-        String ratingString =   this.voto == -1 ? "-" : String.valueOf(this.voto);
-        return "Number: "+ this.numero +", Date: "+this.date+", Current Rating: "+ ratingString+", Comment: "+ this.commento;
+    @Override
+    public String toString() {
+        return "Rating{" +
+                "numero='" + numero + '\'' +
+                ", date='" + date + '\'' +
+                ", commento='" + commento + '\'' +
+                ", voto=" + voto +
+                ", voto_medio=" + voto_medio +
+                '}';
     }
-
-
-
 }

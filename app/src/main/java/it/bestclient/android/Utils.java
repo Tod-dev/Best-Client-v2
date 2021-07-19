@@ -351,6 +351,8 @@ public class Utils {
                         HomeActivity.ratingAVGString[index] = displayRatingStars(val);
                     else
                         HomeActivity.ratingAVGString[index] = String.valueOf(val);
+
+                    r.setVoto_medio(val);
                 }
 
                 RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.ratingString, HomeActivity.ratingAVGString);

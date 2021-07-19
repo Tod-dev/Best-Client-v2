@@ -1,6 +1,7 @@
 package it.bestclient.android.components;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import it.bestclient.android.HomeActivity;
 import it.bestclient.android.R;
+import it.bestclient.android.RatingActivity;
+import it.bestclient.android.RatingModel.Rating;
 import it.bestclient.android.Utils;
 
 public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
@@ -72,18 +75,20 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         }
         holder.field3View.setText(text);
 
-        /*holder.mainLayout.setOnClickListener(v -> {
-            String className = context.getClass().getSimpleName();
-            if(className.equals("HomeActivity")){
-                RatingLocal r = HomeActivity.ratings.get(position);
-                Utils.showDialog(context, 2, r);
-            }
-            else{
-                RatingLocal r = ContactsActivity.ratings.get(position);
-                Utils.showDialog(context, 3, r);
-            }
 
-        });*/
+        holder.mainLayout.setOnClickListener(v -> {
+
+            Rating r = HomeActivity.ratings.get(position);
+
+            Intent intent = new Intent(context, RatingActivity.class);
+            intent.putExtra(RatingActivity.NUMBER,r.getNumero());
+            intent.putExtra(RatingActivity.VOTO,r.getVoto());
+            intent.putExtra(RatingActivity.COMMENT,r.getCommento());
+            intent.putExtra(RatingActivity.MEDIO,r.getVoto_medio());
+
+            context.startActivity(intent);
+
+        });
 
     }
 
