@@ -61,4 +61,6 @@
     <string name="display_rating">Display Rating</string>
     <string name="number">number</string>
     <string name="display_rating_title">Display Rating As</string>
+    <string name="entrata">Chiamate in entrata</string>
+    <string name="uscita">Chiamate in uscita</string>
 </resources>
