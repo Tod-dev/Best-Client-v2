@@ -26,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(R.string.settings);
 
-        BottomNavigationView bn = findViewById(R.id.bottomMenu);
+        /*BottomNavigationView bn = findViewById(R.id.bottomMenu);
         bn.setSelectedItemId(R.id.settingsBtn);
         bn.setOnNavigationItemSelectedListener(item -> {
             switch(item.getItemId()){
@@ -49,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             return true;
-        });
+        });*/
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {

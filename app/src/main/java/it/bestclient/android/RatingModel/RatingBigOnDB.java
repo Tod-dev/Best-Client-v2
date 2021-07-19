@@ -8,12 +8,12 @@ public class RatingBigOnDB extends Rating{
     private String idEsercente;
 
     public RatingBigOnDB(String idEsercente,Date date, double voto,String numero, String commento) {
-        super(numero,date, voto, commento);
+        //super(numero,date, voto, commento);
         this.idEsercente = idEsercente;
     }
 
     public RatingBigOnDB(String idEsercente,String numero, Date date) {
-        super(numero, date);
+        //super(numero, date);
         this.idEsercente = idEsercente;
     }
 

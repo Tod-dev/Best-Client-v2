@@ -31,7 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
         actionBar.setTitle(R.string.profile);
 
         /*MENU*/
-        BottomNavigationView bn = findViewById(R.id.bottomMenu);
+        /*BottomNavigationView bn = findViewById(R.id.bottomMenu);
         bn.setSelectedItemId(R.id.profileBtn);
         bn.setOnNavigationItemSelectedListener(item -> {
             switch(item.getItemId()){
@@ -54,7 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
             return true;
-        });
+        });*/
 
         /*SET THE USER VALUES*/
         sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
@@ -66,17 +66,17 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
+    /*public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home_menu, menu);
         menu.findItem(R.id.logout).setVisible(true);
 
         return super.onCreateOptionsMenu(menu);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.logout) {
-            /*LOGOUT*/
+        /*if (item.getItemId() == R.id.logout) {
+
             sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
 
             @SuppressLint("CommitPrefEdits")
@@ -90,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
             startActivity(intent);
             return true;
-        }
+        }*/
         return false;
     }
 }

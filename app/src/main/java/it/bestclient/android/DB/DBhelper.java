@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import it.bestclient.android.RatingModel.Rating;
-import it.bestclient.android.RatingModel.RatingLocal;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -88,7 +87,7 @@ public class DBhelper extends SQLiteOpenHelper {
         return result != -1;
     }
 */
-    public boolean addData(RatingLocal r) {
+    /*public boolean addData(RatingLocal r) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_CELL, r.getNumero());
@@ -109,7 +108,7 @@ public class DBhelper extends SQLiteOpenHelper {
 
         //if date as inserted incorrectly it will return -1
         return result != -1;
-    }
+    }*/
 
     public Cursor getData(){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -123,7 +122,7 @@ public class DBhelper extends SQLiteOpenHelper {
         return db.rawQuery(query, null);
     }
 
-    public int getRatingId(RatingLocal r) throws ParseException {
+    /*public int getRatingId(RatingLocal r) throws ParseException {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME+ " WHERE "+COL_CELL+" = "+r.getNumero();
         Cursor c = db.rawQuery(query, null);
@@ -160,7 +159,7 @@ public class DBhelper extends SQLiteOpenHelper {
 
         c.close();
         return -1;
-    }
+    }*/
 /*
     public float getRating(String incomingNumber){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -183,7 +182,7 @@ public class DBhelper extends SQLiteOpenHelper {
 
     }
 */
-    public int updateRating(RatingLocal r) throws ParseException  {
+    /*public int updateRating(RatingLocal r) throws ParseException  {
         int id = getRatingId(r);
         if(id == -1){
             Log.d(TAG, " CAN'T FIND ID");
@@ -199,5 +198,5 @@ public class DBhelper extends SQLiteOpenHelper {
         Log.d(TAG, "updateRating: Setting rate to " + r.getVoto());
         db.execSQL(query);
         return 0;
-    }
+    }*/
 }

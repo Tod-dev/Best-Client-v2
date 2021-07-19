@@ -3,6 +3,7 @@ package it.bestclient.android;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -18,10 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 import it.bestclient.android.DB.DBhelper;
+import it.bestclient.android.RatingModel.Rating;
 import it.bestclient.android.RatingModel.RatingBigOnDB;
-import it.bestclient.android.RatingModel.RatingLocal;
 import it.bestclient.android.components.Contact;
 import it.bestclient.android.components.RowAdapter;
 
@@ -119,13 +121,13 @@ public class Utils {
     }
 
     /*FILTER ONLY RATINGS NOT ELIMINATED*/
-    static void filtroNonMeno2(List<RatingLocal> r){
-        for(Iterator<RatingLocal> k = r.iterator(); k.hasNext();){
-            if(k.next().getVoto() == -2){
-                k.remove();
-            }
-        }
-    }
+//    static void filtroNonMeno2(List<RatingLocal> r){
+//        for(Iterator<RatingLocal> k = r.iterator(); k.hasNext();){
+//            if(k.next().getVoto() == -2){
+//                k.remove();
+//            }
+//        }
+//    }
 
     public static String filterOnlyDigits(String s){
         StringBuilder sb = new StringBuilder(s);
@@ -151,190 +153,208 @@ public class Utils {
         return s.toString();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static void showDialog(Context context, int type, RatingLocal r){
-        /* show a dialog box when a user click on a rating! */
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        LayoutInflater inflater = LayoutInflater.from(context);
-        if(type == 1 ) { //Dialog cancella un elemento
-            builder.setTitle(R.string.dialogMessage2);
-            View viewDialog = inflater.inflate(R.layout.delete_rating, null);
-            builder.setView(viewDialog)
-                    .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
-                        float nuovoRating = -2;
-                        r.setVoto(nuovoRating);
-                        try {
-                            UpdateData(context, r, false);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public static void showDialog(Context context, int type, RatingLocal r){
+//        /* show a dialog box when a user click on a rating! */
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        LayoutInflater inflater = LayoutInflater.from(context);
+//        if(type == 1 ) { //Dialog cancella un elemento
+//            builder.setTitle(R.string.dialogMessage2);
+//            View viewDialog = inflater.inflate(R.layout.delete_rating, null);
+//            builder.setView(viewDialog)
+//                    .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
+//                        float nuovoRating = -2;
+//                        r.setVoto(nuovoRating);
+//                        try {
+//                            UpdateData(context, r, false);
+//                        } catch (ParseException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                        HomeActivity.showRatings(context);
+//                        //refreshView(r, listView);
+//
+//                        //ratings.get(i1).setRating(rating.getRating());
+//                        //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
+//                        dialog.dismiss();
+//                    }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
+//            AlertDialog dialog = builder.create();
+//            dialog.show();
+//        }
+//        else { //Dialog dai un voto / cancella un elemento
+//            builder.setTitle(R.string.dialogMessage);
+//            View viewDialog = inflater.inflate(R.layout.rating_stars, null);
+//            TextInputLayout comment = viewDialog.findViewById(R.id.comment);
+//            TextInputEditText commentText = viewDialog.findViewById(R.id.commentText);
+//            RatingBar ratingbar = viewDialog.findViewById(R.id.ratingStars);
+//            ImageView deleteButton = viewDialog.findViewById(R.id.delete);
+//            ImageView commentButton = viewDialog.findViewById(R.id.commentLogo);
+//
+//            if(!r.getCommento().equals("")){
+//                commentText.setText(r.getCommento());
+//            }
+//
+//            if(r.getVoto() > 0){
+//                ratingbar.setRating((float) r.getVoto());
+//            }
+//
+//            builder.setView(viewDialog)
+//                    .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
+//                        float nuovoRating =  ratingbar.getRating();
+//
+//
+//                        r.setCommento(removeQuotes(comment.getEditText().getText().toString()));
+//
+//
+//                        if(nuovoRating != 0){
+//                            //se ho inserito un rating modifico il db firebase
+//                            r.setVoto(nuovoRating);
+//                            try {
+//                                UpdateData(context, r, true);
+//                            } catch (ParseException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                        else{
+//                            try {
+//                                UpdateData(context, r, false);
+//                            } catch (ParseException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                        }
+//
+//                        if(type == 2)
+//                            HomeActivity.showRatings(context);
+//                        else
+//                            ContactsActivity.showRatings(context);
+//                        //refreshView(r, listView);
+//
+//                        //ratings.get(i1).setRating(rating.getRating());
+//                        //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
+//                        dialog.dismiss();
+//                    }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
+//
+//            if(type == 3){
+//                //nei contatti rendo invisibile il tasto di eliminazione del rating
+//                deleteButton.setVisibility(View.INVISIBLE);
+//            }
+//
+//            AlertDialog dialog = builder.create();
+//            dialog.show();
+//            deleteButton.setOnClickListener(v -> {
+//                dialog.dismiss();
+//                showDialog(context, 1, r);
+//            });
+//            commentButton.setOnClickListener(v -> {
+//                comment.setVisibility(View.VISIBLE);
+//                commentButton.setVisibility(View.INVISIBLE);
+//            });
+//
+//        }
+//    }
 
-                        HomeActivity.showRatings(context);
-                        //refreshView(r, listView);
-
-                        //ratings.get(i1).setRating(rating.getRating());
-                        //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
-                    }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
-        else { //Dialog dai un voto / cancella un elemento
-            builder.setTitle(R.string.dialogMessage);
-            View viewDialog = inflater.inflate(R.layout.rating_stars, null);
-            TextInputLayout comment = viewDialog.findViewById(R.id.comment);
-            TextInputEditText commentText = viewDialog.findViewById(R.id.commentText);
-            RatingBar ratingbar = viewDialog.findViewById(R.id.ratingStars);
-            ImageView deleteButton = viewDialog.findViewById(R.id.delete);
-            ImageView commentButton = viewDialog.findViewById(R.id.commentLogo);
-
-            if(!r.getCommento().equals("")){
-                commentText.setText(r.getCommento());
-            }
-
-            if(r.getVoto() > 0){
-                ratingbar.setRating((float) r.getVoto());
-            }
-
-            builder.setView(viewDialog)
-                    .setPositiveButton(R.string.positiveButton, (dialog, which) -> {
-                        float nuovoRating =  ratingbar.getRating();
-
-
-                        r.setCommento(removeQuotes(comment.getEditText().getText().toString()));
-
-
-                        if(nuovoRating != 0){
-                            //se ho inserito un rating modifico il db firebase
-                            r.setVoto(nuovoRating);
-                            try {
-                                UpdateData(context, r, true);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        else{
-                            try {
-                                UpdateData(context, r, false);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
-                        if(type == 2)
-                            HomeActivity.showRatings(context);
-                        else
-                            ContactsActivity.showRatings(context);
-                        //refreshView(r, listView);
-
-                        //ratings.get(i1).setRating(rating.getRating());
-                        //Toast.makeText(AddRating.this,Float.toString(ratingbar.getRating()),Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
-                    }).setNegativeButton(R.string.negativeButton, (dialog, which) -> dialog.dismiss());
-
-            if(type == 3){
-                //nei contatti rendo invisibile il tasto di eliminazione del rating
-                deleteButton.setVisibility(View.INVISIBLE);
-            }
-
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            deleteButton.setOnClickListener(v -> {
-                dialog.dismiss();
-                showDialog(context, 1, r);
-            });
-            commentButton.setOnClickListener(v -> {
-                comment.setVisibility(View.VISIBLE);
-                commentButton.setVisibility(View.INVISIBLE);
-            });
-
-        }
-    }
-
-    public static void UpdateData(Context context, RatingLocal r, boolean db) throws ParseException {
-        /* AGGIORNA I DATI SUL DB SQLITE E SU FIREBASE */
-        Date date = new Date();
-        DBhelper myDBhelper = new DBhelper(context);
-        String uid = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE).getString("uid", "");
-        RatingBigOnDB remoteRating = new RatingBigOnDB(uid,date,r.getVoto(),r.getNumero(),r.getCommento());
-        String key=r.get_firebase_key();
-        if(db){
-            key = updateDB(remoteRating,key);
-            r.set_firebase_key(key);
-        }
-
-        /*if(r.getVoto() > 0){
-            r.setVoto(-2);
-        }*/
-
-        int ret = myDBhelper.updateRating(r);
-        if(ret == -1){
-            boolean insertData = myDBhelper.addData(r);
-
-            if (insertData) {
-                toastMessage("Valutazione inserita correttamente!",context);
-            } else {
-                toastMessage("Qualcosa è andato storto :(",context);
-            }
-        }else{
-            // toastMessage("Data Successfully Updated!");
-            Log.d("DATA IN LOCALE", "UpdateData: ");
-        }
-    }
+//    public static void UpdateData(Context context, RatingLocal r, boolean db) throws ParseException {
+//        /* AGGIORNA I DATI SUL DB SQLITE E SU FIREBASE */
+//        Date date = new Date();
+//        DBhelper myDBhelper = new DBhelper(context);
+//        String uid = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE).getString("uid", "");
+//        RatingBigOnDB remoteRating = new RatingBigOnDB(uid,date,r.getVoto(),r.getNumero(),r.getCommento());
+//        String key=r.get_firebase_key();
+//        if(db){
+//            key = updateDB(remoteRating,key);
+//            r.set_firebase_key(key);
+//        }
+//
+//        /*if(r.getVoto() > 0){
+//            r.setVoto(-2);
+//        }*/
+//
+//        int ret = myDBhelper.updateRating(r);
+//        if(ret == -1){
+//            boolean insertData = myDBhelper.addData(r);
+//
+//            if (insertData) {
+//                toastMessage("Valutazione inserita correttamente!",context);
+//            } else {
+//                toastMessage("Qualcosa è andato storto :(",context);
+//            }
+//        }else{
+//            // toastMessage("Data Successfully Updated!");
+//            Log.d("DATA IN LOCALE", "UpdateData: ");
+//        }
+//    }
 
     public static String removeQuotes(String text) {
 
         return text.replaceAll("'", "");
     }
 
-    public static void getRatingAVG(RatingLocal r, int index, Context context, int type, String preferences){
+    public static void getDataFromDB(Context context, List<Rating> ratings){
+
+        String uid = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE).getString("uid", "");
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("ratingAVG").child(r.getNumero());
-        //Log.d("CONTATCT-DEBUG",r.getNumero());
-        //Log.d("CONTATCT-DEBUG-rating",r.toString());
+        DatabaseReference ratingsRef = database.getReference("Users").child(uid).child("Valutazioni");
+
         ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                for(DataSnapshot d: dataSnapshot.getChildren()){
+                    Rating r = d.getValue(Rating.class);
+                    r.setNumero(d.getKey());
+
+                    int index = 0;
+                    for(Rating current: ratings){
+                        if(current.getNumero().equals(r.getNumero())){
+                            current.setCommento(r.getCommento());
+                            current.setDate(r.getDate());
+                            current.setVoto(r.getVoto());
+                            HomeActivity.ratingString[index] = String.valueOf(current.getVoto());
+                            break;
+                        }
+                        index++;
+                    }
+                }
+                RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.ratingString, HomeActivity.ratingAVGString);
+                HomeActivity.recyclerView.setAdapter(arrayAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+                Log.w("Main", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+    public static void getRatingAVG(Context context, Rating r, int index, String preferences){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ratingsRef = database.getReference("ratingAVG").child(r.getNumero());
+
+        ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 if(dataSnapshot.getValue() == null){
-                    if(type == 1){
-                        HomeActivity.ratingAVGString[index] = " - ";
-                    }
-                    else ContactsActivity.ratingAVGString[index] = " - ";
-
+                    HomeActivity.ratingAVGString[index] = " - ";
                 }
                 else{
-                    if(!(r.getNumero().isEmpty())){
-                        Log.d("CONTATCT-DEBUG",ratingsRef.toString()+" "+dataSnapshot.getValue()+" "+r.toString());
-                        double val = dataSnapshot.getValue(Double.class);
-                        val = Math.round(val*100.0)/100.0;  //arrotondo il rating a due cifre decimali
-                        if(type == 1){
-                            if(preferences.equals("stars"))
-                                HomeActivity.ratingAVGString[index] = displayRatingStars(val);
-                            else
-                                HomeActivity.ratingAVGString[index] = String.valueOf(val);
-                        }
-                        else {
-                            if(preferences.equals("stars"))
-                                ContactsActivity.ratingAVGString[index] = displayRatingStars(val);
-                            else
-                                ContactsActivity.ratingAVGString[index] = String.valueOf(val);
-                        }
+                    double val = dataSnapshot.getValue(Double.class);
+                    val = Math.round(val*100.0)/100.0;  //arrotondo il rating a due cifre decimali
 
-                    }
+                    if(preferences.equals("stars"))
+                        HomeActivity.ratingAVGString[index] = displayRatingStars(val);
+                    else
+                        HomeActivity.ratingAVGString[index] = String.valueOf(val);
                 }
 
-                if(type == 1){
-                    RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.dates, HomeActivity.commentString, HomeActivity.ratingString, HomeActivity.ratingAVGString);
-                    HomeActivity.recyclerView.setAdapter(arrayAdapter);
-                }
-                else{
-                    RowAdapter arrayAdapter = new RowAdapter(context, ContactsActivity.name, ContactsActivity.phoneNumber, ContactsActivity.commentString, ContactsActivity.ratingString, ContactsActivity.ratingAVGString);
-                    ContactsActivity.recyclerView.setAdapter(arrayAdapter);
-                }
-
+                RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.ratingString, HomeActivity.ratingAVGString);
+                HomeActivity.recyclerView.setAdapter(arrayAdapter);
             }
 
             @Override
