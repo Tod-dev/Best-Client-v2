@@ -87,7 +87,6 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
             intent.putExtra(RatingActivity.MEDIO,r.getVoto_medio());
 
             context.startActivity(intent);
-
         });
 
     }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -12,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -32,6 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText piva;
     SharedPreferences sp;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerBtn.setOnClickListener(v -> registerUser());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void registerUser(){
         String emailText = email.getText().toString();
         String passwordText = password.getText().toString();
@@ -102,6 +106,9 @@ public class RegisterActivity extends AppCompatActivity {
                         editor.putString("password", passwordText);
                         editor.putString("piva", pivaText);
                         editor.putString("uid", uid);
+
+                        editor.putString("filter", String.valueOf(HomeActivity.NO_FILTER));
+                        editor.putString("scelta", String.valueOf(HomeActivity.CHIAMATE_ENTRATA));    //chiamate in entrata
                         editor.apply();
 
                         Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);

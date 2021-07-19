@@ -46,14 +46,16 @@ public class HomeActivity extends AppCompatActivity {
 
     // GoogleSignInClient mGoogleSignInClient;
     SharedPreferences sp;
+    SharedPreferences.Editor editor;
     @SuppressLint("StaticFieldLeak")
     //static ListView listView;
 
-    final int CHIAMATE_ENTRATA = 0;
-    final int CHIAMATE_USCITA = 1;
-    final int ULTIME_24H = 2;
-    final int ULTIME_48H = 3;
-    final int CONTATTI = 4;
+    public static final int CHIAMATE_ENTRATA = 0;
+    public static final int CHIAMATE_USCITA = 1;
+    public static final int ULTIME_24H = 2;
+    public static final int ULTIME_48H = 3;
+    public static final int NO_FILTER = 4;
+    public static final int CONTATTI = 5;
 
     static RecyclerView recyclerView;
     static DBhelper myDBhelper;
@@ -61,13 +63,13 @@ public class HomeActivity extends AppCompatActivity {
     static String[] ratingString;
     static String[] ratingAVGString;
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
-    public static List<Contact> contacts = null;
+    public static List<Contact> contacts = new ArrayList<>();
     public static Map<String, String> contactMap = null;
     static final int MAX_ITEMS = 100;
     public static List<Rating> ratings = new ArrayList<>();
     //final String uri = "http://worldtimeapi.org/api/timezone/Europe/Rome";
 
-    @SuppressLint("NonConstantResourceId")
+    @SuppressLint({"NonConstantResourceId", "CommitPrefEdits"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,61 +84,24 @@ public class HomeActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.list);
         myDBhelper = new DBhelper(this);
+        sp = this.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+        editor = sp.edit();
 
-        /*If we got Permissions -> fetch ratings*/
-        if (checkPermissions()) {
-            showRatings(this, CHIAMATE_ENTRATA);
-        }
-    }
-
-    public boolean checkPermissions(){
-        if((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED) &&
-                (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) &&
-                (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED){
             ContentResolver contentResolver = getContentResolver();
             contacts = fetchContacts(contentResolver,this);
-
-            return true;
         }
 
-        Toast.makeText(this, "This app hasn't access to phone numbers, call log or contacts, allow in settings", Toast.LENGTH_LONG).show();
-        return false;
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED){
+            ratings = getCallLog();
+            showRatings(this);
+        }
+        else{
+            Toast.makeText(this, "L'app non ha accesso al registro delle chiamate, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
+        }
     }
 
-    public void showRatings(Context context, int scelta){
-        /* GET ALL RATINGS */
-        switch(scelta){
-            case CHIAMATE_ENTRATA:{
-                ratings = getCallLog();
-                break;
-            }
-            case CHIAMATE_USCITA:{
-                ratings = getCallLog();
-                break;
-            }
-
-            case ULTIME_24H:{
-                ratings = getCallLog();
-                break;
-            }
-
-            case ULTIME_48H:{
-                ratings = getCallLog();
-                break;
-            }
-
-            case CONTATTI:{
-                ContentResolver contentResolver = getContentResolver();
-                contacts = fetchContacts(contentResolver,this);
-                ratings = getRatingContacts();
-                break;
-            }
-            default:{
-                break;
-            }
-        }
-
-
+    public void showRatings(Context context){
         if (ratings != null) {
             Utils.getDataFromDB(this, ratings);
             ratingToString(ratings, this);
@@ -145,12 +110,6 @@ public class HomeActivity extends AppCompatActivity {
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
-        //List<Rating> finalRatings = ratings;
-        /*recyclerView.setOnItemClickListener((parent, view, i1, id) -> {
-            Rating k = finalRatings.get(i1);
-
-            Utils.showDialog(context, 2, k, myDBhelper, uid);
-        });*/
     }
 
 
@@ -165,28 +124,74 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.uscita) {
-            showRatings(this, CHIAMATE_USCITA);
-            return true;
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED){
+                editor.putString("scelta", String.valueOf(CHIAMATE_USCITA));
+                editor.putString("filter", String.valueOf(NO_FILTER));
+                editor.apply();
+                ratings = getCallLog();
+                showRatings(this);
+                return true;
+            }
+            else{
+                Toast.makeText(this, "L'app non ha accesso al registro delle chiamate, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
 
         if (item.getItemId() == R.id.entrata) {
-            showRatings(this, CHIAMATE_ENTRATA);
-            return true;
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                editor.putString("scelta", String.valueOf(CHIAMATE_ENTRATA));
+                editor.putString("filter", String.valueOf(NO_FILTER));
+                editor.apply();
+                ratings = getCallLog();
+                showRatings(this);
+                return true;
+            }
+            else{
+                Toast.makeText(this, "L'app non ha accesso al registro delle chiamate, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
 
         if (item.getItemId() == R.id.contatti) {
-            showRatings(this, CONTATTI);
-            return true;
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED){
+                ratings = getRatingContacts();
+                showRatings(this);
+                return true;
+            }
+            else{
+                Toast.makeText(this, "L'app non ha accesso ai contatti, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
+                return false;
+            }
+
         }
 
         if (item.getItemId() == R.id.ultime24h) {
-            showRatings(this, ULTIME_24H);
-            return true;
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                editor.putString("filter", String.valueOf(ULTIME_24H));
+                editor.apply();
+                ratings = getCallLog();
+                showRatings(this);
+                return true;
+            }
+            else{
+                Toast.makeText(this, "L'app non ha accesso ai contatti, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
 
         if (item.getItemId() == R.id.ultime48h) {
-            showRatings(this, ULTIME_48H);
-            return true;
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                editor.putString("filter", String.valueOf(ULTIME_48H));
+                editor.apply();
+                ratings = getCallLog();
+                showRatings(this);
+                return true;
+            }
+            else{
+                Toast.makeText(this, "L'app non ha accesso ai contatti, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
 
         return false;
@@ -194,14 +199,14 @@ public class HomeActivity extends AppCompatActivity {
 
     
     public List<Rating> getCallLog(){
+        int scelta = Integer.parseInt(sp.getString("scelta", String.valueOf(CHIAMATE_ENTRATA)));
         /*GET CURSOR FOR THE CALLS LOG*/
-        Cursor c = getContentResolver().query(CallLog.Calls.CONTENT_URI, new String[] {"number", "date"}, null, null, "date DESC");
+        Cursor c = getContentResolver().query(CallLog.Calls.CONTENT_URI, new String[] {"number", "date", "type"}, null, null, "date DESC");
 
         int colNumber = c.getColumnIndex(CallLog.Calls.NUMBER);
         int colDate = c.getColumnIndex(CallLog.Calls.DATE);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String notificationPreference = preferences.getString("Last Calls", "None");
+        int filter = Integer.parseInt(sp.getString("filter", String.valueOf(HomeActivity.NO_FILTER)));
 
         List<Rating> ratingsRet = new ArrayList<>();
         List<RatingCallLog> ratingCallLogs = new ArrayList<>();
@@ -214,29 +219,33 @@ public class HomeActivity extends AppCompatActivity {
             count++;
             boolean skip = false;
 
+            String type = c.getString(c.getColumnIndex(CallLog.Calls.TYPE));
+            int typeNumber = Integer.parseInt(type);
+
+            if((scelta == CHIAMATE_ENTRATA && typeNumber == CallLog.Calls.OUTGOING_TYPE) ||
+                    (scelta == CHIAMATE_USCITA && typeNumber != CallLog.Calls.OUTGOING_TYPE)) continue;
+
             /*NEW RATING*/
             String number = c.getString(colNumber);
             Date date = new Date(Long.parseLong(c.getString(colDate)));
-
-            if(number.isEmpty()){//salto in questo caso, non voglio un contatto vuoto
-                continue;
-            }
 
             RatingCallLog check = new RatingCallLog(number,date);
 
             long diffInMillies = Math.abs(date.getTime() - curDate.getTime());
             long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
             /*FILTER in case settings say lastN*/
-            switch (notificationPreference) {
-                case "last24":
-                    if(diff > 24) skip = true;
+            switch (filter) {
+                case ULTIME_24H: {
+                    if (diff > 24) skip = true;
                     break;
-                case "last48":
-                    if(diff > 48) skip = true;
+                }
+                case ULTIME_48H: {
+                    if (diff > 48) skip = true;
                     break;
-                default:
-                    if(count > MAX_ITEMS) skip = true;
+                }
+                default:{
                     break;
+                }
             }
 
             /*IF THE RATING DOES NOT MATCH SETTINGS DATE*/
@@ -275,10 +284,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
     public void ratingToString(List<Rating> ratings, Context context){
-        /*
-        *save all the data in 3 parallel arrays of String data
-        *in order to create the listView easily
-        */
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String displayPreference = preferences.getString("Display Rating", "number");
@@ -302,71 +307,10 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    /* CUSTOM LIST VIEW */
-    /*static class MyAdapter extends ArrayAdapter<String> {
-        Context context;
-        String[] rPhoneNumber;
-        String[] rDate;
-        String[] rComment;
-        String[] rRating;
-        String[] rRatingAVG;
-
-        MyAdapter(Context context, String[] phoneNumber, String[] date, String[] comment, String[] ratings, String[] ratingsAVG){
-            super(context,R.layout.rows,R.id.phoneNumber, phoneNumber);
-            this.context = context;
-            this.rPhoneNumber = phoneNumber;
-            this.rDate = date;
-            this.rComment = comment;
-            this.rRating = ratings;
-            this.rRatingAVG = ratingsAVG;
-        }
-
-        @SuppressLint("SetTextI18n")
-        public View getView(int position, View convertView, ViewGroup parent){
-            LayoutInflater layoutInflater = (LayoutInflater) context.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            @SuppressLint("ViewHolder")
-            View row = layoutInflater.inflate(R.layout.rows, parent, false);
-            TextView phoneNumberView = row.findViewById(R.id.phoneNumber);
-            TextView dateView = row.findViewById(R.id.date);
-            TextView commentView = row.findViewById(R.id.comment);
-            TextView ratingView = row.findViewById(R.id.rating);
-            TextView ratingAVGView = row.findViewById(R.id.ratingAVG);
-
-            String actualNumber = rPhoneNumber[position];
-
-            for (Contact c : contacts){
-                //scorro tutti i contatti che sono riuscito a leggere dalla rubrica
-                Log.d("CONTACTS: ","confronto :'"+c.getPhone()+"'=='"+actualNumber+"'");
-                if(c.getPhone().equals(actualNumber)){
-                    //ho trovato un numero in rubrica !
-                    //scrivo il nome e non il numero!
-                    actualNumber = c.getName();
-                    Log.d("CONTACTS: ","scrivo :'"+c.getName()+"'");
-                }
-            }
-
-            phoneNumberView.setText(actualNumber);
-            dateView.setText(rDate[position]);
-            if(rComment[position].equals("")){
-                commentView.setText("No comment");
-            }
-            else commentView.setText(rComment[position]);
-
-            if(rRating[position].equals("-1.0")){
-                ratingView.setText("Current rating: - ");
-            }
-            else ratingView.setText("Current rating: "+rRating[position]);
-
-            ratingAVGView.setText("AVG rating: "+rRatingAVG[position]);
-
-            return row;
-        }
-    }*/
-
     @Override
     protected void onStart() {
         super.onStart();
-        sp = getApplicationContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+
         String email = sp.getString("email", "");
         String password = sp.getString("password", "");
 
