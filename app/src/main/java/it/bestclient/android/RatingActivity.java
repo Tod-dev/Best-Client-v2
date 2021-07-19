@@ -23,19 +23,20 @@ public class RatingActivity extends AppCompatActivity {
         RatingBar ratingbar = findViewById(R.id.ratingStars);
         TextView number = findViewById(R.id.number);
         TextView comment = findViewById(R.id.comment);
-        TextView ratingAVG = findViewById(R.id.ratingAVG);
+        RatingBar ratingAVG = findViewById(R.id.ratingStarsAVG);
 
         Intent i = getIntent();
 
         final double ratingLocale = i.getDoubleExtra(VOTO,0);
         final String phoneNumber = i.getStringExtra(NUMBER);
         final String commento = i.getStringExtra(COMMENT);
-        final String ratingMedio = displayRatingStars(i.getDoubleExtra(MEDIO,0));
+        final double ratingMedio =  i.getDoubleExtra(MEDIO,0);
+
 
         ratingbar.setRating((float) ratingLocale);
         number.setText(phoneNumber);
         comment.setText(commento);
-        ratingAVG.setText(ratingMedio);
+        ratingAVG.setRating((float) ratingMedio);
     }
 }
 
