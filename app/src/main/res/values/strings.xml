@@ -61,4 +61,5 @@
     <string name="display_rating">Display Rating</string>
     <string name="number">number</string>
     <string name="display_rating_title">Display Rating As</string>
+    <string name="voto_medio">voto medio:</string>
 </resources>
