@@ -43,6 +43,13 @@
                 android:value=".LoginActivity" />
         </activity>
         <activity
+            android:name=".RatingActivity"
+            android:label="Valutazione">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomeActivity" />
+        </activity>
+        <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
