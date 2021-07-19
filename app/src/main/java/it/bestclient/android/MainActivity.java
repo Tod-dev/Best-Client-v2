@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*SPLASH SCREEN 3 seconds*/
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(MainActivity.this, RatingActivity.class);
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
             startActivity(intent);
             finish();
         }, 1500);

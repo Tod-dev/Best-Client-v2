@@ -66,4 +66,5 @@
     <string name="Ultime24H">Ultime 24 ore</string>
     <string name="Ultime48H">Ultime 48 ore</string>
     <string name="contatti">Contatti</string>
+    <string name="voto_medio">Voto medio:</string>
 </resources>
