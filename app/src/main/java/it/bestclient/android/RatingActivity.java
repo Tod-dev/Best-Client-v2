@@ -2,6 +2,7 @@ package it.bestclient.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -38,5 +39,15 @@ public class RatingActivity extends AppCompatActivity {
         comment.setText(commento);
         ratingAVG.setRating((float) ratingMedio);
     }
+
+    @Override
+    protected void onDestroy() {
+        Log.d("BACK--","PRESSED");
+        /*
+        * AGGIORNARE SUL DB IL RATING ASSEGNATO CON ratingLOCALE, data attuale e commento
+        * */
+        super.onDestroy();
+    }
+
 }
 
