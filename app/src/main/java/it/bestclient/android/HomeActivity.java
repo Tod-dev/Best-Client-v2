@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -62,11 +65,13 @@ public class HomeActivity extends AppCompatActivity {
     public static final int NO_FILTER = 4;
     public static final int CONTATTI = 5;
 
-    static RecyclerView recyclerView;
+    public static RecyclerView recyclerView;
     static DBhelper myDBhelper;
-    static String[] phoneNumbers;
-    static String[] ratingString;
-    static String[] ratingAVGString;
+    Context context;
+    public static String[] phoneNumbers;
+    public static String[] ratingString;
+    public static String[] ratingAVGString;
+    public static RowAdapter arrayAdapter;
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
     public static List<Contact> contacts = new ArrayList<>();
     public static Map<String, String> contactMap = null;
@@ -89,6 +94,7 @@ public class HomeActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        context = this;
         recyclerView = findViewById(R.id.list);
         myDBhelper = new DBhelper(this);
         sp = this.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
@@ -114,17 +120,50 @@ public class HomeActivity extends AppCompatActivity {
             Utils.getDataFromDB(context, ratings);
             ratingToString(ratings, context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-            RowAdapter arrayAdapter = new RowAdapter(context, phoneNumbers, ratingString, ratingAVGString);
+            arrayAdapter = new RowAdapter(context, phoneNumbers, ratingString, ratingAVGString);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
 
     }
 
+    public static void showRatings(Context context, List<Rating> ratingList){
+        if (ratingList != null) {
+            Utils.getDataFromDB(context, ratingList);
+            ratingToString(ratingList, context);
+            /* INSERT ALL THE RATINGS IN THE LISTVIEW */
+            arrayAdapter = new RowAdapter(context, phoneNumbers, ratingString, ratingAVGString);
+            recyclerView.setAdapter(arrayAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        }
+    }
+
 
     /*Menu creation -> add button refresh*/
+    @SuppressLint({"ResourceAsColor", "UseCompatLoadingForDrawables"})
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home_menu, menu);
+        menu.findItem(R.id.searchBtn).setVisible(true);
+
+        MenuItem search = menu.findItem(R.id.searchBtn);
+        SearchView searchView = (SearchView) search.getActionView();
+        searchView.setBackgroundColor(R.color.white);
+        searchView.setBackground(this.getDrawable(R.drawable.sfondo_trasparente));
+        searchView.setQueryHint("Cerca...");
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                arrayAdapter.filter(query, context);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                arrayAdapter.filter(newText, context);
+                return true;
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
     }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:title="@string/entrata"
@@ -20,5 +21,13 @@
     <item
         android:title="@string/contatti"
         android:id="@+id/contatti"/>
+
+    <item
+        android:id="@+id/searchBtn"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="@string/cerca"
+        android:visible="false"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom|withText" />
 
 </menu>

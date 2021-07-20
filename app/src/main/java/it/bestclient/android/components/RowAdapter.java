@@ -11,7 +11,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 import it.bestclient.android.HomeActivity;
 import it.bestclient.android.R;
@@ -94,6 +97,19 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     @Override
     public int getItemCount() {
         return field1.length;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void filter(String text, Context context){
+        ArrayList<Rating> filteredRatings = new ArrayList<>();
+        for(Rating r: HomeActivity.ratings){
+            if(r.getNumero().contains(text)){
+                filteredRatings.add(r);
+            }
+        }
+
+        /* INSERT ALL THE RATINGS IN THE LISTVIEW */
+        HomeActivity.showRatings(context, filteredRatings);
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {

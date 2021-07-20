@@ -71,4 +71,6 @@
     <string name="voto_medio">Voto medio:</string>
     <string name="commento">commento</string>
     <string name="popup">Pop-Up</string>
+    <string name="cerca">Cerca</string>
+    <string name="noResults">Nessun Risultato</string>
 </resources>
