@@ -85,6 +85,8 @@ public class HomeActivity extends AppCompatActivity {
 
         if (actionBar != null) {
             actionBar.setTitle(R.string.home);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_account_circle_24_white);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         recyclerView = findViewById(R.id.list);
@@ -130,6 +132,13 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId() == android.R.id.home){
+            Intent intent = new Intent(HomeActivity.this, UserActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
         if (item.getItemId() == R.id.uscita) {
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED){
                 editor.putString("scelta", String.valueOf(CHIAMATE_USCITA));

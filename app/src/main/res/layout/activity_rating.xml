@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <RatingBar
         android:id="@+id/ratingStars"
         android:layout_width="wrap_content"
@@ -17,7 +18,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.381" />
+        app:layout_constraintVertical_bias="0.264" />
 
     <TextView
         android:id="@+id/number"
@@ -31,29 +32,28 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.692" />
-
+        app:layout_constraintVertical_bias="0.485" />
 
     <EditText
         android:id="@+id/comment"
         android:layout_width="242dp"
         android:layout_height="54dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="28dp"
+        android:autofillHints="true"
         android:hint="@string/commento"
         android:inputType="text"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ratingStars"
-        android:autofillHints="true" />
+        app:layout_constraintTop_toBottomOf="@+id/ratingStars" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="116dp"
         android:text="@string/voto_medio"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -68,14 +68,23 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:isIndicator="true"
+        android:theme="@style/RatingBarNOTmodifiable"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.064"
-        android:theme="@style/RatingBarNOTmodifiable"
-        />
+        app:layout_constraintVertical_bias="0.268" />
+
+    <Button
+        android:id="@+id/conferma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/positiveButton"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
