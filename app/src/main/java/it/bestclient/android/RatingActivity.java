@@ -20,6 +20,7 @@ import java.util.Date;
 
 import it.bestclient.android.RatingModel.RatingBigOnDB;
 
+import static it.bestclient.android.HomeActivity.showRatings;
 import static it.bestclient.android.Utils.USERS;
 import static it.bestclient.android.Utils.VALUTAZIONI;
 import static it.bestclient.android.Utils.displayRatingStars;
@@ -99,6 +100,8 @@ public class RatingActivity extends AppCompatActivity {
         RatingBigOnDB newValues = new RatingBigOnDB(dateRatingBig,commentoRatingBIG,votoRatingBig);
 
         myRef.setValue(newValues);
+        showRatings(this);
+
         super.onDestroy();
     }
 

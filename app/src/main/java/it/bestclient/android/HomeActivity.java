@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 
 import static it.bestclient.android.Utils.displayRatingStars;
 import static it.bestclient.android.Utils.fetchContacts;
+import static it.bestclient.android.Utils.toastMessage;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -100,12 +102,13 @@ public class HomeActivity extends AppCompatActivity {
         else{
             Toast.makeText(this, "L'app non ha accesso al registro delle chiamate, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
         }
+
     }
 
-    public void showRatings(Context context){
+    public static void showRatings(Context context){
         if (ratings != null) {
-            Utils.getDataFromDB(this, ratings);
-            ratingToString(ratings, this);
+            Utils.getDataFromDB(context, ratings);
+            ratingToString(ratings, context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
             RowAdapter arrayAdapter = new RowAdapter(context, phoneNumbers, ratingString, ratingAVGString);
             recyclerView.setAdapter(arrayAdapter);
@@ -284,7 +287,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    public void ratingToString(List<Rating> ratings, Context context){
+    public static void ratingToString(List<Rating> ratings, Context context){
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String displayPreference = preferences.getString("Display Rating", "number");
@@ -302,7 +305,7 @@ public class HomeActivity extends AppCompatActivity {
             else
                 ratingString[i] = String.valueOf(ratings.get(i).getVoto());
 
-            Utils.getRatingAVG(this, r, i, displayPreference); //prendo il rating AVG del numero corrente
+            Utils.getRatingAVG(context, r, i, displayPreference); //prendo il rating AVG del numero corrente
             i++;
         }
 
