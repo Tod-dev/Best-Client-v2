@@ -48,6 +48,9 @@ public class Utils {
     /**
      * Classe che contiene metodi statici per manipolare i dati nell'app
      */
+    /*COSTANTI FIREBASE*/
+    public static final String USERS = "Users";
+    public static final String VALUTAZIONI = "Valutazioni";
 
     public static void toastMessage(String message, Context k){
         Toast.makeText(k,message, Toast.LENGTH_SHORT).show();
@@ -258,8 +261,8 @@ public class Utils {
 //        /* AGGIORNA I DATI SUL DB SQLITE E SU FIREBASE */
 //        Date date = new Date();
 //        DBhelper myDBhelper = new DBhelper(context);
-//        String uid = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE).getString("uid", "");
-//        RatingBigOnDB remoteRating = new RatingBigOnDB(uid,date,r.getVoto(),r.getNumero(),r.getCommento());
+////        String uid = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE).getString("uid", "");
+////        RatingBigOnDB remoteRating = new RatingBigOnDB(uid,date,r.getVoto(),r.getNumero(),r.getCommento());
 //        String key=r.get_firebase_key();
 //        if(db){
 //            key = updateDB(remoteRating,key);
