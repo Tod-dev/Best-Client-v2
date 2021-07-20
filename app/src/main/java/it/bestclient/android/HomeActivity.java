@@ -71,6 +71,7 @@ public class HomeActivity extends AppCompatActivity {
     public static String[] phoneNumbers;
     public static String[] ratingString;
     public static String[] ratingAVGString;
+    @SuppressLint("StaticFieldLeak")
     public static RowAdapter arrayAdapter;
     //List<RatingAVGOnDB> allRatings = new ArrayList<>();
     public static List<Contact> contacts = new ArrayList<>();
@@ -154,8 +155,7 @@ public class HomeActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                arrayAdapter.filter(query, context);
-                return true;
+                return false;
             }
 
             @Override

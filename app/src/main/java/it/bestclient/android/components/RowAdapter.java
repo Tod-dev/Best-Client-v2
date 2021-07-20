@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.bestclient.android.HomeActivity;
 import it.bestclient.android.R;
@@ -28,12 +29,15 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     String[] field2;    //Rating assegnato
     String[] field3;    //Rating medio
 
+    List<Rating> filteredRatings;
+
     public RowAdapter(Context context, String[] field1, String[] field2, String[] field3){
         //super(context, R.layout.rows,R.id.field1, field1);
         this.context = context;
         this.field1 = field1;
         this.field2 = field2;
         this.field3 = field3;
+        this.filteredRatings = new ArrayList<>();
     }
 
     @NonNull
@@ -81,13 +85,21 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
         holder.mainLayout.setOnClickListener(v -> {
 
-            Rating r = HomeActivity.ratings.get(position);
+            String number = field1[position];
+            Rating clicked = null;
+
+            for(Rating r: HomeActivity.ratings){
+                if(r.getNumero().equals(number)){
+                    clicked = r;
+                    break;
+                }
+            }
 
             Intent intent = new Intent(context, RatingActivity.class);
-            intent.putExtra(RatingActivity.NUMBER,r.getNumero());
-            intent.putExtra(RatingActivity.VOTO,r.getVoto());
-            intent.putExtra(RatingActivity.COMMENT,r.getCommento());
-            intent.putExtra(RatingActivity.MEDIO,r.getVoto_medio());
+            intent.putExtra(RatingActivity.NUMBER,clicked.getNumero());
+            intent.putExtra(RatingActivity.VOTO,clicked.getVoto());
+            intent.putExtra(RatingActivity.COMMENT,clicked.getCommento());
+            intent.putExtra(RatingActivity.MEDIO,clicked.getVoto_medio());
 
             context.startActivity(intent);
         });
@@ -101,7 +113,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void filter(String text, Context context){
-        ArrayList<Rating> filteredRatings = new ArrayList<>();
+        filteredRatings = new ArrayList<>();
         for(Rating r: HomeActivity.ratings){
             if(r.getNumero().contains(text)){
                 filteredRatings.add(r);
