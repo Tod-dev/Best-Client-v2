@@ -106,6 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
                         editor.putString("password", passwordText);
                         editor.putString("piva", pivaText);
                         editor.putString("uid", uid);
+                        editor.putString("notificationPreference", String.valueOf(R.id.notification));
 
                         editor.putString("filter", String.valueOf(HomeActivity.NO_FILTER));
                         editor.putString("scelta", String.valueOf(HomeActivity.CHIAMATE_ENTRATA));    //chiamate in entrata

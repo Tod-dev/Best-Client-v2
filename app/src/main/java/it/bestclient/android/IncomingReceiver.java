@@ -141,10 +141,10 @@ public class IncomingReceiver extends BroadcastReceiver {
 
             String finalNumber = number;
             ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @SuppressLint("NonConstantResourceId")
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                    String notificationPreference = preferences.getString("Notification", "Toast Message");
+                    int preference = Integer.parseInt(sp.getString("notificationPreference", String.valueOf(R.id.notification)));
                     String message;
                     String dialogTxt;
                     if(dataSnapshot.getValue() == null){
@@ -185,14 +185,14 @@ public class IncomingReceiver extends BroadcastReceiver {
                         //Toast.makeText(AddRating.this, r.toString(), Toast.LENGTH_SHORT).show();
                     }
 
-                    switch (notificationPreference) {
-                        case "toast_message":
+                    switch (preference) {
+                        case R.id.toast:
                             makeToast(message);
                             break;
-                        case "notification":
+                        case R.id.notification:
                             makeNotification(message);
                             break;
-                        case "popup":
+                        case R.id.popup:
                             makePopup(finalNumber, dialogTxt);
                             break;
                         default:

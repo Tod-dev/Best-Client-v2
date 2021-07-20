@@ -58,35 +58,28 @@
             android:id="@+id/notificationButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="15dp"
             android:drawableLeft="@drawable/ic_baseline_notifications_active_24"
             android:gravity="center_vertical"
-            android:text="@string/notification"
+            android:text="@string/impostazioniNotifica"
             android:textAlignment="textStart"
             android:textColor="@color/black"
             app:backgroundTint="@color/white"
+            android:textAllCaps="false"
             app:iconPadding="30sp"
-            android:textStyle="bold"
             tools:ignore="RtlCompat,RtlSymmetry" />
 
         <Button
             android:id="@+id/logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginEnd="15dp"
             android:drawableLeft="@drawable/ic_baseline_logout_24_red"
             android:gravity="center_vertical"
             android:text="@string/logout"
             android:textAlignment="textStart"
+            android:textAllCaps="false"
             android:textColor="@color/black"
             app:backgroundTint="@color/white"
             app:iconPadding="30sp"
-            android:textStyle="bold"
             tools:ignore="RtlCompat,RtlSymmetry" />
     </LinearLayout>
 
