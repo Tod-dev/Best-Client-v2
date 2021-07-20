@@ -14,6 +14,7 @@ import android.provider.CallLog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static android.view.View.*;
 import static it.bestclient.android.Utils.displayRatingStars;
 import static it.bestclient.android.Utils.fetchContacts;
 import static it.bestclient.android.Utils.toastMessage;
@@ -114,6 +116,7 @@ public class HomeActivity extends AppCompatActivity {
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
+
     }
 
 

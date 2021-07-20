@@ -20,6 +20,7 @@ import java.util.Date;
 
 import it.bestclient.android.RatingModel.RatingBigOnDB;
 
+import static android.view.View.GONE;
 import static it.bestclient.android.HomeActivity.showRatings;
 import static it.bestclient.android.Utils.USERS;
 import static it.bestclient.android.Utils.VALUTAZIONI;
