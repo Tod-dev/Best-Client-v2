@@ -20,7 +20,7 @@
         android:theme="@style/Theme.ProgettoBiancoTodaro"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".ContactsActivity">
+        <activity android:name=".UserActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeActivity" />

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/layoutProfilo"
+        android:layout_width="match_parent"
+        android:layout_height="200sp"
+        android:background="@color/teal_200"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:contentDescription="@string/logo"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:src="@drawable/logo_red" />
+
+        <TextView
+            android:id="@+id/emailProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:paddingStart="20sp"
+            android:paddingLeft="20sp"
+            android:text="@string/prompt_email"
+            android:textColor="@color/white"
+
+            android:textSize="25sp"
+            tools:ignore="RtlSymmetry" />
+
+        <TextView
+            android:id="@+id/pivaProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:paddingStart="20sp"
+            android:paddingLeft="20sp"
+            android:text="@string/piva"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            tools:ignore="RtlSymmetry" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/layoutBottoni"
+        android:paddingTop="10sp">
+
+        <Button
+            android:id="@+id/notificationButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:drawableLeft="@drawable/ic_baseline_notifications_active_24"
+            android:gravity="center_vertical"
+            android:text="@string/notification"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/white"
+            app:iconPadding="30sp"
+            android:textStyle="bold"
+            tools:ignore="RtlCompat,RtlSymmetry" />
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginEnd="15dp"
+            android:drawableLeft="@drawable/ic_baseline_logout_24_red"
+            android:gravity="center_vertical"
+            android:text="@string/logout"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/white"
+            app:iconPadding="30sp"
+            android:textStyle="bold"
+            tools:ignore="RtlCompat,RtlSymmetry" />
+    </LinearLayout>
+
+</LinearLayout>
