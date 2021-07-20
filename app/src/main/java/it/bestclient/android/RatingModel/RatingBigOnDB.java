@@ -2,35 +2,42 @@ package it.bestclient.android.RatingModel;
 
 import java.util.Date;
 
-public class RatingBigOnDB extends Rating{
+public class RatingBigOnDB implements Voto{
 
     //attriubutes
-    private String idEsercente;
+    private String date;
+    private String commento;//optional
+    private double voto;
 
-    public RatingBigOnDB(String idEsercente,Date date, double voto,String numero, String commento) {
-        //super(numero,date, voto, commento);
-        this.idEsercente = idEsercente;
-    }
-
-    public RatingBigOnDB(String idEsercente,String numero, Date date) {
-        //super(numero, date);
-        this.idEsercente = idEsercente;
-    }
-
-
-    public String getIdEsercente() {
-        return idEsercente;
-    }
-
-    public void setIdEsercente(String idEsercente) {
-        this.idEsercente = idEsercente;
+    public RatingBigOnDB(String date, String commento, double voto) {
+        this.date = date;
+        this.commento = commento;
+        this.voto = voto;
     }
 
     @Override
-    public String toString() {
-        return "RatingBigOnDB{" +
-                super.toString() +
-                "idEsercente='" + idEsercente + '\'' +
-                '}';
+    public void setVoto(double voto) {
+        this.voto = voto;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setCommento(String commento) {
+        this.commento = commento;
+    }
+
+    @Override
+    public double getVoto() {
+        return voto;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getCommento() {
+        return commento;
     }
 }

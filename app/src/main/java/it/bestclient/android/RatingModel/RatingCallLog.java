@@ -44,10 +44,8 @@ public class RatingCallLog {
         if (o == null || getClass() != o.getClass()) return false;
 
         RatingCallLog rating = (RatingCallLog) o;
-        String date = rating.getDate();
 
-        if (!numero.equals(rating.numero)) return false;
-        //RAGGRUPPO PER GIORNO
-        return Year(this.date).equals(Year(date)) && Month(this.date).equals(Month(date)) && Day(this.date).equals(Day(date));
+        return numero.equals(rating.numero);
+        //RAGGRUPPO PER NUMERO DI TELEFONO
     }
 }
