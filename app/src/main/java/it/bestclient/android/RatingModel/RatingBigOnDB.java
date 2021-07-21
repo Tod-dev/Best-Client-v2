@@ -15,6 +15,10 @@ public class RatingBigOnDB implements Voto{
         this.voto = voto;
     }
 
+    public RatingBigOnDB(){
+
+    }
+
     @Override
     public void setVoto(double voto) {
         this.voto = voto;
