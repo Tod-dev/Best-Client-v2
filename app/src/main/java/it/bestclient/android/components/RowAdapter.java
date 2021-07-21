@@ -6,12 +6,13 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -21,17 +22,16 @@ import it.bestclient.android.HomeActivity;
 import it.bestclient.android.R;
 import it.bestclient.android.RatingActivity;
 import it.bestclient.android.RatingModel.Rating;
-import it.bestclient.android.Utils;
 
 public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     Context context;
     String[] field1;    //Phone number / Contact name
-    String[] field2;    //Rating assegnato
-    String[] field3;    //Rating medio
+    double[] field2;    //Rating assegnato
+    double[] field3;    //Rating medio
 
     List<Rating> filteredRatings;
 
-    public RowAdapter(Context context, String[] field1, String[] field2, String[] field3){
+    public RowAdapter(Context context, String[] field1, double[] field2, double[] field3){
         //super(context, R.layout.rows,R.id.field1, field1);
         this.context = context;
         this.field1 = field1;
@@ -51,8 +51,12 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+        if(field2[position] == -1.0){
+            holder.logoView.setVisibility(View.INVISIBLE);
+        }
+
         String actualNumber = field1[position];
-        String text;
 
         for (Contact c : HomeActivity.contacts){
             //scorro tutti i contatti che sono riuscito a leggere dalla rubrica
@@ -65,23 +69,13 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
         holder.field1View.setText(actualNumber);
 
-        if(field2[position].equals("-1.0") || field2[position].equals("")){
-            text = "Rating assegnato: -";
+        if(field2[position] >= 0){
+            holder.votoAssegnato.setRating((float) field2[position]);
         }
-        else{
-            text = "Rating assegnato: "+field2[position];
-        }
-        holder.field2View.setText(text);
 
-
-        if(field3[position] == null || field3[position].equals("")){
-            text = "Rating Medio: -";
+        if(field3[position] >= 0){
+            holder.votoMedio.setRating((float) field3[position]);
         }
-        else{
-            text = "Rating Medio: "+field3[position];
-        }
-        holder.field3View.setText(text);
-
 
         holder.mainLayout.setOnClickListener(v -> {
 
@@ -125,16 +119,18 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
+        RatingBar votoAssegnato;
+        RatingBar votoMedio;
+        ImageView logoView;
         TextView field1View;
-        TextView field2View;
-        TextView field3View;
         LinearLayout mainLayout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            votoAssegnato = itemView.findViewById(R.id.ratingBarAssegnato);
+            votoMedio = itemView.findViewById(R.id.ratingBarMedio);
+            logoView = itemView.findViewById(R.id.logoRating);
             field1View = itemView.findViewById(R.id.field1);
-            field2View = itemView.findViewById(R.id.field2);
-            field3View = itemView.findViewById(R.id.field3);
             mainLayout = itemView.findViewById(R.id.mainLayout);
         }
     }

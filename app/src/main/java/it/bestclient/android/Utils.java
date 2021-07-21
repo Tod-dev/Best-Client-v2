@@ -302,13 +302,13 @@ public class Utils {
                             current.setCommento(r.getCommento());
                             current.setDate(r.getDate());
                             current.setVoto(r.getVoto());
-                            HomeActivity.ratingString[index] = String.valueOf(current.getVoto());
+                            HomeActivity.ratingDouble[index] = current.getVoto();
                             break;
                         }
                         index++;
                     }
                 }
-                RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.ratingString, HomeActivity.ratingAVGString);
+                RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
                 HomeActivity.recyclerView.setAdapter(arrayAdapter);
             }
 
@@ -331,21 +331,18 @@ public class Utils {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.getValue() == null){
-                    HomeActivity.ratingAVGString[index] = " - ";
+                    HomeActivity.ratingAVGDouble[index] = 0;
                 }
                 else{
                     double val = dataSnapshot.getValue(Double.class);
                     val = Math.round(val*100.0)/100.0;  //arrotondo il rating a due cifre decimali
 
-                    if(preferences.equals("stars"))
-                        HomeActivity.ratingAVGString[index] = displayRatingStars(val);
-                    else
-                        HomeActivity.ratingAVGString[index] = String.valueOf(val);
+                    HomeActivity.ratingAVGDouble[index] = val;
 
                     r.setVoto_medio(val);
                 }
 
-                RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.ratingString, HomeActivity.ratingAVGString);
+                RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
                 HomeActivity.recyclerView.setAdapter(arrayAdapter);
             }
 

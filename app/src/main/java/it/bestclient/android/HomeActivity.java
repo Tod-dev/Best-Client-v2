@@ -36,7 +36,6 @@ import it.bestclient.android.RatingModel.RatingCallLog;
 import it.bestclient.android.components.Contact;
 import it.bestclient.android.components.RowAdapter;
 
-import static it.bestclient.android.Utils.displayRatingStars;
 import static it.bestclient.android.Utils.fetchContacts;
 
 
@@ -59,8 +58,8 @@ public class HomeActivity extends AppCompatActivity {
     public static RecyclerView recyclerView;
     Context context;
     public static String[] phoneNumbers;
-    public static String[] ratingString;
-    public static String[] ratingAVGString;
+    public static double[] ratingDouble;
+    public static double[] ratingAVGDouble;
     @SuppressLint("StaticFieldLeak")
     public static RowAdapter arrayAdapter;
     public static List<Contact> contacts = new ArrayList<>();
@@ -108,7 +107,7 @@ public class HomeActivity extends AppCompatActivity {
             Utils.getDataFromDB(context, ratings);
             ratingToString(ratings, context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-            arrayAdapter = new RowAdapter(context, phoneNumbers, ratingString, ratingAVGString);
+            arrayAdapter = new RowAdapter(context, phoneNumbers, ratingDouble, ratingAVGDouble);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
@@ -120,7 +119,7 @@ public class HomeActivity extends AppCompatActivity {
             Utils.getDataFromDB(context, ratingList);
             ratingToString(ratingList, context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-            arrayAdapter = new RowAdapter(context, phoneNumbers, ratingString, ratingAVGString);
+            arrayAdapter = new RowAdapter(context, phoneNumbers, ratingDouble, ratingAVGDouble);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
@@ -331,17 +330,14 @@ public class HomeActivity extends AppCompatActivity {
         String displayPreference = preferences.getString("Display Rating", "number");
 
         phoneNumbers = new String[ratings.size()];
-        ratingString = new String[ratings.size()];
-        ratingAVGString = new String[ratings.size()];
+        ratingDouble = new double[ratings.size()];
+        ratingAVGDouble = new double[ratings.size()];
 
         int i = 0;
         for(Rating r : ratings){
             phoneNumbers[i] = ratings.get(i).getNumero();
 
-            if(displayPreference.equals("stars"))
-                ratingString[i] = displayRatingStars(ratings.get(i).getVoto());
-            else
-                ratingString[i] = String.valueOf(ratings.get(i).getVoto());
+            ratingDouble[i] = ratings.get(i).getVoto();
 
             Utils.getRatingAVG(context, r, i, displayPreference); //prendo il rating AVG del numero corrente
             i++;
