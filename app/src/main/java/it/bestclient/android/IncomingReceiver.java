@@ -23,7 +23,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import it.bestclient.android.RatingModel.Rating;
 import it.bestclient.android.RatingModel.RatingAVGOnDB;
+import it.bestclient.android.RatingModel.RatingBigOnDB;
 import it.bestclient.android.components.Contact;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +33,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static it.bestclient.android.Utils.USERS;
+import static it.bestclient.android.Utils.VALUTAZIONI;
+import static it.bestclient.android.Utils.displayRatingStars;
 import static it.bestclient.android.Utils.filterOnlyDigits;
 
 public class IncomingReceiver extends BroadcastReceiver {
@@ -82,14 +87,58 @@ public class IncomingReceiver extends BroadcastReceiver {
         }
 
         /* DISPLAY OF TOAST */
-        public void makeToast(String message){
+        public void makeToast(Rating r){
+            String message = r.getNumero() +"\n";
+            if(r.getVoto() == -1){
+                /* RATING NON INSERITO DALL'UTENTE */
+                message += "Numero non valutato da te\n";
+                if(r.getVoto_medio() == -1){
+                    message = "Numero non valutato!";
+                }
+                else{
+                    message += "voto medio: "+displayRatingStars(r.getVoto_medio());
+                }
+            }else{
+                message += "voto:   "+displayRatingStars(r.getVoto())+"\n";
+                message += r.getCommento().isEmpty() ? "" : "commento:   "+r.getCommento()+"\n";
+                //message += "data: "+ratingToShow.getDate()+"\n";
+                if(r.getVoto_medio() == -1){
+                    message = "Nessuna valutazione media!";
+                }
+                else{
+                    message += "voto medio: "+displayRatingStars(r.getVoto_medio());
+                }
+
+            }
+
             Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
             toast.show();
         }
 
         /* DISPLAY OF NOTIFICATION */
-        public void makeNotification(String message){
+        public void makeNotification(Rating r){
+            String message = "";
+            if(r.getVoto() == -1){
+                /* RATING NON INSERITO DALL'UTENTE */
+                //message += "Non valutato da te,";
+                if(r.getVoto_medio() == -1){
+                    message = "Numero non valutato!";
+                }
+                else{
+                    message += "media: "+displayRatingStars(r.getVoto_medio());
+                }
+            }else{
+                message += "voto:"+displayRatingStars(r.getVoto())+"\n";
+                //message += "data: "+ratingToShow.getDate()+"\n";
+                if (r.getVoto_medio() != -1) {
+                    message += "    media: "+displayRatingStars(r.getVoto_medio());
+                }
+
+            }
+
+
+
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
                 NotificationChannel channel = new NotificationChannel("Rating Notification", "Rating Notification", NotificationManager.IMPORTANCE_HIGH);
                 NotificationManager manager = context.getSystemService(NotificationManager.class);
@@ -108,17 +157,42 @@ public class IncomingReceiver extends BroadcastReceiver {
         }
 
         /* DISPLAY OF POPUP */
-        public void makePopup(String title, String dialogTxt){
+        public void makePopup(String title, Rating  r){
+            String message = "";
+            if(r.getVoto() == -1){
+                /* RATING NON INSERITO DALL'UTENTE */
+                message += "Numero non valutato da te\n";
+                if(r.getVoto_medio() == -1){
+                    message = "Numero non valutato!";
+                }
+                else{
+                    message += "voto medio: "+displayRatingStars(r.getVoto_medio());
+                }
+            }else{
+                message += "voto:   "+displayRatingStars(r.getVoto())+"\n";
+                message += r.getCommento().isEmpty() ? "" : "commento:   "+r.getCommento()+"\n";
+                //message += "data: "+ratingToShow.getDate()+"\n";
+                if(r.getVoto_medio() == -1){
+                    message = "Nessuna valutazione media!";
+                }
+                else{
+                    message += "voto medio: "+displayRatingStars(r.getVoto_medio());
+                }
+
+            }
+
             Intent intent = new Intent(context, PopUpActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("title", title);
-            intent.putExtra("text", dialogTxt);
+            intent.putExtra("text", message);
             context.startActivity(intent);
         }
 
         /*Selects the object from firebase db using phone number and copies it into curRating object -> than send a notification (setting switch the notification type) */
         @RequiresApi(api = Build.VERSION_CODES.O)
         public void getRatingFromNumber(String number){
+            String onlyNumber = number;
+
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference ratingsRef = database.getReference("ratingAVG").child(number);
 
@@ -131,67 +205,78 @@ public class IncomingReceiver extends BroadcastReceiver {
                     break;
                 }
             }
-
             String finalNumber = number;
             ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
                 @SuppressLint("NonConstantResourceId")
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    int preference = Integer.parseInt(sp.getString("notificationPreference", String.valueOf(R.id.notification)));
-                    String message;
-                    String dialogTxt;
+
+                    Rating ratingToShow = new Rating();
+                    ratingToShow.setNumero(finalNumber);
+
+                    /*LETTURA DEL VOTO MEDIO*/
+
                     if(dataSnapshot.getValue() == null){
-                        message = finalNumber + ": Number not rated";
-                        dialogTxt=message;
-                        //curRating = new RatingOnDB(number,"notRated");
-                        //Toast.makeText(AddRating.this, "null", Toast.LENGTH_SHORT).show();
+                        ratingToShow.setVoto_medio(-1);
                     }
                     else{
                         double val = dataSnapshot.getValue(Double.class);
                         curRating = new RatingAVGOnDB(val);
                         double rating = curRating.getVoto();
-                        /*
-                        if (curRating != null) {
-                            rating = CalculateAvgRating(curRating);
-                        }
-                        */
-                        if(rating == 0){
-                            message = finalNumber +": 0 stars!";
-                            dialogTxt="0 stars!";
-                        }
-                        else{
-                            int roundRating = (int) Math.floor(rating);
-                            StringBuilder feedBack = new StringBuilder();
-
-                            double resto = rating-Math.floor(rating);
-                            for(int i = 0; i < roundRating; i++){
-                                feedBack.append("⭐");
-                            }
-                            if(resto > 0){
-                                feedBack.append("☆");
-                            }
-
-                            message = finalNumber + " "+feedBack.toString();
-                            dialogTxt=feedBack.toString();
-
-                        }
-                        //Toast.makeText(AddRating.this, r.toString(), Toast.LENGTH_SHORT).show();
+                        ratingToShow.setVoto_medio(rating);
                     }
 
-                    switch (preference) {
-                        case R.id.toast:
-                            makeToast(message);
-                            break;
-                        case R.id.notification:
-                            makeNotification(message);
-                            break;
-                        case R.id.popup:
-                            makePopup(finalNumber, dialogTxt);
-                            break;
-                        default:
-                            makeNotification(message);
-                            break;
-                    }
+
+                    /* LETTURA DEL RATING BIG */
+                    String uid = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE).getString("uid", "");
+
+                    // path
+                    FirebaseDatabase db = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = db.getReference(USERS).child(uid).child(VALUTAZIONI).child(onlyNumber);
+
+
+                    // Read from the database
+                    myRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            int preference = Integer.parseInt(sp.getString("notificationPreference", String.valueOf(R.id.notification)));
+
+                            RatingBigOnDB r = dataSnapshot.getValue(RatingBigOnDB.class);
+                            if(dataSnapshot.getValue() == null){
+                                ratingToShow.setVoto(-1);
+                            }
+                            else{
+                                ratingToShow.setVoto(r.getVoto());
+                                ratingToShow.setDate(r.getDate());
+                                ratingToShow.setCommento(r.getCommento());
+
+                            }
+
+
+                            switch (preference) {
+                                case R.id.toast:
+                                    makeToast(ratingToShow);
+                                    break;
+                                case R.id.notification:
+                                    makeNotification(ratingToShow);
+                                    break;
+                                case R.id.popup:
+                                    makePopup(finalNumber, ratingToShow);
+                                    break;
+                                default:
+                                    makeNotification(ratingToShow);
+                                    break;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                            // Failed to read value
+                            Log.w("ERROR", "Failed to read value.", error.toException());
+                        }
+                    });
+
                 }
 
                 @Override
@@ -201,24 +286,5 @@ public class IncomingReceiver extends BroadcastReceiver {
                 }
             });
         }
-
-
-        /*
-        //Calculates average rating of a RatingOnDB object
-        public float CalculateAvgRating(RatingAVGOnDB ratingAVGOnDB){
-            StringTokenizer stringTokenizer = new StringTokenizer(ratingAVGOnDB.getRating(), ";");
-            float avg = 0;
-            float i = 0;
-            while(stringTokenizer.hasMoreTokens()){
-                avg += Float.parseFloat(stringTokenizer.nextToken());
-                i++;
-            }
-
-            if(i == 0) return 0;
-
-            return avg / i;
-        }
-        */
     }
-
 }
