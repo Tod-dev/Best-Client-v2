@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -106,11 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
                         editor.putString("password", passwordText);
                         editor.putString("piva", pivaText);
                         editor.putString("uid", uid);
-                        editor.putString("notificationPreference", String.valueOf(R.id.notification));
-
-                        editor.putString("filter", String.valueOf(HomeActivity.NO_FILTER));
-                        editor.putString("scelta", String.valueOf(HomeActivity.CHIAMATE_ENTRATA));    //chiamate in entrata
-                        editor.apply();
+                        Utils.resetPreferences(editor, false);
 
                         Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
                         startActivity(intent);
@@ -127,5 +124,21 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void finish(){
+        super.finish();
+        overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
     }
 }

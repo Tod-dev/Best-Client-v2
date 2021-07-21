@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -151,6 +152,17 @@ public class IncomingReceiver extends BroadcastReceiver {
             builder.setSmallIcon(R.drawable.ic_baseline_star_24);
             builder.setColorized(true);
             builder.setPriority(Notification.PRIORITY_MAX);
+
+            Intent intent = new Intent(context, RatingActivity.class);
+            intent.putExtra(RatingActivity.NUMBER,r.getNumero());
+            intent.putExtra(RatingActivity.VOTO,r.getVoto());
+            intent.putExtra(RatingActivity.COMMENT,r.getCommento());
+            intent.putExtra(RatingActivity.MEDIO,r.getVoto_medio());
+
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            builder.setContentIntent(contentIntent);
 
             NotificationManagerCompat notificationCompat = NotificationManagerCompat.from(context);
             notificationCompat.notify(1, builder.build());

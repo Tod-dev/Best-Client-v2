@@ -1,5 +1,6 @@
 package it.bestclient.android.components;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -24,6 +25,7 @@ import it.bestclient.android.RatingActivity;
 import it.bestclient.android.RatingModel.Rating;
 
 public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
+    Activity myActivity;
     Context context;
     String[] field1;    //Phone number / Contact name
     double[] field2;    //Rating assegnato
@@ -31,8 +33,9 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
     List<Rating> filteredRatings;
 
-    public RowAdapter(Context context, String[] field1, double[] field2, double[] field3){
+    public RowAdapter(Activity myActivity, Context context, String[] field1, double[] field2, double[] field3){
         //super(context, R.layout.rows,R.id.field1, field1);
+        this.myActivity = myActivity;
         this.context = context;
         this.field1 = field1;
         this.field2 = field2;
@@ -96,6 +99,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
             intent.putExtra(RatingActivity.MEDIO,clicked.getVoto_medio());
 
             context.startActivity(intent);
+            myActivity.overridePendingTransition(R.anim.to_right_in, R.anim.to_left_out);
         });
 
     }

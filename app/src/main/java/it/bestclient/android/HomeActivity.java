@@ -2,6 +2,7 @@ package it.bestclient.android;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -108,7 +109,7 @@ public class HomeActivity extends AppCompatActivity {
             Utils.getDataFromDB(context, ratings);
             ratingToString(ratings, context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-            arrayAdapter = new RowAdapter(context, phoneNumbers, ratingDouble, ratingAVGDouble);
+            arrayAdapter = new RowAdapter((Activity)context, context, phoneNumbers, ratingDouble, ratingAVGDouble);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
@@ -120,7 +121,7 @@ public class HomeActivity extends AppCompatActivity {
             Utils.getDataFromDB(context, ratingList);
             ratingToString(ratingList, context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-            arrayAdapter = new RowAdapter(context, phoneNumbers, ratingDouble, ratingAVGDouble);
+            arrayAdapter = new RowAdapter((Activity)context, context, phoneNumbers, ratingDouble, ratingAVGDouble);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
@@ -162,6 +163,7 @@ public class HomeActivity extends AppCompatActivity {
         if(item.getItemId() == android.R.id.home){
             Intent intent = new Intent(HomeActivity.this, UserActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
             return true;
         }
 
@@ -357,6 +359,7 @@ public class HomeActivity extends AppCompatActivity {
         if (email.equals("") || password.equals("")) {
             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
         }
 
     }

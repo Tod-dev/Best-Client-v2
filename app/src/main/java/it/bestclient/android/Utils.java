@@ -1,8 +1,10 @@
 package it.bestclient.android;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -176,7 +178,7 @@ public class Utils {
                         index++;
                     }
                 }
-                RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
+                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
                 HomeActivity.recyclerView.setAdapter(arrayAdapter);
             }
 
@@ -210,7 +212,7 @@ public class Utils {
                     r.setVoto_medio(val);
                 }
 
-                RowAdapter arrayAdapter = new RowAdapter(context, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
+                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
                 HomeActivity.recyclerView.setAdapter(arrayAdapter);
             }
 
@@ -220,5 +222,20 @@ public class Utils {
                 Log.w("Main", "Failed to read value.", error.toException());
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void resetPreferences(SharedPreferences.Editor editor, boolean all){
+        if(all){
+            editor.putString("email", "");
+            editor.putString("password", "");
+            editor.putString("piva", "");
+            editor.putString("uid", "");
+        }
+
+        editor.putString("notificationPreference", String.valueOf(R.id.notification));
+        editor.putString("filter", String.valueOf(HomeActivity.NO_FILTER));
+        editor.putString("scelta", String.valueOf(HomeActivity.CHIAMATE_ENTRATA));    //chiamate in entrata
+        editor.apply();
     }
 }

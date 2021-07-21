@@ -75,4 +75,6 @@
     <string name="noResults">Nessun Risultato</string>
     <string name="ratingAssegnato">Rating assegnato:</string>
     <string name="ratingMedio">Rating medio:</string>
+    <string name="deleteUser">Elimina utente</string>
+    <string name="delete_user_confirm">Sei sicuro di voler eliminare l\'account?</string>
 </resources>

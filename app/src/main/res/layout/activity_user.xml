@@ -81,6 +81,20 @@
             app:backgroundTint="@color/white"
             app:iconPadding="30sp"
             tools:ignore="RtlCompat,RtlSymmetry" />
+
+        <Button
+            android:id="@+id/deleteUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_baseline_delete_24"
+            android:gravity="center_vertical"
+            android:text="@string/deleteUser"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/white"
+            app:iconPadding="30sp"
+            tools:ignore="RtlCompat,RtlSymmetry" />
     </LinearLayout>
 
 </LinearLayout>
