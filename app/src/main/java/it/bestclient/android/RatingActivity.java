@@ -2,8 +2,10 @@ package it.bestclient.android;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -22,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Date;
 
 import it.bestclient.android.RatingModel.RatingBigOnDB;
+import it.bestclient.android.components.Contact;
 
 import static it.bestclient.android.HomeActivity.showRatings;
 import static it.bestclient.android.Utils.USERS;
@@ -48,6 +51,9 @@ public class RatingActivity extends AppCompatActivity {
     Double RATINGLOCALEiniziale;
     String COMMENTOiniziale;
 
+    boolean isKeyboardShowing = false;
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,17 +64,31 @@ public class RatingActivity extends AppCompatActivity {
         comment = findViewById(R.id.comment);
         RatingBar ratingAVG = findViewById(R.id.ratingStarsAVG);
         context = this;
-
         Intent i = getIntent();
 
-        /*click outside keyboard close it*/
+
         ConstraintLayout l = findViewById(R.id.ratingActivity);
+
+        /*is keyboard opened ?*/
+        l.getViewTreeObserver().addOnGlobalLayoutListener( () -> {
+            Rect r = new Rect();
+            l.getWindowVisibleDisplayFrame(r);
+            int screenHeight = l.getRootView().getHeight();
+            int keypadHeight = screenHeight - r.bottom;
+            isKeyboardShowing = keypadHeight > screenHeight * 0.15;
+        });
+
+        /*click outside keyboard close it*/
         l.setOnClickListener(v -> {
-            View view = RatingActivity.this.getCurrentFocus();
-            if (view != null) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            Log.d("TASTIERA",isKeyboardShowing+"");
+            if(isKeyboardShowing) {
+                View view = RatingActivity.this.getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
             }
+
         });
 
         ratingLocale = i.getDoubleExtra(VOTO,0);
@@ -80,8 +100,19 @@ public class RatingActivity extends AppCompatActivity {
         COMMENTOiniziale = commento;
 
 
+        String actualNumber = phoneNumber;
+        for (Contact c : HomeActivity.contacts){
+            //scorro tutti i contatti che sono riuscito a leggere dalla rubrica
+            if(c.getPhone().equals(phoneNumber)){
+                //ho trovato un numero in rubrica !
+                //scrivo il nome e non il numero!
+                actualNumber = c.getName();
+            }
+        }
+
+
         ratingbar.setRating(ratingLocale.floatValue());
-        number.setText(phoneNumber);
+        number.setText(actualNumber);
         comment.setText(commento);
         ratingAVG.setRating(ratingMedio.floatValue());
 
