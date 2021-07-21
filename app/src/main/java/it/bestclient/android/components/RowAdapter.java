@@ -109,7 +109,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     public void filter(String text, Context context){
         filteredRatings = new ArrayList<>();
         for(Rating r: HomeActivity.ratings){
-            if(r.getNumero().contains(text)){
+            if(r.getNumero().contains(text) || r.getNome().contains(text)){
                 filteredRatings.add(r);
             }
         }

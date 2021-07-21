@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -63,7 +64,7 @@ public class HomeActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static RowAdapter arrayAdapter;
     public static List<Contact> contacts = new ArrayList<>();
-    public static Map<String, String> contactMap = null;
+    public static Map<String, String> contactMap = new HashMap<>();
     static final int MAX_ITEMS = 100;
     public static List<Rating> ratings = new ArrayList<>();
 
@@ -306,7 +307,8 @@ public class HomeActivity extends AppCompatActivity {
             /*ADD A NEW RATING TO THE LIST*/
             if(!checkIfExist){
                 ratingCallLogs.add(new RatingCallLog(number, date));
-                ratingsRet.add(new Rating(number));
+                if(contactMap.containsKey(number)) ratingsRet.add(new Rating(number, contactMap.get(number)));
+                else ratingsRet.add(new Rating(number));
             }
         }
         c.close();
@@ -317,7 +319,7 @@ public class HomeActivity extends AppCompatActivity {
     public List<Rating> getRatingContacts(){
         List<Rating> ratingsRet = new ArrayList<>();
         for(Contact c: contacts){
-            ratingsRet.add(new Rating(c.getPhone()));
+            ratingsRet.add(new Rating(c.getPhone(), c.getName()));
         }
 
         return ratingsRet;

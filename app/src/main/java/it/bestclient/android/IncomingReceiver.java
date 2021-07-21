@@ -237,7 +237,7 @@ public class IncomingReceiver extends BroadcastReceiver {
 
 
                     // Read from the database
-                    myRef.addValueEventListener(new ValueEventListener() {
+                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             int preference = Integer.parseInt(sp.getString("notificationPreference", String.valueOf(R.id.notification)));

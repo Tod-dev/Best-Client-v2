@@ -12,6 +12,7 @@ public class Rating implements Voto{
     private String numero;
     private String date;
     private String commento;//optional
+    private String nome;//optional
     private double voto;
     private double voto_medio;
     // double voto;
@@ -21,7 +22,7 @@ public class Rating implements Voto{
     //uso lo stesso format in tutta l'app!
     public static final SimpleDateFormat formatter  = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ITALIAN); //formatter.format(date);
 
-    public Rating(String numero, Date date, double voto, String commento, double voto_medio){
+    public Rating(String numero, Date date, double voto, String commento, double voto_medio, String nome){
         this.voto = voto;
         //rating con voto e commento, data sotto forma di date
         this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
@@ -30,6 +31,7 @@ public class Rating implements Voto{
         else
             this.date = formatter.format(date);
         this.commento = commento;
+        this.nome = nome;
         this.voto_medio = voto_medio;
         // this.id = ID_GENERATOR.getAndIncrement();
     }
@@ -44,6 +46,18 @@ public class Rating implements Voto{
         this.voto = -1;
         this.commento ="";
         this.date = "";
+        this.nome = "";
+        this.voto_medio = -1;
+        //  this.id = ID_GENERATOR.getAndIncrement();
+    }
+
+    public Rating(String numero, String nome){
+        //nuovo rating senza voto e senza commento
+        this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
+        this.voto = -1;
+        this.commento ="";
+        this.date = "";
+        this.nome = nome;
         this.voto_medio = -1;
         //  this.id = ID_GENERATOR.getAndIncrement();
     }
@@ -60,6 +74,9 @@ public class Rating implements Voto{
         return this.date;
     }
 
+    public String getNome(){
+        return this.nome;
+    }
 
     public String getCommento(){
         return commento;
@@ -71,6 +88,10 @@ public class Rating implements Voto{
 
     public void setNumero(String numero) {
         this.numero = numero;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public void setVoto_medio(double voto_medio) {
@@ -98,6 +119,7 @@ public class Rating implements Voto{
                 ", commento='" + commento + '\'' +
                 ", voto=" + voto +
                 ", voto_medio=" + voto_medio +
+                ", nome=" + nome +
                 '}';
     }
 }

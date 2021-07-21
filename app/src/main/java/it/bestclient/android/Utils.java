@@ -92,7 +92,7 @@ public class Utils {
                                     //non è stato trovato un contatto con stesso numero
                                     contact.setPhone(filterOnlyDigits(phoneinContact));
                                     contacts.add(contact);
-                                    HomeActivity.contactMap.put(phoneinContact, phoneinContact);
+                                    HomeActivity.contactMap.put(contact.getPhone(), contact.getName());
                                 }
                             }
                             if (phoneCursor != null) phoneCursor.close();
