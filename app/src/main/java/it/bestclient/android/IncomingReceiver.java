@@ -22,9 +22,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
 
-import it.bestclient.android.DB.DBhelper;
 import it.bestclient.android.RatingModel.RatingAVGOnDB;
 import it.bestclient.android.components.Contact;
 import com.google.firebase.database.DataSnapshot;
@@ -36,12 +34,9 @@ import com.google.firebase.database.ValueEventListener;
 import static it.bestclient.android.Utils.filterOnlyDigits;
 
 public class IncomingReceiver extends BroadcastReceiver {
-    //final String OUR_ACTION = "android.intent.action.PHONE_STATE";
     Context context;
-    DBhelper myDBhelper;
     RatingAVGOnDB curRating;
     SharedPreferences sp;
-   // private NotificationManagerCompat notificationManager;
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
@@ -50,14 +45,12 @@ public class IncomingReceiver extends BroadcastReceiver {
             if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 /*THE PHONE IS RINGING*/
                 this.context = context;
-                myDBhelper = new DBhelper(this.context);
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                 CallListener cl = new CallListener();
                 tm.listen(cl, PhoneStateListener.LISTEN_CALL_STATE);
 
             } else if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                 Log.d("CALL: ", "CALL ENDED");
-                //Refresh view ?
             }
         }
         else Toast.makeText(context,"This app couldn't read phone state, please allow in settings", Toast.LENGTH_LONG).show();

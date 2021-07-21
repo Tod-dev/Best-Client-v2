@@ -3,46 +3,33 @@ package it.bestclient.android;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
 
-import it.bestclient.android.DB.DBhelper;
-import it.bestclient.android.RatingModel.Rating;
-import it.bestclient.android.RatingModel.RatingBigOnDB;
-import it.bestclient.android.components.Contact;
-import it.bestclient.android.components.RowAdapter;
-
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import it.bestclient.android.RatingModel.Rating;
+import it.bestclient.android.RatingModel.RatingBigOnDB;
+import it.bestclient.android.components.Contact;
+import it.bestclient.android.components.RowAdapter;
 
 public class Utils {
     /**

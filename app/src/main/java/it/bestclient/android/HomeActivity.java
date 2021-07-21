@@ -8,15 +8,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -28,25 +24,20 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import it.bestclient.android.DB.DBhelper;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import it.bestclient.android.RatingModel.Rating;
 import it.bestclient.android.RatingModel.RatingCallLog;
 import it.bestclient.android.components.Contact;
 import it.bestclient.android.components.RowAdapter;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static android.view.View.*;
 import static it.bestclient.android.Utils.displayRatingStars;
 import static it.bestclient.android.Utils.fetchContacts;
-import static it.bestclient.android.Utils.toastMessage;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -66,19 +57,16 @@ public class HomeActivity extends AppCompatActivity {
     public static final int CONTATTI = 5;
 
     public static RecyclerView recyclerView;
-    static DBhelper myDBhelper;
     Context context;
     public static String[] phoneNumbers;
     public static String[] ratingString;
     public static String[] ratingAVGString;
     @SuppressLint("StaticFieldLeak")
     public static RowAdapter arrayAdapter;
-    //List<RatingAVGOnDB> allRatings = new ArrayList<>();
     public static List<Contact> contacts = new ArrayList<>();
     public static Map<String, String> contactMap = null;
     static final int MAX_ITEMS = 100;
     public static List<Rating> ratings = new ArrayList<>();
-    //final String uri = "http://worldtimeapi.org/api/timezone/Europe/Rome";
 
     @SuppressLint({"NonConstantResourceId", "CommitPrefEdits"})
     @Override
@@ -97,7 +85,6 @@ public class HomeActivity extends AppCompatActivity {
 
         context = this;
         recyclerView = findViewById(R.id.list);
-        myDBhelper = new DBhelper(this);
         sp = this.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
         editor = sp.edit();
 
