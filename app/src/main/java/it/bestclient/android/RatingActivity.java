@@ -38,6 +38,7 @@ public class RatingActivity extends AppCompatActivity {
     public static final String NUMBER = "numero";
     public static final String COMMENT = "commento";
     public static final String MEDIO = "medio";
+    public static final String PUBBLICA = "pubblica";
 
     Context context;
 
@@ -45,6 +46,7 @@ public class RatingActivity extends AppCompatActivity {
     String phoneNumber;
     String commento;
     Double ratingMedio;
+    boolean pubblica;
 
     RatingBar ratingbar;
     Button conferma;
@@ -101,6 +103,7 @@ public class RatingActivity extends AppCompatActivity {
         phoneNumber = i.getStringExtra(NUMBER);
         commento = i.getStringExtra(COMMENT);
         ratingMedio =  i.getDoubleExtra(MEDIO,0);
+        pubblica = i.getBooleanExtra(PUBBLICA, false);
 
         RATINGLOCALEiniziale = ratingLocale;
         COMMENTOiniziale = commento;
@@ -118,6 +121,7 @@ public class RatingActivity extends AppCompatActivity {
 
 
         ratingbar.setRating(ratingLocale.floatValue());
+        pubblico.setChecked(pubblica);
         number.setText(actualNumber);
         comment.setText(commento);
         ratingAVG.setRating(ratingMedio.floatValue());
@@ -142,7 +146,9 @@ public class RatingActivity extends AppCompatActivity {
             newValues.setPubblica(pubblico.isChecked());
 
             myRef.setValue(newValues);
-            showRatings(this);
+            Intent intent = new Intent(RatingActivity.this, HomeActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
         });
     }
 

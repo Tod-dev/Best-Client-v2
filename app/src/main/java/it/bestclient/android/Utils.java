@@ -173,6 +173,7 @@ public class Utils {
                             current.setCommento(r.getCommento());
                             current.setDate(r.getDate());
                             current.setVoto(r.getVoto());
+                            current.setPubblica(r.getPubblica());
                             HomeActivity.ratingDouble[index] = current.getVoto();
                             break;
                         }

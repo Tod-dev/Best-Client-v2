@@ -15,6 +15,7 @@ public class Rating implements Voto{
     private String nome;//optional
     private double voto;
     private double voto_medio;
+    private boolean pubblica;
     // double voto;
     //private long id;
 
@@ -22,7 +23,7 @@ public class Rating implements Voto{
     //uso lo stesso format in tutta l'app!
     public static final SimpleDateFormat formatter  = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ITALIAN); //formatter.format(date);
 
-    public Rating(String numero, Date date, double voto, String commento, double voto_medio, String nome){
+    public Rating(String numero, Date date, double voto, String commento, double voto_medio, String nome, boolean pubblica){
         this.voto = voto;
         //rating con voto e commento, data sotto forma di date
         this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
@@ -32,6 +33,7 @@ public class Rating implements Voto{
             this.date = formatter.format(date);
         this.commento = commento;
         this.nome = nome;
+        this.pubblica = pubblica;
         this.voto_medio = voto_medio;
         // this.id = ID_GENERATOR.getAndIncrement();
     }
@@ -47,6 +49,7 @@ public class Rating implements Voto{
         this.commento ="";
         this.date = "";
         this.nome = "";
+        this.pubblica = false;
         this.voto_medio = -1;
         //  this.id = ID_GENERATOR.getAndIncrement();
     }
@@ -64,6 +67,10 @@ public class Rating implements Voto{
 
     public double getVoto() {
         return voto;
+    }
+
+    public boolean getPubblica() {
+        return pubblica;
     }
 
     public String getNumero() {
@@ -94,6 +101,10 @@ public class Rating implements Voto{
         this.nome = nome;
     }
 
+    public void setPubblica(boolean pubblica) {
+        this.pubblica = pubblica;
+    }
+
     public void setVoto_medio(double voto_medio) {
         this.voto_medio = voto_medio;
     }
@@ -120,6 +131,7 @@ public class Rating implements Voto{
                 ", voto=" + voto +
                 ", voto_medio=" + voto_medio +
                 ", nome=" + nome +
+                ", pubblica=" + pubblica +
                 '}';
     }
 }
