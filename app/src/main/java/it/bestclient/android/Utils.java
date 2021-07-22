@@ -214,6 +214,7 @@ public class Utils {
                     HomeActivity.ratingAVGDouble[index] = val;
 
                     r.setVoto_medio(val);
+                    r.setCommentList(ratingAVGOnDB.getCommentList());
                 }
 
                 RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);

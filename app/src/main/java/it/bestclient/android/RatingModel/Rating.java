@@ -16,6 +16,7 @@ public class Rating implements Voto{
     private double voto;
     private double voto_medio;
     private boolean pubblica;
+    private String commentList;
     // double voto;
     //private long id;
 
@@ -47,6 +48,7 @@ public class Rating implements Voto{
         this.date = new Date().getTime();
         this.nome = "";
         this.pubblica = false;
+        this.commentList = "";
         this.voto_medio = -1;
         //  this.id = ID_GENERATOR.getAndIncrement();
     }
@@ -58,6 +60,8 @@ public class Rating implements Voto{
         this.commento ="";
         this.date = new Date().getTime();
         this.nome = nome;
+        this.pubblica = false;
+        this.commentList = "";
         this.voto_medio = -1;
         //  this.id = ID_GENERATOR.getAndIncrement();
     }
@@ -68,6 +72,10 @@ public class Rating implements Voto{
 
     public boolean getPubblica() {
         return pubblica;
+    }
+
+    public String getCommentList() {
+        return commentList;
     }
 
     public String getNumero() {
@@ -112,6 +120,10 @@ public class Rating implements Voto{
 
     public void setVoto(double voto) {
         this.voto = voto;
+    }
+
+    public void setCommentList(String commentList) {
+        this.commentList = commentList;
     }
 
 

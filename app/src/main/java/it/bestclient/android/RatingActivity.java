@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +24,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import it.bestclient.android.RatingModel.RatingBigOnDB;
 import it.bestclient.android.components.Contact;
@@ -39,6 +43,7 @@ public class RatingActivity extends AppCompatActivity {
     public static final String COMMENT = "commento";
     public static final String MEDIO = "medio";
     public static final String PUBBLICA = "pubblica";
+    public static final String FEEDBACK = "feedback";
 
     Context context;
 
@@ -47,11 +52,13 @@ public class RatingActivity extends AppCompatActivity {
     String commento;
     Double ratingMedio;
     boolean pubblica;
+    String commentList;
 
     RatingBar ratingbar;
     Button conferma;
     EditText comment;
     CheckBox pubblico;
+    TextView feedbacks;
 
     Double RATINGLOCALEiniziale;
     String COMMENTOiniziale;
@@ -69,11 +76,12 @@ public class RatingActivity extends AppCompatActivity {
         comment = findViewById(R.id.comment);
         RatingBar ratingAVG = findViewById(R.id.ratingStarsAVG);
         pubblico = findViewById(R.id.checkBox);
+        feedbacks = findViewById(R.id.elencoFeedbacks);
         context = this;
         Intent i = getIntent();
 
 
-        ConstraintLayout l = findViewById(R.id.ratingActivity);
+        LinearLayout l = findViewById(R.id.ratingActivity);
 
         /*is keyboard opened ?*/
         l.getViewTreeObserver().addOnGlobalLayoutListener( () -> {
@@ -104,6 +112,7 @@ public class RatingActivity extends AppCompatActivity {
         commento = i.getStringExtra(COMMENT);
         ratingMedio =  i.getDoubleExtra(MEDIO,0);
         pubblica = i.getBooleanExtra(PUBBLICA, false);
+        commentList = i.getStringExtra(FEEDBACK);
 
         RATINGLOCALEiniziale = ratingLocale;
         COMMENTOiniziale = commento;
@@ -125,6 +134,16 @@ public class RatingActivity extends AppCompatActivity {
         number.setText(actualNumber);
         comment.setText(commento);
         ratingAVG.setRating(ratingMedio.floatValue());
+
+        if(!commentList.equals("")){
+            List<String> commentString = splitComments(commentList);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for(String comment: commentString){
+                stringBuilder.append("- ").append(comment).append("\n");
+            }
+            feedbacks.setText(stringBuilder.toString());
+        }
 
         conferma.setOnClickListener(v -> {
             Log.d("CHECKBOX_VALUE",pubblico.isChecked()+"");
@@ -166,6 +185,16 @@ public class RatingActivity extends AppCompatActivity {
     public void finish(){
         super.finish();
         overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
+    }
+
+    public List<String> splitComments(String comments){
+        List<String> commentString = new ArrayList<>();
+        StringTokenizer stringTokenizer = new StringTokenizer(comments, "#");
+        while(stringTokenizer.hasMoreTokens()){
+            commentString.add(stringTokenizer.nextToken());
+        }
+
+        return commentString;
     }
 }
 

@@ -98,6 +98,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
             intent.putExtra(RatingActivity.COMMENT,clicked.getCommento());
             intent.putExtra(RatingActivity.MEDIO,clicked.getVoto_medio());
             intent.putExtra(RatingActivity.PUBBLICA,clicked.getPubblica());
+            intent.putExtra(RatingActivity.FEEDBACK,clicked.getCommentList());
 
             context.startActivity(intent);
             myActivity.overridePendingTransition(R.anim.to_right_in, R.anim.to_left_out);
