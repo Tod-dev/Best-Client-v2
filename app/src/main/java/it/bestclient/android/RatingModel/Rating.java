@@ -10,7 +10,7 @@ public class Rating implements Voto{
 
     //ATTRIBUTES common to ratingLocal and RatingBIGONDB
     private String numero;
-    private String date;
+    private long date;
     private String commento;//optional
     private String nome;//optional
     private double voto;
@@ -27,11 +27,8 @@ public class Rating implements Voto{
         this.voto = voto;
         //rating con voto e commento, data sotto forma di date
         this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
-        if(date == null)
-            this.date = "";
-        else
-            this.date = formatter.format(date);
         this.commento = commento;
+        this.date = date.getTime();
         this.nome = nome;
         this.pubblica = pubblica;
         this.voto_medio = voto_medio;
@@ -47,7 +44,7 @@ public class Rating implements Voto{
         this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
         this.voto = -1;
         this.commento ="";
-        this.date = "";
+        this.date = new Date().getTime();
         this.nome = "";
         this.pubblica = false;
         this.voto_medio = -1;
@@ -59,7 +56,7 @@ public class Rating implements Voto{
         this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
         this.voto = -1;
         this.commento ="";
-        this.date = "";
+        this.date = new Date().getTime();
         this.nome = nome;
         this.voto_medio = -1;
         //  this.id = ID_GENERATOR.getAndIncrement();
@@ -77,7 +74,7 @@ public class Rating implements Voto{
         return numero;
     }
 
-    public String getDate(){
+    public long getDate(){
         return this.date;
     }
 
@@ -109,7 +106,7 @@ public class Rating implements Voto{
         this.voto_medio = voto_medio;
     }
 
-    public void setDate(String date) {
+    public void setDate(long date) {
         this.date = date;
     }
 
