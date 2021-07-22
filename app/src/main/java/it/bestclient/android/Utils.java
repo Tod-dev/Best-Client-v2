@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import it.bestclient.android.RatingModel.Rating;
+import it.bestclient.android.RatingModel.RatingAVGOnDB;
 import it.bestclient.android.RatingModel.RatingBigOnDB;
 import it.bestclient.android.components.Contact;
 import it.bestclient.android.components.RowAdapter;
@@ -204,7 +205,9 @@ public class Utils {
                     HomeActivity.ratingAVGDouble[index] = 0;
                 }
                 else{
-                    double val = dataSnapshot.getValue(Double.class);
+                    RatingAVGOnDB ratingAVGOnDB = dataSnapshot.getValue(RatingAVGOnDB.class);
+
+                    double val = ratingAVGOnDB.getVotoMedio();
                     val = Math.round(val*100.0)/100.0;  //arrotondo il rating a due cifre decimali
 
                     HomeActivity.ratingAVGDouble[index] = val;

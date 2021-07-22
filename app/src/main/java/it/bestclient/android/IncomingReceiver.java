@@ -233,9 +233,8 @@ public class IncomingReceiver extends BroadcastReceiver {
                         ratingToShow.setVoto_medio(-1);
                     }
                     else{
-                        double val = dataSnapshot.getValue(Double.class);
-                        curRating = new RatingAVGOnDB(val);
-                        double rating = curRating.getVoto();
+                        curRating = dataSnapshot.getValue(RatingAVGOnDB.class);
+                        double rating = curRating.getVotoMedio();
                         ratingToShow.setVoto_medio(rating);
                     }
 
