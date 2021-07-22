@@ -124,7 +124,7 @@ public class RatingActivity extends AppCompatActivity {
 
         conferma.setOnClickListener(v -> {
             Log.d("CHECKBOX_VALUE",pubblico.isChecked()+"");
-            String dateRatingBig = new Date().toString();
+            long dateRatingBig = new Date().getTime();
             String commentoRatingBIG = comment.getText().toString();
             double votoRatingBig = ratingbar.getRating();
 

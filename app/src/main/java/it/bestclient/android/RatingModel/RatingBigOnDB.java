@@ -5,12 +5,12 @@ import java.util.Date;
 public class RatingBigOnDB implements Voto{
 
     //attriubutes
-    private String date;
+    private long date;
     private String commento;//optional
     private double voto;
     private boolean pubblico;
 
-    public RatingBigOnDB(String date, String commento, double voto) {
+    public RatingBigOnDB(long date, String commento, double voto) {
         this.date = date;
         this.commento = commento;
         this.voto = voto;
@@ -30,7 +30,7 @@ public class RatingBigOnDB implements Voto{
         this.voto = voto;
     }
 
-    public void setDate(String date) {
+    public void setDate(long date) {
         this.date = date;
     }
 
@@ -43,7 +43,7 @@ public class RatingBigOnDB implements Voto{
         return voto;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
     }
 
