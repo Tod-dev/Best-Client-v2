@@ -8,15 +8,21 @@ public class RatingBigOnDB implements Voto{
     private String date;
     private String commento;//optional
     private double voto;
+    private boolean pubblico;
 
     public RatingBigOnDB(String date, String commento, double voto) {
         this.date = date;
         this.commento = commento;
         this.voto = voto;
+        this.pubblico = false;
     }
 
     public RatingBigOnDB(){
+        this.pubblico = false;
+    }
 
+    public void setPubblica(boolean pubblico){
+        this.pubblico = pubblico;
     }
 
     @Override
@@ -44,4 +50,9 @@ public class RatingBigOnDB implements Voto{
     public String getCommento() {
         return commento;
     }
+
+    public boolean isPubblica() {
+        return pubblico;
+    }
+
 }

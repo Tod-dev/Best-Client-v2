@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ public class RatingActivity extends AppCompatActivity {
     RatingBar ratingbar;
     Button conferma;
     EditText comment;
+    CheckBox pubblico;
 
     Double RATINGLOCALEiniziale;
     String COMMENTOiniziale;
@@ -64,6 +66,7 @@ public class RatingActivity extends AppCompatActivity {
         TextView number = findViewById(R.id.number);
         comment = findViewById(R.id.comment);
         RatingBar ratingAVG = findViewById(R.id.ratingStarsAVG);
+        pubblico = findViewById(R.id.checkBox);
         context = this;
         Intent i = getIntent();
 
@@ -77,20 +80,22 @@ public class RatingActivity extends AppCompatActivity {
             int screenHeight = l.getRootView().getHeight();
             int keypadHeight = screenHeight - r.bottom;
             isKeyboardShowing = keypadHeight > screenHeight * 0.15;
-        });
-
-        /*click outside keyboard close it*/
-        l.setOnClickListener(v -> {
-            Log.d("TASTIERA",isKeyboardShowing+"");
-            if(isKeyboardShowing) {
-                View view = RatingActivity.this.getCurrentFocus();
-                if (view != null) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
+            if(isKeyboardShowing){
+                /*click outside keyboard close it */
+                l.setOnClickListener(v -> {
+                    v.setBackground(null);
+                    Log.d("TASTIERA",isKeyboardShowing+"");
+                        View view = RatingActivity.this.getCurrentFocus();
+                        if (view != null) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        }
+                });
+            }else{
+                l.setClickable(false);
             }
-
         });
+
 
         ratingLocale = i.getDoubleExtra(VOTO,0);
         phoneNumber = i.getStringExtra(NUMBER);
@@ -118,6 +123,7 @@ public class RatingActivity extends AppCompatActivity {
         ratingAVG.setRating(ratingMedio.floatValue());
 
         conferma.setOnClickListener(v -> {
+            Log.d("CHECKBOX_VALUE",pubblico.isChecked()+"");
             String dateRatingBig = new Date().toString();
             String commentoRatingBIG = comment.getText().toString();
             double votoRatingBig = ratingbar.getRating();
@@ -133,6 +139,7 @@ public class RatingActivity extends AppCompatActivity {
             // Log.d("BACK--",myRef.toString());
 
             RatingBigOnDB newValues = new RatingBigOnDB(dateRatingBig,commentoRatingBIG,votoRatingBig);
+            newValues.setPubblica(pubblico.isChecked());
 
             myRef.setValue(newValues);
             showRatings(this);
