@@ -79,5 +79,5 @@
     <string name="delete_user_confirm">Sei sicuro di voler eliminare l\'account?</string>
     <string name="modifica">modifica</string>
     <string name="pubblica">Pubblica</string>
-    <string name="feedback">Feedbacks</string>
+    <string name="feedback">Feedbacks:</string>
 </resources>

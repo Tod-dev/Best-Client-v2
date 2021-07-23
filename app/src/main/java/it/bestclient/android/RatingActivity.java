@@ -140,9 +140,11 @@ public class RatingActivity extends AppCompatActivity {
             StringBuilder stringBuilder = new StringBuilder();
 
             for(String comment: commentString){
-                stringBuilder.append("- ").append(comment).append("\n");
+                stringBuilder.append("➡ ").append(comment).append("\n");
             }
             feedbacks.setText(stringBuilder.toString());
+        }else{
+            feedbacks.setText("Feedbacks non disponibili per il numero selezionato");
         }
 
         conferma.setOnClickListener(v -> {
