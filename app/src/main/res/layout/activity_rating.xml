@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -96,9 +97,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="44dp"
             android:text="@string/feedback"
+            android:textStyle="bold|italic"
+            android:drawableStart="@drawable/ic_baseline_library_books_24"
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            app:drawableLeftCompat="@drawable/ic_baseline_library_books_24"
+            android:drawableLeft="@drawable/ic_baseline_library_books_24"
+            tools:ignore="UseCompatTextViewDrawableXml"
+            android:drawablePadding="10sp"/>
 
 
         <TextView

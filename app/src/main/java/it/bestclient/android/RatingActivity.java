@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -32,7 +31,6 @@ import java.util.StringTokenizer;
 import it.bestclient.android.RatingModel.RatingBigOnDB;
 import it.bestclient.android.components.Contact;
 
-import static it.bestclient.android.HomeActivity.showRatings;
 import static it.bestclient.android.Utils.USERS;
 import static it.bestclient.android.Utils.VALUTAZIONI;
 
@@ -140,11 +138,11 @@ public class RatingActivity extends AppCompatActivity {
             StringBuilder stringBuilder = new StringBuilder();
 
             for(String comment: commentString){
-                stringBuilder.append("➡ ").append(comment).append("\n");
+                stringBuilder.append("\uD83D\uDD30\t\t").append(comment).append("\n\n");
             }
             feedbacks.setText(stringBuilder.toString());
         }else{
-            feedbacks.setText("Feedbacks non disponibili per il numero selezionato");
+            feedbacks.setText(R.string.noFeedback);
         }
 
         conferma.setOnClickListener(v -> {
