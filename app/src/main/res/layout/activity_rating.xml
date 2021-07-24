@@ -101,7 +101,7 @@
             android:layout_gravity="center_horizontal"/>
 
 
-        <TextView
+      <!--  <TextView
             android:id="@+id/elencoFeedbacks"
             android:layout_width="315dp"
             android:layout_height="wrap_content"
@@ -111,6 +111,15 @@
             android:gravity="center_horizontal"
             android:textColor="@color/grey"
             android:textSize="20sp" />
+        -->
+
+        <LinearLayout
+            android:id="@+id/listLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="30dp">
+        </LinearLayout>
 
 
     </LinearLayout>

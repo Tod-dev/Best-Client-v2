@@ -2,4 +2,5 @@
 <resources>
     <string name="modifica">modifica</string>
     <string name="pubblica">Pubblica</string>
+    <string name="NofeedbackMessage">Feedbacks non disponibili per il numero selezionato</string>
 </resources>
