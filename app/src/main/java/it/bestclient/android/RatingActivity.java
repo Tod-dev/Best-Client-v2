@@ -6,10 +6,8 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,7 +19,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,7 +31,6 @@ import java.util.StringTokenizer;
 import it.bestclient.android.RatingModel.RatingBigOnDB;
 import it.bestclient.android.components.Contact;
 
-import static it.bestclient.android.HomeActivity.showRatings;
 import static it.bestclient.android.Utils.USERS;
 import static it.bestclient.android.Utils.VALUTAZIONI;
 
@@ -60,7 +56,7 @@ public class RatingActivity extends AppCompatActivity {
     Button conferma;
     EditText comment;
     CheckBox pubblico;
-    //TextView feedbacks;
+    TextView feedbacks;
 
     Double RATINGLOCALEiniziale;
     String COMMENTOiniziale;
@@ -78,7 +74,7 @@ public class RatingActivity extends AppCompatActivity {
         comment = findViewById(R.id.comment);
         RatingBar ratingAVG = findViewById(R.id.ratingStarsAVG);
         pubblico = findViewById(R.id.checkBox);
-        //feedbacks = findViewById(R.id.elencoFeedbacks);
+        feedbacks = findViewById(R.id.elencoFeedbacks);
         context = this;
         Intent i = getIntent();
 
@@ -137,41 +133,16 @@ public class RatingActivity extends AppCompatActivity {
         comment.setText(commento);
         ratingAVG.setRating(ratingMedio.floatValue());
 
-        LinearLayout layout = (LinearLayout) findViewById(R.id.listLayout);
         if(!commentList.equals("")){
             List<String> commentString = splitComments(commentList);
-           // StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
 
             for(String comment: commentString){
-                //stringBuilder.append("➡ ").append(comment).append("\n");
-                TextView newTextView = new TextView(this);
-                newTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_campaign_24, 0, 0, 0);
-                String text = " "+comment;
-                newTextView.setText(text);
-                newTextView.setTextColor(getResources().getColor(R.color.grey));
-                newTextView.setGravity(Gravity.CENTER);
-                layout.addView(newTextView);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                params.gravity = Gravity.CENTER_HORIZONTAL;
-                params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                params.setMargins(50,5,50,5);
-                newTextView.setLayoutParams(params);
-
+                stringBuilder.append("\uD83D\uDD30\t\t").append(comment).append("\n\n");
             }
-            //feedbacks.setText(stringBuilder.toString());
+            feedbacks.setText(stringBuilder.toString());
         }else{
-            TextView newTextView = new TextView(this);
-            newTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_campaign_24, 0, 0, 0);
-            newTextView.setText(R.string.NofeedbackMessage);
-            newTextView.setTextColor(getResources().getColor(R.color.grey));
-            newTextView.setGravity(Gravity.CENTER);
-            layout.addView(newTextView);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.gravity = Gravity.CENTER_HORIZONTAL;
-            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            params.setMargins(50,5,50,5);
-            newTextView.setLayoutParams(params);
-            //feedbacks.setText("Feedbacks non disponibili per il numero selezionato");
+            feedbacks.setText(R.string.noFeedback);
         }
 
         conferma.setOnClickListener(v -> {
