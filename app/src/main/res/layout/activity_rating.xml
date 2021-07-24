@@ -107,8 +107,8 @@
             tools:ignore="UseCompatTextViewDrawableXml"
             android:drawablePadding="10sp"/>
 
-
-      <!--  <TextView
+<!--
+        <TextView
             android:id="@+id/elencoFeedbacks"
             android:layout_width="315dp"
             android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
             android:gravity="center_horizontal"
             android:textColor="@color/grey"
             android:textSize="20sp" />
-        -->
+-->
 
         <LinearLayout
             android:id="@+id/listLayout"

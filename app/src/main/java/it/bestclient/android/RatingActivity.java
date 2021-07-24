@@ -6,8 +6,10 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -74,7 +76,7 @@ public class RatingActivity extends AppCompatActivity {
         comment = findViewById(R.id.comment);
         RatingBar ratingAVG = findViewById(R.id.ratingStarsAVG);
         pubblico = findViewById(R.id.checkBox);
-        feedbacks = findViewById(R.id.elencoFeedbacks);
+        //feedbacks = findViewById(R.id.elencoFeedbacks);
         context = this;
         Intent i = getIntent();
 
@@ -133,16 +135,38 @@ public class RatingActivity extends AppCompatActivity {
         comment.setText(commento);
         ratingAVG.setRating(ratingMedio.floatValue());
 
+        LinearLayout layout = (LinearLayout) findViewById(R.id.listLayout);
         if(!commentList.equals("")){
             List<String> commentString = splitComments(commentList);
-            StringBuilder stringBuilder = new StringBuilder();
+            // StringBuilder stringBuilder = new StringBuilder();
 
             for(String comment: commentString){
-                stringBuilder.append("\uD83D\uDD30\t\t").append(comment).append("\n\n");
+                //stringBuilder.append("➡ ").append(comment).append("\n");
+                TextView newTextView = new TextView(this);
+                newTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_campaign_24, 0, 0, 0);
+                String text = " "+comment;
+                newTextView.setText(text);
+                newTextView.setTextColor(getResources().getColor(R.color.grey));
+                newTextView.setGravity(Gravity.CENTER);
+                layout.addView(newTextView);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                params.gravity = Gravity.CENTER_HORIZONTAL;
+                params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                params.setMargins(50,5,50,5);
+                newTextView.setLayoutParams(params);
             }
-            feedbacks.setText(stringBuilder.toString());
         }else{
-            feedbacks.setText(R.string.noFeedback);
+            TextView newTextView = new TextView(this);
+            newTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_campaign_24, 0, 0, 0);
+            newTextView.setText(R.string.noFeedback);
+            newTextView.setTextColor(getResources().getColor(R.color.grey));
+            newTextView.setGravity(Gravity.CENTER);
+            layout.addView(newTextView);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            params.gravity = Gravity.CENTER_HORIZONTAL;
+            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            params.setMargins(50,5,50,5);
+            newTextView.setLayoutParams(params);
         }
 
         conferma.setOnClickListener(v -> {
