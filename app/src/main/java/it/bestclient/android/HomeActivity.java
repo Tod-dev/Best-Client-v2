@@ -446,6 +446,7 @@ public class HomeActivity extends AppCompatActivity {
                 return;
             }
             activity.progressBar.setVisibility(View.VISIBLE);
+            activity.swipeRefreshLayout.setVisibility(View.GONE);
             //Toast.makeText(activity, "START", Toast.LENGTH_SHORT).show();
 
         }
@@ -481,6 +482,7 @@ public class HomeActivity extends AppCompatActivity {
             //Toast.makeText(activity, "ok", Toast.LENGTH_SHORT).show();
             activity.progressBar.setProgress(0);
             activity.progressBar.setVisibility(View.GONE);
+            activity.swipeRefreshLayout.setVisibility(View.VISIBLE);
             //Toast.makeText(activity, "END", Toast.LENGTH_SHORT).show();
         }
     }
