@@ -9,11 +9,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.CallLog;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -24,7 +28,9 @@ import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -68,6 +74,27 @@ public class HomeActivity extends AppCompatActivity {
     public static Map<String, String> contactMap = new HashMap<>();
     //static final int MAX_ITEMS = 100;
     public static List<Rating> ratings = new ArrayList<>();
+    private ProgressBar progressBar;
+    //private final Handler mainHandler = new Handler();
+    SwipeRefreshLayout swipeRefreshLayout;
+    boolean contactsActive = false;
+
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        String email = sp.getString("email", "");
+        String password = sp.getString("password", "");
+
+        if (email.equals("") || password.equals("")) {
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
+        }
+
+    }
 
     @SuppressLint({"NonConstantResourceId", "CommitPrefEdits"})
     @Override
@@ -88,17 +115,29 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.list);
         sp = this.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
         editor = sp.edit();
+        progressBar = findViewById(R.id.progressBar);
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED){
-            ContentResolver contentResolver = getContentResolver();
-            contacts = fetchContacts(contentResolver,this);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if(contactsActive)
+                startAsyncTask(2);
+            else
+                startAsyncTask(1);
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            startAsyncTask(0);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+            startAsyncTask(1);
         }
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED){
-            ratings = getCallLog();
-            showRatings(this);
-        }
+    }
 
+    public void startAsyncTask(int type) {
+        new LoadRatingsAsync(this).execute(type);
     }
 
     public static void showRatings(Context context){
@@ -110,7 +149,6 @@ public class HomeActivity extends AppCompatActivity {
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
-
     }
 
     public static void showRatings(Context context, List<Rating> ratingList){
@@ -172,8 +210,14 @@ public class HomeActivity extends AppCompatActivity {
                 editor.putString("scelta", String.valueOf(CHIAMATE_USCITA));
                 editor.putString("filter", String.valueOf(NO_FILTER));
                 editor.apply();
+                contactsActive = false;
+
+                /*
                 ratings = getCallLog();
                 showRatings(this);
+
+                 */
+                startAsyncTask(1);
                 return true;
             }
             else{
@@ -187,8 +231,12 @@ public class HomeActivity extends AppCompatActivity {
                 editor.putString("scelta", String.valueOf(CHIAMATE_ENTRATA));
                 editor.putString("filter", String.valueOf(NO_FILTER));
                 editor.apply();
+                contactsActive = false;
+                /*
                 ratings = getCallLog();
                 showRatings(this);
+                */
+                startAsyncTask(1);
                 return true;
             }
             else{
@@ -199,8 +247,13 @@ public class HomeActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.contatti) {
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED){
+                contactsActive = true;
+                /*
                 ratings = getRatingContacts();
                 showRatings(this);
+
+                 */
+                startAsyncTask(2);
                 return true;
             }
             else{
@@ -214,8 +267,13 @@ public class HomeActivity extends AppCompatActivity {
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
                 editor.putString("filter", String.valueOf(ULTIME_24H));
                 editor.apply();
+                contactsActive = false;
+
+                /*
                 ratings = getCallLog();
                 showRatings(this);
+                */
+                startAsyncTask(1);
                 return true;
             }
             else{
@@ -228,8 +286,14 @@ public class HomeActivity extends AppCompatActivity {
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
                 editor.putString("filter", String.valueOf(ULTIME_48H));
                 editor.apply();
+                contactsActive = false;
+
+                /*
                 ratings = getCallLog();
                 showRatings(this);
+
+                 */
+                startAsyncTask(1);
                 return true;
             }
             else{
@@ -364,19 +428,61 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
 
-        String email = sp.getString("email", "");
-        String password = sp.getString("password", "");
+    @SuppressLint("StaticFieldLeak")
+    private class LoadRatingsAsync extends AsyncTask<Integer, Void, Void> {
+        private WeakReference<HomeActivity> activityWeakReference;
 
-        if (email.equals("") || password.equals("")) {
-            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
+        LoadRatingsAsync(HomeActivity activity) {
+            activityWeakReference = new WeakReference<>(activity);
         }
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            HomeActivity activity = activityWeakReference.get();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+            activity.progressBar.setVisibility(View.VISIBLE);
+            //Toast.makeText(activity, "START", Toast.LENGTH_SHORT).show();
+
+        }
+
+        @Override
+        protected Void doInBackground(Integer ...val) {
+            //showRatings(activityWeakReference.get().context);
+            int type = val[0];
+            runOnUiThread(() -> {
+                if(type == 0) {
+                    ContentResolver contentResolver = activityWeakReference.get().getContentResolver();
+                    contacts = fetchContacts(contentResolver, activityWeakReference.get().context);
+                }else if(type == 1){
+                    ratings = activityWeakReference.get().getCallLog();
+                    showRatings(activityWeakReference.get().context);
+                }else if(type == 2){
+                    ratings = getRatingContacts();
+                    showRatings(activityWeakReference.get().context);
+                }
+            });
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            super.onPostExecute(v);
+
+            HomeActivity activity = activityWeakReference.get();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+
+            //Toast.makeText(activity, "ok", Toast.LENGTH_SHORT).show();
+            activity.progressBar.setProgress(0);
+            activity.progressBar.setVisibility(View.GONE);
+            //Toast.makeText(activity, "END", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
