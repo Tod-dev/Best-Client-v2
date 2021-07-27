@@ -375,14 +375,6 @@ public class HomeActivity extends AppCompatActivity {
                 ratingCallLogs.add(new RatingCallLog(number, date));
                 if(contactMap.containsKey(number)) ratingsRet.add(new Rating(number, contactMap.get(number)));
                 else ratingsRet.add(new Rating(number));
-
-                count++;
-
-                if(count == 20){
-                    //ogni 20 fa il refresh della lista
-                    showRatings(context, ratingsRet);
-                    count = 0;
-                }
             }
         }
         c.close();

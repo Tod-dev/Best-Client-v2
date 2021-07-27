@@ -44,6 +44,7 @@ public class RatingActivity extends AppCompatActivity {
     public static final String MEDIO = "medio";
     public static final String PUBBLICA = "pubblica";
     public static final String FEEDBACK = "feedback";
+    public static final String NOME = "nome";
 
     Context context;
 
@@ -119,15 +120,10 @@ public class RatingActivity extends AppCompatActivity {
 
 
         String actualNumber = phoneNumber;
-        for (Contact c : HomeActivity.contacts){
-            //scorro tutti i contatti che sono riuscito a leggere dalla rubrica
-            if(c.getPhone().equals(phoneNumber)){
-                //ho trovato un numero in rubrica !
-                //scrivo il nome e non il numero!
-                actualNumber = c.getName();
-            }
-        }
 
+        if(!i.getStringExtra(NOME).isEmpty()){
+            actualNumber = i.getStringExtra(NOME);
+        }
 
         ratingbar.setRating(ratingLocale.floatValue());
         pubblico.setChecked(pubblica);
@@ -135,7 +131,7 @@ public class RatingActivity extends AppCompatActivity {
         comment.setText(commento);
         ratingAVG.setRating(ratingMedio.floatValue());
 
-        LinearLayout layout = (LinearLayout) findViewById(R.id.listLayout);
+        LinearLayout layout = findViewById(R.id.listLayout);
         if(!commentList.equals("")){
             List<String> commentString = splitComments(commentList);
             // StringBuilder stringBuilder = new StringBuilder();
