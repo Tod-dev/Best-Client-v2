@@ -55,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
     public static final int ULTIME_24H = 2;
     public static final int ULTIME_48H = 3;
     public static final int NO_FILTER = 4;
-    public static final int CONTATTI = 5;
+    //public static final int CONTATTI = 5;
 
     public static RecyclerView recyclerView;
     Context context;
@@ -66,7 +66,7 @@ public class HomeActivity extends AppCompatActivity {
     public static RowAdapter arrayAdapter;
     public static List<Contact> contacts = new ArrayList<>();
     public static Map<String, String> contactMap = new HashMap<>();
-    static final int MAX_ITEMS = 100;
+    //static final int MAX_ITEMS = 100;
     public static List<Rating> ratings = new ArrayList<>();
 
     @SuppressLint({"NonConstantResourceId", "CommitPrefEdits"})
@@ -311,6 +311,14 @@ public class HomeActivity extends AppCompatActivity {
                 ratingCallLogs.add(new RatingCallLog(number, date));
                 if(contactMap.containsKey(number)) ratingsRet.add(new Rating(number, contactMap.get(number)));
                 else ratingsRet.add(new Rating(number));
+
+                count++;
+
+                if(count == 20){
+                    //ogni 20 fa il refresh della lista
+                    showRatings(context, ratingsRet);
+                    count = 0;
+                }
             }
         }
         c.close();
@@ -320,8 +328,15 @@ public class HomeActivity extends AppCompatActivity {
     
     public List<Rating> getRatingContacts(){
         List<Rating> ratingsRet = new ArrayList<>();
+        int count = 0;
         for(Contact c: contacts){
             ratingsRet.add(new Rating(c.getPhone(), c.getName()));
+            count++;
+            if(count == 20){
+                //ogni 20 fa il refresh della lista
+                showRatings(context, ratingsRet);
+                count = 0;
+            }
         }
 
         return ratingsRet;
