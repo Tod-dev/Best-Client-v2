@@ -98,9 +98,6 @@ public class HomeActivity extends AppCompatActivity {
             ratings = getCallLog();
             showRatings(this);
         }
-        else{
-            Toast.makeText(this, "L'app non ha accesso al registro delle chiamate, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
-        }
 
     }
 
@@ -148,8 +145,11 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                arrayAdapter.filter(newText, context);
-                return true;
+                if(ratings != null && ratings.size() > 0){
+                    arrayAdapter.filter(newText, context);
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -219,7 +219,7 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             }
             else{
-                Toast.makeText(this, "L'app non ha accesso ai contatti, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "L'app non ha accesso al registro delle chiamate, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
                 return false;
             }
         }
@@ -233,7 +233,7 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             }
             else{
-                Toast.makeText(this, "L'app non ha accesso ai contatti, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "L'app non ha accesso al registro delle chiamate, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
                 return false;
             }
         }
