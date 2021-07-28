@@ -192,7 +192,7 @@ public class Utils {
         });
     }
 
-    public static void getRatingAVG(Context context, Rating r, int index, String preferences){
+    public static void getRatingAVG(Context context, Rating r, int index){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ratingsRef = database.getReference("ratingAVG").child(r.getNumero());
 
@@ -203,7 +203,11 @@ public class Utils {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.getValue() == null){
-                    HomeActivity.ratingAVGDouble[index] = 0;
+                    try {
+                        HomeActivity.ratingAVGDouble[index] = 0;
+                    }catch(IndexOutOfBoundsException e){
+                        e.printStackTrace();
+                    }
                 }
                 else{
                     RatingAVGOnDB ratingAVGOnDB = dataSnapshot.getValue(RatingAVGOnDB.class);

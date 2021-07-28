@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.CallLog;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +24,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -143,7 +141,7 @@ public class HomeActivity extends AppCompatActivity {
     public static void showRatings(Context context){
         if (ratings != null) {
             Utils.getDataFromDB(context, ratings);
-            ratingToString(ratings, context);
+            ratingToString(context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
             arrayAdapter = new RowAdapter((Activity)context, context, phoneNumbers, ratingDouble, ratingAVGDouble);
             recyclerView.setAdapter(arrayAdapter);
@@ -153,8 +151,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public static void showRatings(Context context, List<Rating> ratingList){
         if (ratingList != null) {
-            Utils.getDataFromDB(context, ratingList);
-            ratingToString(ratingList, context);
+            ratingToString(ratingList);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
             arrayAdapter = new RowAdapter((Activity)context, context, phoneNumbers, ratingDouble, ratingAVGDouble);
             recyclerView.setAdapter(arrayAdapter);
@@ -321,10 +318,10 @@ public class HomeActivity extends AppCompatActivity {
 
         Date curDate = Calendar.getInstance().getTime();
         /*READ CALLS LOG, LINE BY LINE*/
-        int count = 0;
+        //int count = 0;
         while(c.moveToNext()){
             //Log.d("i, array:  ", ""+i + Arrays.toString(ratings.toArray()));
-            count++;
+            //count++;
             boolean skip = false;
 
             String type = c.getString(c.getColumnIndex(CallLog.Calls.TYPE));
@@ -384,26 +381,22 @@ public class HomeActivity extends AppCompatActivity {
     
     public List<Rating> getRatingContacts(){
         List<Rating> ratingsRet = new ArrayList<>();
-        int count = 0;
+        //int count = 0;
         for(Contact c: contacts){
             ratingsRet.add(new Rating(c.getPhone(), c.getName()));
-            count++;
+            /*count++;
             if(count == 20){
                 //ogni 20 fa il refresh della lista
                 showRatings(context, ratingsRet);
                 count = 0;
-            }
+            }*/
         }
 
         return ratingsRet;
     }
 
 
-    public static void ratingToString(List<Rating> ratings, Context context){
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String displayPreference = preferences.getString("Display Rating", "number");
-
+    public static void ratingToString(Context context){
         phoneNumbers = new String[ratings.size()];
         ratingDouble = new double[ratings.size()];
         ratingAVGDouble = new double[ratings.size()];
@@ -414,7 +407,24 @@ public class HomeActivity extends AppCompatActivity {
 
             ratingDouble[i] = ratings.get(i).getVoto();
 
-            Utils.getRatingAVG(context, r, i, displayPreference); //prendo il rating AVG del numero corrente
+            Utils.getRatingAVG(context, r, i); //prendo il rating AVG del numero corrente
+            i++;
+        }
+
+    }
+
+    public static void ratingToString(List<Rating> ratingList){
+        phoneNumbers = new String[ratingList.size()];
+        ratingDouble = new double[ratingList.size()];
+        ratingAVGDouble = new double[ratingList.size()];
+
+        int i = 0;
+        for(Rating r : ratingList){
+            phoneNumbers[i] = ratingList.get(i).getNumero();
+
+            ratingDouble[i] = ratingList.get(i).getVoto();
+
+            ratingAVGDouble[i] = ratingList.get(i).getVoto_medio();
             i++;
         }
 
