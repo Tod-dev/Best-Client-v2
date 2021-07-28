@@ -57,6 +57,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
+        Log.d(TAG, field1[position]+"; "+field2[position]+"; "+field3[position]);
         if(field2[position] == -1.0){
             holder.logoView.setVisibility(View.INVISIBLE);
         }
@@ -78,6 +79,10 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         */
 
         holder.field1View.setText(actualNumber);
+
+        if(field2[position] == -1.0){
+            holder.votoAssegnato.setRating(0);
+        }
 
         if(field2[position] >= 0){
             holder.votoAssegnato.setRating((float) field2[position]);
