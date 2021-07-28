@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import it.bestclient.android.RatingActivity;
 import it.bestclient.android.RatingModel.Rating;
 
 public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
+    private static final String TAG = "RowAdapter";
     Activity myActivity;
     Context context;
     String[] field1;    //Phone number / Contact name
@@ -61,6 +63,10 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
         String actualNumber = field1[position];
 
+        if(HomeActivity.contactMap.containsKey(actualNumber)){
+            actualNumber=HomeActivity.contactMap.get(actualNumber);
+        }
+        /*
         for (Contact c : HomeActivity.contacts){
             //scorro tutti i contatti che sono riuscito a leggere dalla rubrica
             if(c.getPhone().equals(actualNumber)){
@@ -69,6 +75,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
                 actualNumber = c.getName();
             }
         }
+        */
 
         holder.field1View.setText(actualNumber);
 
@@ -117,6 +124,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     public void filter(String text, Context context){
         filteredRatings = new ArrayList<>();
         for(Rating r: HomeActivity.ratings){
+            Log.d(TAG, "filter: "+ r.toString());
             if(r.getNumero().contains(text) || r.getNome().contains(text)){
                 filteredRatings.add(r);
             }

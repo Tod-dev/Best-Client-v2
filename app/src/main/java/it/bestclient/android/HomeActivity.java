@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,7 +48,7 @@ import static it.bestclient.android.Utils.fetchContacts;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class HomeActivity extends AppCompatActivity {
-
+    private static final String TAG = "HomeActivity";
     // GoogleSignInClient mGoogleSignInClient;
     SharedPreferences sp;
     SharedPreferences.Editor editor;
@@ -64,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
     public static RecyclerView recyclerView;
     Context context;
     public static String[] phoneNumbers;
+    public static String[] names;
     public static double[] ratingDouble;
     public static double[] ratingAVGDouble;
     @SuppressLint("StaticFieldLeak")
@@ -138,7 +140,7 @@ public class HomeActivity extends AppCompatActivity {
         new LoadRatingsAsync(this).execute(type);
     }
 
-    public static void showRatings(Context context){
+    public void showRatings(Context context){
         if (ratings != null) {
             Utils.getDataFromDB(context, ratings);
             ratingToString(context);
@@ -369,9 +371,10 @@ public class HomeActivity extends AppCompatActivity {
 
             /*ADD A NEW RATING TO THE LIST*/
             if(!checkIfExist){
-                ratingCallLogs.add(new RatingCallLog(number, date));
-                if(contactMap.containsKey(number)) ratingsRet.add(new Rating(number, contactMap.get(number)));
-                else ratingsRet.add(new Rating(number));
+                ratingCallLogs.add(check);
+                Log.d(TAG, "getCallLogCHECK:  number: "+number+" -> contacts: " + contactMap.toString());
+                if(contactMap.containsKey(check.getNumero())) ratingsRet.add(new Rating(check.getNumero(), contactMap.get(check.getNumero())));
+                else ratingsRet.add(new Rating(check.getNumero()));
             }
         }
         c.close();
@@ -418,14 +421,15 @@ public class HomeActivity extends AppCompatActivity {
         ratingDouble = new double[ratingList.size()];
         ratingAVGDouble = new double[ratingList.size()];
 
-        int i = 0;
-        for(Rating r : ratingList){
+
+
+        for(int i = 0;i<ratingList.size();i++){
             phoneNumbers[i] = ratingList.get(i).getNumero();
 
             ratingDouble[i] = ratingList.get(i).getVoto();
 
             ratingAVGDouble[i] = ratingList.get(i).getVoto_medio();
-            i++;
+
         }
 
     }

@@ -139,8 +139,8 @@ public class Rating implements Voto{
                 ", commento='" + commento + '\'' +
                 ", voto=" + voto +
                 ", voto_medio=" + voto_medio +
-                ", nome=" + nome +
-                ", pubblica=" + pubblica +
+                ", nome='" + nome +
+                "', pubblica=" + pubblica +
                 '}';
     }
 }
