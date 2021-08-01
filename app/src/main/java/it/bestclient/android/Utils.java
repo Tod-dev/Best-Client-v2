@@ -203,11 +203,9 @@ public class Utils {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.getValue() == null){
-                    try {
-                        HomeActivity.ratingAVGDouble[index] = 0;
-                    }catch(IndexOutOfBoundsException e){
-                        e.printStackTrace();
-                    }
+                    HomeActivity.ratingAVGDouble[index] = 0;
+                    r.setCommentList("");
+                    r.setVoto_medio(0);
                 }
                 else{
                     RatingAVGOnDB ratingAVGOnDB = dataSnapshot.getValue(RatingAVGOnDB.class);

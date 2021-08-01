@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Best Client</string>
+    <string name="app_name">BestClient</string>
     <string name="add_rating">Add Rating</string>
     <string name="arrowback">ArrowBack</string>
     <string name="dialogMessage">Set Rating</string>
@@ -67,7 +67,7 @@
     <string name="uscita">Chiamate in uscita</string>
     <string name="Ultime24H">Ultime 24 ore</string>
     <string name="Ultime48H">Ultime 48 ore</string>
-    <string name="contatti">Contatti</string>
+    <string name="contatti">I miei contatti</string>
     <string name="voto_medio">Voto medio:</string>
     <string name="commento">commento</string>
     <string name="popup">Pop-Up</string>
@@ -81,4 +81,7 @@
     <string name="pubblica">Pubblica</string>
     <string name="feedback">Feedbacks:</string>
     <string name="noFeedback">Feedbacks non disponibili per il numero selezionato</string>
+    <string name="group">👨‍👨‍👧‍👦</string>
+    <string name="single">🧑</string>
+    <string name="mieiFeedback">I miei feedback</string>
 </resources>

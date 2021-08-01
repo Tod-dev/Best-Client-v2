@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,12 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -58,9 +65,9 @@ public class HomeActivity extends AppCompatActivity {
     public static final int CHIAMATE_ENTRATA = 0;
     public static final int CHIAMATE_USCITA = 1;
     public static final int ULTIME_24H = 2;
-    public static final int ULTIME_48H = 3;
+    public static final int MIEI_FEEDBACK = 3;
     public static final int NO_FILTER = 4;
-    //public static final int CONTATTI = 5;
+    public static final int CONTATTI = 5;
 
     public static RecyclerView recyclerView;
     Context context;
@@ -106,7 +113,7 @@ public class HomeActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
-            actionBar.setTitle(R.string.home);
+            actionBar.setTitle(R.string.app_name);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_account_circle_24_white);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -117,22 +124,60 @@ public class HomeActivity extends AppCompatActivity {
         editor = sp.edit();
         progressBar = findViewById(R.id.progressBar);
 
+
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            if(contactsActive)
-                startAsyncTask(2);
-            else
-                startAsyncTask(1);
+            int scelta = Integer.parseInt(sp.getString("scelta", String.valueOf(CHIAMATE_ENTRATA)));
+            switch(scelta){
+                case CHIAMATE_ENTRATA:
+                case CHIAMATE_USCITA: {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                        startAsyncTask(1);
+                    }
+                    break;
+                }
+                case CONTATTI:{
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                        startAsyncTask(2);
+                    }
+                    break;
+                }
+                case MIEI_FEEDBACK:{
+                    startAsyncTask(3);
+                    break;
+                }
+                default: break;
+            }
             swipeRefreshLayout.setRefreshing(false);
         });
-
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             startAsyncTask(0);
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
-            startAsyncTask(1);
+
+        int scelta = Integer.parseInt(sp.getString("scelta", String.valueOf(CHIAMATE_ENTRATA)));
+
+        switch(scelta){
+            case CHIAMATE_ENTRATA:
+            case CHIAMATE_USCITA: {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                    startAsyncTask(1);
+                }
+                break;
+            }
+            case CONTATTI:{
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                    startAsyncTask(2);
+                }
+                break;
+            }
+            case MIEI_FEEDBACK:{
+                startAsyncTask(3);
+                break;
+            }
+            default: break;
         }
+
 
     }
 
@@ -151,9 +196,9 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    public static void showRatings(Context context, List<Rating> ratingList){
+    public static void showRatings(Context context, List<Rating> ratingList, boolean getAVG){
         if (ratingList != null) {
-            ratingToString(ratingList);
+            ratingToString(context, ratingList, getAVG);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
             arrayAdapter = new RowAdapter((Activity)context, context, phoneNumbers, ratingDouble, ratingAVGDouble);
             recyclerView.setAdapter(arrayAdapter);
@@ -247,6 +292,8 @@ public class HomeActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.contatti) {
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED){
                 contactsActive = true;
+                editor.putString("scelta", String.valueOf(CONTATTI));
+                editor.apply();
                 /*
                 ratings = getRatingContacts();
                 showRatings(this);
@@ -263,42 +310,40 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         if (item.getItemId() == R.id.ultime24h) {
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
-                editor.putString("filter", String.valueOf(ULTIME_24H));
-                editor.apply();
-                contactsActive = false;
+            int scelta = Integer.parseInt(sp.getString("scelta", String.valueOf(CHIAMATE_ENTRATA)));
+            if(scelta == CHIAMATE_ENTRATA || scelta == CHIAMATE_USCITA){
+                if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                    editor.putString("filter", String.valueOf(ULTIME_24H));
+                    editor.apply();
+                    contactsActive = false;
 
                 /*
                 ratings = getCallLog();
                 showRatings(this);
                 */
-                startAsyncTask(1);
-                return true;
+                    startAsyncTask(1);
+                    return true;
+                }
+                else{
+                    Toast.makeText(this, "L'app non ha accesso al registro delle chiamate, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
+                    return false;
+                }
             }
-            else{
-                Toast.makeText(this, "L'app non ha accesso al registro delle chiamate, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
-                return false;
-            }
+            else return false;
         }
 
-        if (item.getItemId() == R.id.ultime48h) {
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
-                editor.putString("filter", String.valueOf(ULTIME_48H));
-                editor.apply();
-                contactsActive = false;
+        if (item.getItemId() == R.id.mieiFeedback) {
+            editor.putString("scelta", String.valueOf(MIEI_FEEDBACK));
+            editor.apply();
+            contactsActive = false;
 
-                /*
-                ratings = getCallLog();
-                showRatings(this);
+            /*
+            ratings = getCallLog();
+            showRatings(this);
 
-                 */
-                startAsyncTask(1);
-                return true;
-            }
-            else{
-                Toast.makeText(this, "L'app non ha accesso al registro delle chiamate, abilitalo dalle impostazioni", Toast.LENGTH_LONG).show();
-                return false;
-            }
+             */
+            startAsyncTask(3);
+            return true;
         }
 
         return false;
@@ -341,18 +386,8 @@ public class HomeActivity extends AppCompatActivity {
             long diffInMillies = Math.abs(date.getTime() - curDate.getTime());
             long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
             /*FILTER in case settings say lastN*/
-            switch (filter) {
-                case ULTIME_24H: {
-                    if (diff > 24) skip = true;
-                    break;
-                }
-                case ULTIME_48H: {
-                    if (diff > 48) skip = true;
-                    break;
-                }
-                default:{
-                    break;
-                }
+            if (filter == ULTIME_24H) {
+                if (diff > 24) skip = true;
             }
 
             /*IF THE RATING DOES NOT MATCH SETTINGS DATE*/
@@ -398,6 +433,37 @@ public class HomeActivity extends AppCompatActivity {
         return ratingsRet;
     }
 
+    public void getMyFeedbacks(){
+        String uid = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE).getString("uid", "");
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ratingsRef = database.getReference("Users").child(uid).child("Valutazioni");
+
+        ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                ratings = new ArrayList<>();
+                for(DataSnapshot d: dataSnapshot.getChildren()){
+                    Rating r = d.getValue(Rating.class);
+                    r.setNumero(d.getKey());
+                    if(contactMap.containsKey(r.getNumero())) r.setNome(contactMap.get(r.getNumero()));
+                    else r.setNome("");
+
+                    ratings.add(r);
+                }
+                showRatings(context, ratings, true);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+                Log.w("Main", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
 
     public static void ratingToString(Context context){
         phoneNumbers = new String[ratings.size()];
@@ -416,7 +482,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public static void ratingToString(List<Rating> ratingList){
+    public static void ratingToString(Context context, List<Rating> ratingList, boolean getAVG){
         phoneNumbers = new String[ratingList.size()];
         ratingDouble = new double[ratingList.size()];
         ratingAVGDouble = new double[ratingList.size()];
@@ -428,7 +494,10 @@ public class HomeActivity extends AppCompatActivity {
 
             ratingDouble[i] = ratingList.get(i).getVoto();
 
-            ratingAVGDouble[i] = ratingList.get(i).getVoto_medio();
+            if(getAVG){
+                Utils.getRatingAVG(context, ratingList.get(i), i);
+            }
+            else ratingAVGDouble[i] = ratingList.get(i).getVoto_medio();
 
         }
 
@@ -471,6 +540,9 @@ public class HomeActivity extends AppCompatActivity {
                 }else if(type == 2){
                     ratings = getRatingContacts();
                     showRatings(activityWeakReference.get().context);
+                }
+                else if(type == 3){
+                    getMyFeedbacks();
                 }
             });
             return null;

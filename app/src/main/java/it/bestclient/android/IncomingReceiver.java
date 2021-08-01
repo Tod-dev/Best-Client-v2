@@ -92,24 +92,21 @@ public class IncomingReceiver extends BroadcastReceiver {
             String message = r.getNumero() +"\n";
             if(r.getVoto() == -1){
                 /* RATING NON INSERITO DALL'UTENTE */
-                message += "Numero non valutato da te\n";
+                //message += "Numero non valutato da te\n";
                 if(r.getVoto_medio() == -1){
-                    message = "Numero non valutato!";
+                    //message = "Numero non valutato!";
+                    return;
                 }
                 else{
-                    message += "voto medio: "+displayRatingStars(r.getVoto_medio());
+                    message += "\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67\u200D\uD83D\uDC66   "+displayRatingStars(r.getVoto_medio());
                 }
             }else{
-                message += "voto:   "+displayRatingStars(r.getVoto())+"\n";
-                message += r.getCommento().isEmpty() ? "" : "commento:   "+r.getCommento()+"\n";
+                message += "\uD83E\uDDD1   "+displayRatingStars(r.getVoto());
                 //message += "data: "+ratingToShow.getDate()+"\n";
-                if(r.getVoto_medio() == -1){
-                    message = "Nessuna valutazione media!";
+                if(r.getVoto_medio() != -1){
+                    message += "\n\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67\u200D\uD83D\uDC66   "+displayRatingStars(r.getVoto_medio());
                 }
-                else{
-                    message += "voto medio: "+displayRatingStars(r.getVoto_medio());
-                }
-
+                //message += r.getCommento().isEmpty() ? "" : "\n\uD83D\uDCE3   "+r.getCommento();
             }
 
             Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
@@ -124,16 +121,17 @@ public class IncomingReceiver extends BroadcastReceiver {
                 /* RATING NON INSERITO DALL'UTENTE */
                 //message += "Non valutato da te,";
                 if(r.getVoto_medio() == -1){
-                    message = "Numero non valutato!";
+                    //message = "Numero non valutato!";
+                    return;
                 }
                 else{
-                    message += "media: "+displayRatingStars(r.getVoto_medio());
+                    message += "\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67\u200D\uD83D\uDC66 "+displayRatingStars(r.getVoto_medio());
                 }
             }else{
-                message += "voto:"+displayRatingStars(r.getVoto())+"\n";
+                message += "\uD83E\uDDD1 "+displayRatingStars(r.getVoto())+"\n";
                 //message += "data: "+ratingToShow.getDate()+"\n";
                 if (r.getVoto_medio() != -1) {
-                    message += "    media: "+displayRatingStars(r.getVoto_medio());
+                    message += "    \uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67\u200D\uD83D\uDC66 "+displayRatingStars(r.getVoto_medio());
                 }
 
             }
@@ -147,7 +145,7 @@ public class IncomingReceiver extends BroadcastReceiver {
             }
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"Rating Notification");
-            builder.setContentTitle("Rating Manager");
+            builder.setContentTitle(r.getNumero());
             builder.setContentText(message);
             builder.setSmallIcon(R.drawable.ic_baseline_star_24);
             builder.setColorized(true);
@@ -173,24 +171,21 @@ public class IncomingReceiver extends BroadcastReceiver {
             String message = "";
             if(r.getVoto() == -1){
                 /* RATING NON INSERITO DALL'UTENTE */
-                message += "Numero non valutato da te\n";
+                //message += "Numero non valutato da te\n";
                 if(r.getVoto_medio() == -1){
-                    message = "Numero non valutato!";
+                    //message = "Numero non valutato!";
+                    return;
                 }
                 else{
-                    message += "voto medio: "+displayRatingStars(r.getVoto_medio());
+                    message += "\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67\u200D\uD83D\uDC66   "+displayRatingStars(r.getVoto_medio());
                 }
             }else{
-                message += "voto:   "+displayRatingStars(r.getVoto())+"\n";
-                message += r.getCommento().isEmpty() ? "" : "commento:   "+r.getCommento()+"\n";
+                message += "\uD83E\uDDD1   "+displayRatingStars(r.getVoto());
                 //message += "data: "+ratingToShow.getDate()+"\n";
-                if(r.getVoto_medio() == -1){
-                    message = "Nessuna valutazione media!";
+                if (r.getVoto_medio() != -1) {
+                    message += "\n\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67\u200D\uD83D\uDC66   " + displayRatingStars(r.getVoto_medio());
                 }
-                else{
-                    message += "voto medio: "+displayRatingStars(r.getVoto_medio());
-                }
-
+                //message += r.getCommento().isEmpty() ? "" : "\n\uD83D\uDCE3   "+r.getCommento()+"\n";
             }
 
             Intent intent = new Intent(context, PopUpActivity.class);

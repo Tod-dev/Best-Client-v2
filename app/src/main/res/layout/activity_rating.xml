@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,25 +22,36 @@
             android:textStyle="bold"
             android:layout_gravity="center_horizontal" />
 
-        <TextView
-            android:id="@+id/modifica"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
-            android:text="@string/modifica"
-            android:textColor="@color/teal_200"
-            android:textSize="19sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20sp"/>
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
 
-        <RatingBar
-            android:id="@+id/ratingStars"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:theme="@style/RatingBarModifiable"
-            android:visibility="visible"
-            android:layout_marginTop="20sp"/>
+            <TextView
+                android:id="@+id/modifica"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/single"
+                android:textColor="@color/teal_200"
+                android:textSize="35sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20sp"/>
+
+            <RatingBar
+                android:id="@+id/ratingStars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:theme="@style/RatingBarModifiable"
+                android:visibility="visible"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20sp"
+                 />
+
+        </LinearLayout>
 
 
         <EditText
@@ -71,27 +81,39 @@
             android:text="@string/positiveButton"
             android:layout_gravity="center_horizontal"/>
 
-        <TextView
-            android:id="@+id/textView"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
-            android:text="@string/voto_medio"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:layout_gravity="center_horizontal"/>
-
-        <RatingBar
-            android:id="@+id/ratingStarsAVG"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
-            android:isIndicator="true"
-            android:theme="@style/RatingBarNOTmodifiable"
-            android:visibility="visible"
-            />
+            android:layout_marginBottom="40sp">
 
-        <TextView
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:layout_marginTop="20sp"
+                android:text="@string/group"
+                android:textColor="@color/black"
+                android:textSize="35sp"
+                android:layout_gravity="center"/>
+
+            <RatingBar
+                android:id="@+id/ratingStarsAVG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:isIndicator="true"
+                android:theme="@style/RatingBarNOTmodifiable"
+                android:visibility="visible"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20sp"
+                />
+        </LinearLayout>
+
+        <!--<TextView
             android:id="@+id/feedbacks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -105,7 +127,7 @@
             app:drawableLeftCompat="@drawable/ic_baseline_library_books_24"
             android:drawableLeft="@drawable/ic_baseline_library_books_24"
             tools:ignore="UseCompatTextViewDrawableXml"
-            android:drawablePadding="10sp"/>
+            android:drawablePadding="10sp"/>-->
 
 <!--
         <TextView

@@ -15,12 +15,12 @@
         android:id="@+id/ultime24h"/>
 
     <item
-        android:title="@string/Ultime48H"
-        android:id="@+id/ultime48h"/>
-
-    <item
         android:title="@string/contatti"
         android:id="@+id/contatti"/>
+
+    <item
+        android:title="@string/mieiFeedback"
+        android:id="@+id/mieiFeedback"/>
 
     <item
         android:id="@+id/searchBtn"

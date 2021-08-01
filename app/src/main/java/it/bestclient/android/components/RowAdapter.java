@@ -58,8 +58,8 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         Log.d(TAG, field1[position]+"; "+field2[position]+"; "+field3[position]);
-        if(field2[position] == -1.0){
-            holder.logoView.setVisibility(View.INVISIBLE);
+        if(field2[position] > 0 || field3[position] > 0){
+            holder.logoView.setVisibility(View.VISIBLE);
         }
 
         String actualNumber = field1[position];
@@ -136,7 +136,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         }
 
         /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-        HomeActivity.showRatings(context, filteredRatings);
+        HomeActivity.showRatings(context, filteredRatings, false);
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
