@@ -65,6 +65,8 @@ public class UserActivity extends AppCompatActivity {
         logoutBtn.setOnClickListener(v -> {
 
             Utils.resetPreferences(editor, true);
+            HomeActivity.ratingsOnDb.clear();
+            HomeActivity.checkDataOnDB = false;
 
             Intent intent = new Intent(UserActivity.this, LoginActivity.class);
             startActivity(intent);

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -151,48 +152,6 @@ public class Utils {
         return text.replaceAll("'", "");
     }
 
-    public static void getDataFromDB(Context context, List<Rating> ratings){
-
-        String uid = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE).getString("uid", "");
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("Users").child(uid).child("Valutazioni");
-
-        ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot d: dataSnapshot.getChildren()){
-                    Rating r = d.getValue(Rating.class);
-                    r.setNumero(d.getKey());
-
-                    int index = 0;
-                    for(Rating current: ratings){
-                        if(current.getNumero().equals(r.getNumero())){
-                            current.setCommento(r.getCommento());
-                            current.setDate(r.getDate());
-                            current.setVoto(r.getVoto());
-                            current.setPubblica(r.getPubblica());
-                            HomeActivity.ratingDouble[index] = current.getVoto();
-                            if(current.getVoto() > 0) HomeActivity.logos[index] = R.drawable.logo_red;
-                            break;
-                        }
-                        index++;
-                    }
-                }
-                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.logos, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
-                HomeActivity.recyclerView.setAdapter(arrayAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Log.w("Main", "Failed to read value.", error.toException());
-            }
-        });
-    }
-
     public static void getRatingAVG(Context context, Rating r, int index){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ratingsRef = database.getReference("ratingAVG").child(r.getNumero());
@@ -226,6 +185,63 @@ public class Utils {
 
                 RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.logos, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
                 HomeActivity.recyclerView.setAdapter(arrayAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+                Log.w("Main", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+    //Funzione che scarica la lista di valutazioni dell'utente collegato e le inserisce in ratingsOnDb
+    public static void getDataFromDB(Context context){
+
+        String uid = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE).getString("uid", "");
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ratingsRef = database.getReference("Users").child(uid).child("Valutazioni");
+
+        ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot d: dataSnapshot.getChildren()){
+                    Rating r = d.getValue(Rating.class);
+                    r.setNumero(d.getKey());
+
+                    if(HomeActivity.contactMap.containsKey(r.getNumero())) r.setNome(HomeActivity.contactMap.get(r.getNumero()));
+                    else r.setNome("");
+
+                    HomeActivity.ratingsOnDb.put(r.getNumero(), r);
+                }
+                HomeActivity.checkDataOnDB = true;
+                int scelta = Integer.parseInt(HomeActivity.sp.getString("scelta", String.valueOf(HomeActivity.CHIAMATE_ENTRATA)));
+
+                switch (scelta) {
+                    case HomeActivity.CHIAMATE_ENTRATA:
+                    case HomeActivity.CHIAMATE_USCITA: {
+                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                            HomeActivity.ratings = HomeActivity.getCallLog(context);
+                        }
+                        break;
+                    }
+                    case HomeActivity.CONTATTI: {
+                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                            HomeActivity.ratings = HomeActivity.getRatingContacts();
+                        }
+                        break;
+                    }
+                    case HomeActivity.MIEI_FEEDBACK: {
+                        HomeActivity.ratings = new ArrayList<>(HomeActivity.ratingsOnDb.values());
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                HomeActivity.showRatings(context);
             }
 
             @Override

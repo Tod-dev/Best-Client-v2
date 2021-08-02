@@ -82,6 +82,11 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
             holder.logoView.setScaleX(0.5F);
             holder.logoView.setScaleY(0.5F);
         }
+        else{
+            holder.logoView.setScaleX(1.5F);
+            holder.logoView.setScaleY(1.5F);
+        }
+
         holder.logoView.setImageDrawable(context.getDrawable(logos[position]));
 
         holder.field1View.setText(actualNumber);
@@ -103,10 +108,15 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
             String number = field1[position];
             Rating clicked = null;
 
-            for(Rating r: HomeActivity.ratings){
-                if(r.getNumero().equals(number)){
-                    clicked = r;
-                    break;
+            if(HomeActivity.ratingsOnDb.containsKey(number)){
+                clicked = HomeActivity.ratingsOnDb.get(number);
+            }
+            else {
+                for (Rating r : HomeActivity.ratings) {
+                    if (r.getNumero().equals(number)) {
+                        clicked = r;
+                        break;
+                    }
                 }
             }
 
@@ -132,7 +142,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void filter(String text, Context context){
+    public void filter(String text){
         filteredRatings = new ArrayList<>();
         for(Rating r: HomeActivity.ratings){
             Log.d(TAG, "filter: "+ r.toString());
@@ -142,7 +152,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         }
 
         /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-        HomeActivity.showRatings(context, filteredRatings, false);
+        HomeActivity.showRatings(context, filteredRatings);
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {

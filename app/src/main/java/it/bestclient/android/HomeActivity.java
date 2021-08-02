@@ -20,8 +20,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,12 +27,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -58,7 +50,7 @@ import static it.bestclient.android.Utils.fetchContacts;
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
     // GoogleSignInClient mGoogleSignInClient;
-    SharedPreferences sp;
+    public static SharedPreferences sp;
     SharedPreferences.Editor editor;
     @SuppressLint("StaticFieldLeak")
     //static ListView listView;
@@ -81,13 +73,14 @@ public class HomeActivity extends AppCompatActivity {
     public static RowAdapter arrayAdapter;
     public static List<Contact> contacts = new ArrayList<>();
     public static Map<String, String> contactMap = new HashMap<>();
+    public static Map<String, Rating> ratingsOnDb = new HashMap<>(); //mappa di rating presenti sul db (presi con un'unica richiesta)
     //static final int MAX_ITEMS = 100;
     public static List<Rating> ratings = new ArrayList<>();
     private ProgressBar progressBar;
     //private final Handler mainHandler = new Handler();
     SwipeRefreshLayout swipeRefreshLayout;
     boolean contactsActive = false;
-
+    public static boolean checkDataOnDB = false;
 
 
     @Override
@@ -102,6 +95,7 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
             overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
         }
+        //else Utils.getDataFromDB(context);
 
     }
 
@@ -125,7 +119,6 @@ public class HomeActivity extends AppCompatActivity {
         sp = this.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
         editor = sp.edit();
         progressBar = findViewById(R.id.progressBar);
-
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -153,33 +146,42 @@ public class HomeActivity extends AppCompatActivity {
             swipeRefreshLayout.setRefreshing(false);
         });
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+        //prendo la lista dei contatti una sola volta
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
+                contacts.size() == 0) {
             startAsyncTask(0);
         }
 
-        int scelta = Integer.parseInt(sp.getString("scelta", String.valueOf(CHIAMATE_ENTRATA)));
-
-        switch(scelta){
-            case CHIAMATE_ENTRATA:
-            case CHIAMATE_USCITA: {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
-                    startAsyncTask(1);
-                }
-                break;
-            }
-            case CONTATTI:{
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                    startAsyncTask(2);
-                }
-                break;
-            }
-            case MIEI_FEEDBACK:{
-                startAsyncTask(3);
-                break;
-            }
-            default: break;
+        //prendo le valutazioni dal database UNA VOLTA SOLA
+        if(!checkDataOnDB){
+            startAsyncTask(4);
         }
+        else {
 
+            int scelta = Integer.parseInt(sp.getString("scelta", String.valueOf(CHIAMATE_ENTRATA)));
+
+            switch (scelta) {
+                case CHIAMATE_ENTRATA:
+                case CHIAMATE_USCITA: {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                        startAsyncTask(1);
+                    }
+                    break;
+                }
+                case CONTATTI: {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                        startAsyncTask(2);
+                    }
+                    break;
+                }
+                case MIEI_FEEDBACK: {
+                    startAsyncTask(3);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
 
     }
 
@@ -187,9 +189,8 @@ public class HomeActivity extends AppCompatActivity {
         new LoadRatingsAsync(this).execute(type);
     }
 
-    public void showRatings(Context context){
-        if (ratings != null) {
-            Utils.getDataFromDB(context, ratings);
+    public static void showRatings(Context context){
+        if (ratings != null && checkDataOnDB) {
             ratingToString(context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
             arrayAdapter = new RowAdapter((Activity)context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble);
@@ -198,9 +199,9 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    public static void showRatings(Context context, List<Rating> ratingList, boolean getAVG){
-        if (ratingList != null) {
-            ratingToString(context, ratingList, getAVG);
+    public static void showRatings(Context context, List<Rating> listRating){
+        if (listRating != null) {
+            ratingToString(listRating);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
             arrayAdapter = new RowAdapter((Activity)context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble);
             recyclerView.setAdapter(arrayAdapter);
@@ -230,7 +231,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if(ratings != null && ratings.size() > 0){
-                    arrayAdapter.filter(newText, context);
+                    arrayAdapter.filter(newText);
                     return true;
                 }
                 return false;
@@ -258,11 +259,6 @@ public class HomeActivity extends AppCompatActivity {
                 editor.apply();
                 contactsActive = false;
 
-                /*
-                ratings = getCallLog();
-                showRatings(this);
-
-                 */
                 startAsyncTask(1);
                 return true;
             }
@@ -278,10 +274,7 @@ public class HomeActivity extends AppCompatActivity {
                 editor.putString("filter", String.valueOf(NO_FILTER));
                 editor.apply();
                 contactsActive = false;
-                /*
-                ratings = getCallLog();
-                showRatings(this);
-                */
+
                 startAsyncTask(1);
                 return true;
             }
@@ -296,11 +289,7 @@ public class HomeActivity extends AppCompatActivity {
                 contactsActive = true;
                 editor.putString("scelta", String.valueOf(CONTATTI));
                 editor.apply();
-                /*
-                ratings = getRatingContacts();
-                showRatings(this);
 
-                 */
                 startAsyncTask(2);
                 return true;
             }
@@ -319,10 +308,6 @@ public class HomeActivity extends AppCompatActivity {
                     editor.apply();
                     contactsActive = false;
 
-                /*
-                ratings = getCallLog();
-                showRatings(this);
-                */
                     startAsyncTask(1);
                     return true;
                 }
@@ -339,11 +324,6 @@ public class HomeActivity extends AppCompatActivity {
             editor.apply();
             contactsActive = false;
 
-            /*
-            ratings = getCallLog();
-            showRatings(this);
-
-             */
             startAsyncTask(3);
             return true;
         }
@@ -352,10 +332,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     
-    public List<Rating> getCallLog(){
+    public static List<Rating> getCallLog(Context context){
         int scelta = Integer.parseInt(sp.getString("scelta", String.valueOf(CHIAMATE_ENTRATA)));
         /*GET CURSOR FOR THE CALLS LOG*/
-        Cursor c = getContentResolver().query(CallLog.Calls.CONTENT_URI, new String[] {"number", "date", "type"}, null, null, "date DESC");
+        Cursor c = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, new String[] {"number", "date", "type"}, null, null, "date DESC");
 
         int colNumber = c.getColumnIndex(CallLog.Calls.NUMBER);
         int colDate = c.getColumnIndex(CallLog.Calls.DATE);
@@ -410,8 +390,17 @@ public class HomeActivity extends AppCompatActivity {
             if(!checkIfExist){
                 ratingCallLogs.add(check);
                 Log.d(TAG, "getCallLogCHECK:  number: "+number+" -> contacts: " + contactMap.toString());
-                if(contactMap.containsKey(check.getNumero())) ratingsRet.add(new Rating(check.getNumero(), contactMap.get(check.getNumero())));
-                else ratingsRet.add(new Rating(check.getNumero()));
+
+                Rating r;
+
+                //se il numero è nella lista contatti salvo il nome
+                if(contactMap.containsKey(check.getNumero())) r = new Rating(check.getNumero(), contactMap.get(check.getNumero()));
+                else r = new Rating(check.getNumero());
+
+                //se il numero è stato valutato imposto il suo voto
+                if(ratingsOnDb.containsKey(r.getNumero())) r.setVoto(ratingsOnDb.get(r.getNumero()).getVoto());
+
+                ratingsRet.add(r);
             }
         }
         c.close();
@@ -419,11 +408,16 @@ public class HomeActivity extends AppCompatActivity {
         return ratingsRet;
     }
     
-    public List<Rating> getRatingContacts(){
+    public static List<Rating> getRatingContacts(){
         List<Rating> ratingsRet = new ArrayList<>();
         //int count = 0;
         for(Contact c: contacts){
-            ratingsRet.add(new Rating(c.getPhone(), c.getName()));
+
+            if(ratingsOnDb.containsKey(c.getPhone())){
+                ratingsRet.add(ratingsOnDb.get(c.getPhone()));
+            }
+            else ratingsRet.add(new Rating(c.getPhone(), c.getName()));
+
             /*count++;
             if(count == 20){
                 //ogni 20 fa il refresh della lista
@@ -435,35 +429,8 @@ public class HomeActivity extends AppCompatActivity {
         return ratingsRet;
     }
 
-    public void getMyFeedbacks(){
-        String uid = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE).getString("uid", "");
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("Users").child(uid).child("Valutazioni");
-
-        ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                ratings = new ArrayList<>();
-                for(DataSnapshot d: dataSnapshot.getChildren()){
-                    Rating r = d.getValue(Rating.class);
-                    r.setNumero(d.getKey());
-                    if(contactMap.containsKey(r.getNumero())) r.setNome(contactMap.get(r.getNumero()));
-                    else r.setNome("");
-
-                    ratings.add(r);
-                }
-                showRatings(context, ratings, true);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Log.w("Main", "Failed to read value.", error.toException());
-            }
-        });
+    public List<Rating> getMyFeedbacks(){
+        return new ArrayList<>(ratingsOnDb.values());
     }
 
 
@@ -476,9 +443,9 @@ public class HomeActivity extends AppCompatActivity {
 
         int i = 0;
         for(Rating r : ratings){
-            phoneNumbers[i] = ratings.get(i).getNumero();
+            phoneNumbers[i] = r.getNumero();
 
-            ratingDouble[i] = ratings.get(i).getVoto();
+            ratingDouble[i] = r.getVoto();
 
             Utils.getRatingAVG(context, r, i); //prendo il rating AVG del numero corrente
             i++;
@@ -486,28 +453,25 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public static void ratingToString(Context context, List<Rating> ratingList, boolean getAVG){
-        logos = new int[ratings.size()];
+    public static void ratingToString(List<Rating> ratingList){
+        logos = new int[ratingList.size()];
         Arrays.fill(logos, R.drawable.phone);
         phoneNumbers = new String[ratingList.size()];
         ratingDouble = new double[ratingList.size()];
         ratingAVGDouble = new double[ratingList.size()];
 
+        int i = 0;
+        for(Rating r : ratingList){
+            phoneNumbers[i] = r.getNumero();
 
+            ratingDouble[i] = r.getVoto();
 
-        for(int i = 0;i<ratingList.size();i++){
-            phoneNumbers[i] = ratingList.get(i).getNumero();
+            ratingAVGDouble[i] = r.getVoto_medio();
 
-            ratingDouble[i] = ratingList.get(i).getVoto();
-
-            if(getAVG){
-                Utils.getRatingAVG(context, ratingList.get(i), i);
+            if(r.getVoto() > 0 || r.getVoto_medio() > 0){
+                logos[i] = R.drawable.logo_red;
             }
-            else {
-                ratingAVGDouble[i] = ratingList.get(i).getVoto_medio();
-                if(ratingDouble[i] > 0 || ratingAVGDouble[i] > 0) logos[i] = R.drawable.logo_red;
-            }
-
+            i++;
         }
 
     }
@@ -544,14 +508,20 @@ public class HomeActivity extends AppCompatActivity {
                     ContentResolver contentResolver = activityWeakReference.get().getContentResolver();
                     contacts = fetchContacts(contentResolver, activityWeakReference.get().context);
                 }else if(type == 1){
-                    ratings = activityWeakReference.get().getCallLog();
+                    activityWeakReference.get();
+                    ratings = getCallLog(activityWeakReference.get().context);
                     showRatings(activityWeakReference.get().context);
                 }else if(type == 2){
                     ratings = getRatingContacts();
                     showRatings(activityWeakReference.get().context);
                 }
                 else if(type == 3){
-                    getMyFeedbacks();
+                    ratings = new ArrayList<>(ratingsOnDb.values());
+                    //ratings = (List<Rating>) ratingsOnDb.values();
+                    showRatings(activityWeakReference.get().context);
+                }
+                else if(type == 4){
+                    Utils.getDataFromDB(activityWeakReference.get().context);
                 }
             });
             return null;

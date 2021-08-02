@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import it.bestclient.android.RatingModel.Rating;
 import it.bestclient.android.RatingModel.RatingBigOnDB;
 import it.bestclient.android.components.Contact;
 
@@ -199,6 +200,21 @@ public class RatingActivity extends AppCompatActivity {
             newValues.setPubblica(pubblico.isChecked());
 
             myRef.setValue(newValues);
+
+            if(HomeActivity.ratingsOnDb.size() > 0){
+                if(!HomeActivity.ratingsOnDb.containsKey(phoneNumber)){
+                    HomeActivity.ratingsOnDb.put(phoneNumber, new Rating(phoneNumber));
+                }
+            }
+            else{
+                HomeActivity.ratingsOnDb.put(phoneNumber, new Rating(phoneNumber));
+            }
+
+            HomeActivity.ratingsOnDb.get(phoneNumber).setVoto(newValues.getVoto());
+            HomeActivity.ratingsOnDb.get(phoneNumber).setCommento(newValues.getCommento());
+            HomeActivity.ratingsOnDb.get(phoneNumber).setDate(newValues.getDate());
+            HomeActivity.ratingsOnDb.get(phoneNumber).setPubblica(newValues.isPubblica());
+
             Intent intent = new Intent(RatingActivity.this, HomeActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);

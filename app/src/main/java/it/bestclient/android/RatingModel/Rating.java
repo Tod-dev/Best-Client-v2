@@ -37,7 +37,14 @@ public class Rating implements Voto{
     }
 
     public Rating(){
-
+        this.numero = "";
+        this.voto = -1;
+        this.commento ="";
+        this.date = new Date().getTime();
+        this.nome = "";
+        this.pubblica = false;
+        this.commentList = "";
+        this.voto_medio = -1;
     }
 
     public Rating(String numero){
