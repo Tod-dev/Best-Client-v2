@@ -15,7 +15,7 @@
         android:scaleY="1.5"
         android:src="@drawable/logo_red"
         android:id="@+id/logoRating"
-        android:visibility="invisible"/>
+        android:visibility="visible"/>
 
     <LinearLayout
         android:layout_width="250dp"

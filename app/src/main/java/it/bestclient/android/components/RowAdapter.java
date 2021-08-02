@@ -1,5 +1,6 @@
 package it.bestclient.android.components;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -53,14 +54,12 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         return new MyViewHolder(view);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         Log.d(TAG, field1[position]+"; "+field2[position]+"; "+field3[position]);
-        if(field2[position] > 0 || field3[position] > 0){
-            holder.logoView.setVisibility(View.VISIBLE);
-        }
 
         String actualNumber = field1[position];
 
@@ -80,16 +79,21 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
         holder.field1View.setText(actualNumber);
 
-        if(field2[position] == -1.0){
-            holder.votoAssegnato.setRating(0);
-        }
-
         if(field2[position] >= 0){
             holder.votoAssegnato.setRating((float) field2[position]);
+            holder.logoView.setVisibility(View.VISIBLE);
         }
+        else holder.votoAssegnato.setRating(0);
 
         if(field3[position] >= 0){
             holder.votoMedio.setRating((float) field3[position]);
+        }
+        else holder.votoMedio.setRating(0);
+
+        if(holder.votoMedio.getRating() == 0 && holder.votoAssegnato.getRating() == 0){
+            holder.logoView.setImageDrawable(context.getDrawable(R.drawable.phone));
+            holder.logoView.setScaleX(0.5F);
+            holder.logoView.setScaleY(0.5F);
         }
 
         holder.mainLayout.setOnClickListener(v -> {

@@ -203,9 +203,9 @@ public class Utils {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.getValue() == null){
-                    HomeActivity.ratingAVGDouble[index] = 0;
+                    HomeActivity.ratingAVGDouble[index] = -1.0;
                     r.setCommentList("");
-                    r.setVoto_medio(0);
+                    r.setVoto_medio(-1.0);
                 }
                 else{
                     RatingAVGOnDB ratingAVGOnDB = dataSnapshot.getValue(RatingAVGOnDB.class);

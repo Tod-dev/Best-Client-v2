@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="modifica">modifica</string>
-    <string name="pubblica">Pubblica</string>
-    <string name="NofeedbackMessage">Feedbacks non disponibili per il numero selezionato</string>
+    <string name="pubblica">Rendi pubblico il commento</string>
+    <string name="noFeedback">Feedbacks non disponibili per il numero selezionato</string>
 </resources>

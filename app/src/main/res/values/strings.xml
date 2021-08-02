@@ -78,7 +78,7 @@
     <string name="deleteUser">Elimina utente</string>
     <string name="delete_user_confirm">Sei sicuro di voler eliminare l\'account?</string>
     <string name="modifica">modifica</string>
-    <string name="pubblica">Pubblica</string>
+    <string name="pubblica">Rendi pubblico il commento</string>
     <string name="feedback">Feedbacks:</string>
     <string name="noFeedback">Feedbacks non disponibili per il numero selezionato</string>
     <string name="group">👨‍👨‍👧‍👦</string>
