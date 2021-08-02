@@ -175,12 +175,13 @@ public class Utils {
                             current.setVoto(r.getVoto());
                             current.setPubblica(r.getPubblica());
                             HomeActivity.ratingDouble[index] = current.getVoto();
+                            if(current.getVoto() > 0) HomeActivity.logos[index] = R.drawable.logo_red;
                             break;
                         }
                         index++;
                     }
                 }
-                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
+                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.logos, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
                 HomeActivity.recyclerView.setAdapter(arrayAdapter);
             }
 
@@ -203,9 +204,9 @@ public class Utils {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.getValue() == null){
-                    HomeActivity.ratingAVGDouble[index] = -1.0;
+                    HomeActivity.ratingAVGDouble[index] = 0;
                     r.setCommentList("");
-                    r.setVoto_medio(-1.0);
+                    r.setVoto_medio(0);
                 }
                 else{
                     RatingAVGOnDB ratingAVGOnDB = dataSnapshot.getValue(RatingAVGOnDB.class);
@@ -219,7 +220,11 @@ public class Utils {
                     r.setCommentList(ratingAVGOnDB.getCommentList());
                 }
 
-                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
+                if(r.getVoto() > 0 || r.getVoto_medio() > 0){
+                    HomeActivity.logos[index] = R.drawable.logo_red;
+                }
+
+                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.logos, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
                 HomeActivity.recyclerView.setAdapter(arrayAdapter);
             }
 

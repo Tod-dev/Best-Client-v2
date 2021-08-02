@@ -38,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,6 +73,7 @@ public class HomeActivity extends AppCompatActivity {
     public static RecyclerView recyclerView;
     Context context;
     public static String[] phoneNumbers;
+    public static int[] logos;
     public static String[] names;
     public static double[] ratingDouble;
     public static double[] ratingAVGDouble;
@@ -190,7 +192,7 @@ public class HomeActivity extends AppCompatActivity {
             Utils.getDataFromDB(context, ratings);
             ratingToString(context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-            arrayAdapter = new RowAdapter((Activity)context, context, phoneNumbers, ratingDouble, ratingAVGDouble);
+            arrayAdapter = new RowAdapter((Activity)context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
@@ -200,7 +202,7 @@ public class HomeActivity extends AppCompatActivity {
         if (ratingList != null) {
             ratingToString(context, ratingList, getAVG);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-            arrayAdapter = new RowAdapter((Activity)context, context, phoneNumbers, ratingDouble, ratingAVGDouble);
+            arrayAdapter = new RowAdapter((Activity)context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
@@ -466,6 +468,8 @@ public class HomeActivity extends AppCompatActivity {
 
 
     public static void ratingToString(Context context){
+        logos = new int[ratings.size()];
+        Arrays.fill(logos, R.drawable.phone);
         phoneNumbers = new String[ratings.size()];
         ratingDouble = new double[ratings.size()];
         ratingAVGDouble = new double[ratings.size()];
@@ -483,6 +487,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public static void ratingToString(Context context, List<Rating> ratingList, boolean getAVG){
+        logos = new int[ratings.size()];
+        Arrays.fill(logos, R.drawable.phone);
         phoneNumbers = new String[ratingList.size()];
         ratingDouble = new double[ratingList.size()];
         ratingAVGDouble = new double[ratingList.size()];
@@ -497,7 +503,10 @@ public class HomeActivity extends AppCompatActivity {
             if(getAVG){
                 Utils.getRatingAVG(context, ratingList.get(i), i);
             }
-            else ratingAVGDouble[i] = ratingList.get(i).getVoto_medio();
+            else {
+                ratingAVGDouble[i] = ratingList.get(i).getVoto_medio();
+                if(ratingDouble[i] > 0 || ratingAVGDouble[i] > 0) logos[i] = R.drawable.logo_red;
+            }
 
         }
 

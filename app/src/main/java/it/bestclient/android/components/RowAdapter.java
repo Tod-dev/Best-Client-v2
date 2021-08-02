@@ -30,16 +30,18 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     private static final String TAG = "RowAdapter";
     Activity myActivity;
     Context context;
+    int[] logos;        //logo
     String[] field1;    //Phone number / Contact name
     double[] field2;    //Rating assegnato
     double[] field3;    //Rating medio
 
     List<Rating> filteredRatings;
 
-    public RowAdapter(Activity myActivity, Context context, String[] field1, double[] field2, double[] field3){
+    public RowAdapter(Activity myActivity, Context context, int[] logos, String[] field1, double[] field2, double[] field3){
         //super(context, R.layout.rows,R.id.field1, field1);
         this.myActivity = myActivity;
         this.context = context;
+        this.logos = logos;
         this.field1 = field1;
         this.field2 = field2;
         this.field3 = field3;
@@ -59,7 +61,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        Log.d(TAG, field1[position]+"; "+field2[position]+"; "+field3[position]);
+        Log.d(TAG, logos[position]+"; "+field1[position]+"; "+field2[position]+"; "+field3[position]);
 
         String actualNumber = field1[position];
 
@@ -76,12 +78,16 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
             }
         }
         */
+        if(logos[position] == R.drawable.phone){
+            holder.logoView.setScaleX(0.5F);
+            holder.logoView.setScaleY(0.5F);
+        }
+        holder.logoView.setImageDrawable(context.getDrawable(logos[position]));
 
         holder.field1View.setText(actualNumber);
 
         if(field2[position] >= 0){
             holder.votoAssegnato.setRating((float) field2[position]);
-            holder.logoView.setVisibility(View.VISIBLE);
         }
         else holder.votoAssegnato.setRating(0);
 
@@ -90,11 +96,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         }
         else holder.votoMedio.setRating(0);
 
-        if(holder.votoMedio.getRating() == 0 && holder.votoAssegnato.getRating() == 0){
-            holder.logoView.setImageDrawable(context.getDrawable(R.drawable.phone));
-            holder.logoView.setScaleX(0.5F);
-            holder.logoView.setScaleY(0.5F);
-        }
+
 
         holder.mainLayout.setOnClickListener(v -> {
 
