@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="76dp"
             android:text="@string/number"
-            android:textColor="@color/teal_200"
+            android:textColor="@color/txtColor"
             android:textSize="34sp"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal" />
@@ -61,7 +61,7 @@
             android:autofillHints="true"
             android:hint="@string/commento"
             android:inputType="text"
-            android:textColor="@color/black"
+            android:textColor="@color/txtColor"
             android:textSize="16sp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20sp"/>
@@ -77,6 +77,8 @@
             android:id="@+id/conferma"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/btn_background"
+            android:textColor="@color/btnTxtColor"
             android:layout_marginTop="30dp"
             android:text="@string/positiveButton"
             android:layout_gravity="center_horizontal"/>

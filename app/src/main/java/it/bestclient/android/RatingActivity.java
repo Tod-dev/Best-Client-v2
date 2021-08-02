@@ -2,6 +2,7 @@ package it.bestclient.android;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -132,6 +133,9 @@ public class RatingActivity extends AppCompatActivity {
         ratingAVG.setRating(ratingMedio.floatValue());
 
         LinearLayout layout = findViewById(R.id.listLayout);
+
+        int nightModeFlags = this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
         if(!commentList.equals("")){
             List<String> commentString = splitComments(commentList);
             // StringBuilder stringBuilder = new StringBuilder();
@@ -139,7 +143,12 @@ public class RatingActivity extends AppCompatActivity {
             for(String comment: commentString){
                 //stringBuilder.append("➡ ").append(comment).append("\n");
                 TextView newTextView = new TextView(this);
-                newTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_campaign_24, 0, 0, 0);
+                if(nightModeFlags == Configuration.UI_MODE_NIGHT_YES){
+                    newTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_campaign_24_white, 0, 0, 0);
+                }
+                else{
+                    newTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_campaign_24, 0, 0, 0);
+                }
                 String text = " "+comment;
                 newTextView.setText(text);
                 newTextView.setTextColor(getResources().getColor(R.color.grey));
@@ -153,7 +162,12 @@ public class RatingActivity extends AppCompatActivity {
             }
         }else{
             TextView newTextView = new TextView(this);
-            newTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_campaign_24, 0, 0, 0);
+            if(nightModeFlags == Configuration.UI_MODE_NIGHT_YES){
+                    newTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_campaign_24_white, 0, 0, 0);
+                }
+                else{
+                    newTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_campaign_24, 0, 0, 0);
+                }
             newTextView.setText(R.string.noFeedback);
             newTextView.setTextColor(getResources().getColor(R.color.grey));
             newTextView.setGravity(Gravity.CENTER);

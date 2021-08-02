@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/drawable/btn_background.xml" value="0.2703125" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/drawable/btn_user_background.xml" value="0.2703125" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/drawable/ic_baseline_account_circle_24_red.xml" value="0.2703125" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/drawable/ic_baseline_campaign_24_white.xml" value="0.2703125" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.2703125" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/drawable/ic_baseline_delete_24_white.xml" value="0.2703125" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/drawable/ic_baseline_logout_24.xml" value="0.2703125" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/drawable/ic_baseline_notifications_active_24_white.xml" value="0.2703125" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.2703125" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/drawable/sfondo_trasparente.xml" value="0.2703125" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/layout/activity_login.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/layout/activity_rating.xml" value="0.264" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/layout/activity_user.xml" value="0.264" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/layout/rows.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/bianc/Best-Client/app/src/main/res/menu/home_menu.xml" value="0.25416666666666665" />
+      </map>
+    </option>
+  </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="org.jetbrains.annotations.Nullable" />
     <option name="myDefaultNotNull" value="androidx.annotation.RecentlyNonNull" />
@@ -25,7 +46,7 @@
     </option>
     <option name="myNotNulls">
       <value>
-        <list size="13">
+        <list size="14">
           <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.NotNull" />
           <item index="1" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.NonNull" />
           <item index="2" class="java.lang.String" itemvalue="android.support.annotation.NonNull" />
@@ -39,6 +60,7 @@
           <item index="10" class="java.lang.String" itemvalue="org.eclipse.jdt.annotation.NonNull" />
           <item index="11" class="java.lang.String" itemvalue="io.reactivex.annotations.NonNull" />
           <item index="12" class="java.lang.String" itemvalue="io.reactivex.rxjava3.annotations.NonNull" />
+          <item index="13" class="java.lang.String" itemvalue="lombok.NonNull" />
         </list>
       </value>
     </option>

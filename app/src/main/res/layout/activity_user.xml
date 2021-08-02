@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/userBtnBckColor"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -10,7 +11,7 @@
         android:id="@+id/layoutProfilo"
         android:layout_width="match_parent"
         android:layout_height="200sp"
-        android:background="@color/teal_200"
+        android:background="@color/userBckColor"
         android:orientation="vertical">
 
         <ImageView
@@ -58,13 +59,14 @@
             android:id="@+id/notificationButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_baseline_notifications_active_24"
+            android:background="@color/userBtnBckColor"
+            android:drawableLeft="@drawable/ic_baseline_notifications_active_24_white"
             android:gravity="center_vertical"
             android:text="@string/impostazioniNotifica"
             android:textAlignment="textStart"
-            android:textColor="@color/black"
-            app:backgroundTint="@color/white"
             android:textAllCaps="false"
+            android:textColor="@color/txtColor2"
+            app:backgroundTint="@color/userBtnBckColor"
             app:iconPadding="30sp"
             tools:ignore="RtlCompat,RtlSymmetry" />
 
@@ -72,13 +74,13 @@
             android:id="@+id/logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_baseline_logout_24_red"
+            android:drawableLeft="@drawable/ic_baseline_logout_24_white"
             android:gravity="center_vertical"
             android:text="@string/logout"
             android:textAlignment="textStart"
             android:textAllCaps="false"
-            android:textColor="@color/black"
-            app:backgroundTint="@color/white"
+            android:textColor="@color/txtColor2"
+            app:backgroundTint="@color/userBtnBckColor"
             app:iconPadding="30sp"
             tools:ignore="RtlCompat,RtlSymmetry" />
 
@@ -86,13 +88,13 @@
             android:id="@+id/deleteUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_baseline_delete_24"
+            android:drawableLeft="@drawable/ic_baseline_delete_24_white"
             android:gravity="center_vertical"
             android:text="@string/deleteUser"
             android:textAlignment="textStart"
             android:textAllCaps="false"
-            android:textColor="@color/black"
-            app:backgroundTint="@color/white"
+            android:textColor="@color/txtColor2"
+            app:backgroundTint="@color/userBtnBckColor"
             app:iconPadding="30sp"
             tools:ignore="RtlCompat,RtlSymmetry" />
     </LinearLayout>

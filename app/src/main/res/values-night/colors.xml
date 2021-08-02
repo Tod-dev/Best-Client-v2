@@ -11,11 +11,11 @@
     <color name="duskYellow">#FFE500</color>
     <color name="light_grey">#A8A8A8</color>
 
-    <color name="txtColor">#FF000000</color>
+    <color name="txtColor">#FFFFFF</color>
     <color name="txtColor2">#FFFFFF</color>
-    <color name="btnTxtColor">#FFFFFF</color>
-    <color name="btnBckColor">#de1f0d</color>
-    <color name="userBckColor">#de1f0d</color>
-    <color name="userBtnBckColor">#c72516</color>
-    <color name="searchBtnBckColor">#de1f0d</color>
+    <color name="btnTxtColor">#FF000000</color>
+    <color name="btnBckColor">#FFFFFF</color>
+    <color name="userBckColor">#141414</color>
+    <color name="userBtnBckColor">#141414</color>
+    <color name="searchBtnBckColor">#141414</color>
 </resources>

@@ -1,0 +1,36 @@
+<resources>
+    <!-- Notifications Preference -->
+    <string-array name="notifications_entries">
+        <item>Toast Message</item>
+        <item>Notification</item>
+        <item>PopUp</item>
+    </string-array>
+
+    <string-array name="notifications_values">
+        <item>toast_message</item>
+        <item>notification</item>
+        <item>popup</item>
+    </string-array>
+
+    <string-array name="lastcalls_entries">
+        <item>Last 24H</item>
+        <item>Last 48H</item>
+        <item>No Filter</item>
+    </string-array>
+
+    <string-array name="lastcalls_values">
+        <item>last24</item>
+        <item>last48</item>
+        <item>noFilter</item>
+    </string-array>
+
+    <string-array name="display_rating_entries">
+        <item>Number</item>
+        <item>Stars</item>
+    </string-array>
+
+    <string-array name="display_rating_values">
+        <item>number</item>
+        <item>stars</item>
+    </string-array>
+</resources>
