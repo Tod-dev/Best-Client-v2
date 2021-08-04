@@ -31,12 +31,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import it.bestclient.android.RatingModel.Rating;
 import it.bestclient.android.RatingModel.RatingCallLog;
@@ -57,16 +55,16 @@ public class HomeActivity extends AppCompatActivity {
 
     public static final int CHIAMATE_ENTRATA = 0;
     public static final int CHIAMATE_USCITA = 1;
-    public static final int ULTIME_24H = 2;
+    //public static final int ULTIME_24H = 2;
     public static final int MIEI_FEEDBACK = 3;
-    public static final int NO_FILTER = 4;
+    //public static final int NO_FILTER = 4;
     public static final int CONTATTI = 5;
 
     public static RecyclerView recyclerView;
     Context context;
     public static String[] phoneNumbers;
     public static int[] logos;
-    public static String[] names;
+    //public static String[] names;
     public static double[] ratingDouble;
     public static double[] ratingAVGDouble;
     @SuppressLint("StaticFieldLeak")
@@ -95,7 +93,6 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
             overridePendingTransition(R.anim.to_left_in, R.anim.to_right_out);
         }
-        //else Utils.getDataFromDB(context);
 
     }
 
@@ -255,7 +252,7 @@ public class HomeActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.uscita) {
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED){
                 editor.putString("scelta", String.valueOf(CHIAMATE_USCITA));
-                editor.putString("filter", String.valueOf(NO_FILTER));
+                //editor.putString("filter", String.valueOf(NO_FILTER));
                 editor.apply();
                 contactsActive = false;
 
@@ -271,7 +268,7 @@ public class HomeActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.entrata) {
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
                 editor.putString("scelta", String.valueOf(CHIAMATE_ENTRATA));
-                editor.putString("filter", String.valueOf(NO_FILTER));
+                //editor.putString("filter", String.valueOf(NO_FILTER));
                 editor.apply();
                 contactsActive = false;
 
@@ -300,7 +297,7 @@ public class HomeActivity extends AppCompatActivity {
 
         }
 
-        if (item.getItemId() == R.id.ultime24h) {
+        /*if (item.getItemId() == R.id.ultime24h) {
             int scelta = Integer.parseInt(sp.getString("scelta", String.valueOf(CHIAMATE_ENTRATA)));
             if(scelta == CHIAMATE_ENTRATA || scelta == CHIAMATE_USCITA){
                 if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
@@ -317,7 +314,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
             else return false;
-        }
+        }*/
 
         if (item.getItemId() == R.id.mieiFeedback) {
             editor.putString("scelta", String.valueOf(MIEI_FEEDBACK));
@@ -340,18 +337,18 @@ public class HomeActivity extends AppCompatActivity {
         int colNumber = c.getColumnIndex(CallLog.Calls.NUMBER);
         int colDate = c.getColumnIndex(CallLog.Calls.DATE);
 
-        int filter = Integer.parseInt(sp.getString("filter", String.valueOf(HomeActivity.NO_FILTER)));
+        //int filter = Integer.parseInt(sp.getString("filter", String.valueOf(HomeActivity.NO_FILTER)));
 
         List<Rating> ratingsRet = new ArrayList<>();
         List<RatingCallLog> ratingCallLogs = new ArrayList<>();
 
-        Date curDate = Calendar.getInstance().getTime();
+        //Date curDate = Calendar.getInstance().getTime();
         /*READ CALLS LOG, LINE BY LINE*/
         //int count = 0;
         while(c.moveToNext()){
             //Log.d("i, array:  ", ""+i + Arrays.toString(ratings.toArray()));
             //count++;
-            boolean skip = false;
+            //boolean skip = false;
 
             String type = c.getString(c.getColumnIndex(CallLog.Calls.TYPE));
             int typeNumber = Integer.parseInt(type);
@@ -365,15 +362,15 @@ public class HomeActivity extends AppCompatActivity {
 
             RatingCallLog check = new RatingCallLog(number,date);
 
-            long diffInMillies = Math.abs(date.getTime() - curDate.getTime());
-            long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            //long diffInMillies = Math.abs(date.getTime() - curDate.getTime());
+            //long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
             /*FILTER in case settings say lastN*/
-            if (filter == ULTIME_24H) {
+            /*if (filter == ULTIME_24H) {
                 if (diff > 24) skip = true;
-            }
+            }*/
 
             /*IF THE RATING DOES NOT MATCH SETTINGS DATE*/
-            if(skip) continue;
+            //if(skip) continue;
 
             /*IF THE RATING IS NOT THE FIRST ONE OF ITS TYPE(GROUP): (DAY,PHONE) -> skip*/
             boolean checkIfExist = false;
@@ -417,21 +414,14 @@ public class HomeActivity extends AppCompatActivity {
                 ratingsRet.add(ratingsOnDb.get(c.getPhone()));
             }
             else ratingsRet.add(new Rating(c.getPhone(), c.getName()));
-
-            /*count++;
-            if(count == 20){
-                //ogni 20 fa il refresh della lista
-                showRatings(context, ratingsRet);
-                count = 0;
-            }*/
         }
 
         return ratingsRet;
     }
 
-    public List<Rating> getMyFeedbacks(){
+    /*public List<Rating> getMyFeedbacks(){
         return new ArrayList<>(ratingsOnDb.values());
-    }
+    }*/
 
 
     public static void ratingToString(Context context){
@@ -479,7 +469,8 @@ public class HomeActivity extends AppCompatActivity {
 
     @SuppressLint("StaticFieldLeak")
     private class LoadRatingsAsync extends AsyncTask<Integer, Void, Void> {
-        private WeakReference<HomeActivity> activityWeakReference;
+        private final WeakReference<HomeActivity> activityWeakReference;
+        //final ProgressDialog dialog = new ProgressDialog(HomeActivity.this);
 
         LoadRatingsAsync(HomeActivity activity) {
             activityWeakReference = new WeakReference<>(activity);
@@ -488,6 +479,10 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            /*dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setMessage("Carico...");
+            dialog.show();*/
 
             HomeActivity activity = activityWeakReference.get();
             if (activity == null || activity.isFinishing()) {
@@ -531,13 +526,15 @@ public class HomeActivity extends AppCompatActivity {
         protected void onPostExecute(Void v) {
             super.onPostExecute(v);
 
+            //dialog.dismiss();
+
             HomeActivity activity = activityWeakReference.get();
             if (activity == null || activity.isFinishing()) {
                 return;
             }
 
             //Toast.makeText(activity, "ok", Toast.LENGTH_SHORT).show();
-            activity.progressBar.setProgress(0);
+            //activity.progressBar.setProgress(0);
             activity.progressBar.setVisibility(View.GONE);
             activity.swipeRefreshLayout.setVisibility(View.VISIBLE);
             //Toast.makeText(activity, "END", Toast.LENGTH_SHORT).show();

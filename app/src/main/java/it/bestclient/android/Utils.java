@@ -262,7 +262,7 @@ public class Utils {
         }
 
         editor.putString("notificationPreference", String.valueOf(R.id.notification));
-        editor.putString("filter", String.valueOf(HomeActivity.NO_FILTER));
+        //editor.putString("filter", String.valueOf(HomeActivity.NO_FILTER));
         editor.putString("scelta", String.valueOf(HomeActivity.CHIAMATE_ENTRATA));    //chiamate in entrata
         editor.apply();
     }

@@ -83,5 +83,5 @@
     <string name="noFeedback">Feedbacks non disponibili per il numero selezionato</string>
     <string name="group">👨‍👨‍👧‍👦</string>
     <string name="single">🧑</string>
-    <string name="mieiFeedback">I miei feedback</string>
+    <string name="mieiFeedback">Le mie valutazioni</string>
 </resources>

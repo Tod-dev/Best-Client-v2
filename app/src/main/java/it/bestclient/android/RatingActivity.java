@@ -186,6 +186,11 @@ public class RatingActivity extends AppCompatActivity {
             String commentoRatingBIG = comment.getText().toString();
             double votoRatingBig = ratingbar.getRating();
 
+            if(votoRatingBig == 0){
+                Toast.makeText(this, "Devi inserire una valutazione!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             String uid = this.getSharedPreferences("UserPreferences", MODE_PRIVATE).getString("uid", "");
 
             // Write a message to the database

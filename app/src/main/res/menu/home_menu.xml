@@ -10,9 +10,9 @@
         android:title="@string/uscita"
         android:id="@+id/uscita"/>
 
-    <item
+    <!--<item
         android:title="@string/Ultime24H"
-        android:id="@+id/ultime24h"/>
+        android:id="@+id/ultime24h"/>-->
 
     <item
         android:title="@string/contatti"
