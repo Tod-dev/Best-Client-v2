@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp"
+    android:padding="10dp"
     android:visibility="visible"
     android:id="@+id/mainLayout">
 
@@ -76,12 +76,12 @@
                     android:id="@+id/field3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="6dp"
                     android:fontFamily="sans-serif"
                     android:text="@string/group"
                     android:textColor="#7a7a7a"
                     android:textSize="15sp"
-                    android:layout_marginStart="25dp" />
+                    android:layout_marginStart="6dp" />
 
                 <RatingBar
                     android:id="@+id/ratingBarMedio"
@@ -100,13 +100,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/Nvalutazioni"
+                    android:id="@+id/nValutazioni"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/Nvalutazioni"
                     android:textColor="@color/txtColor"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginLeft="6dp"
                     />
 
             </LinearLayout>

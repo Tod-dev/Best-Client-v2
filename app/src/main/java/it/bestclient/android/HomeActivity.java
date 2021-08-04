@@ -69,6 +69,7 @@ public class HomeActivity extends AppCompatActivity {
     //public static String[] names;
     public static double[] ratingDouble;
     public static double[] ratingAVGDouble;
+    public static int[] nValutazioni;
     @SuppressLint("StaticFieldLeak")
     public static RowAdapter arrayAdapter;
     public static List<Contact> contacts = new ArrayList<>();
@@ -191,7 +192,7 @@ public class HomeActivity extends AppCompatActivity {
         if (ratings != null && checkDataOnDB) {
             ratingToString(context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-            arrayAdapter = new RowAdapter((Activity)context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble);
+            arrayAdapter = new RowAdapter((Activity)context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble, nValutazioni);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
@@ -201,7 +202,7 @@ public class HomeActivity extends AppCompatActivity {
         if (listRating != null) {
             ratingToString(listRating);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-            arrayAdapter = new RowAdapter((Activity)context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble);
+            arrayAdapter = new RowAdapter((Activity)context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble, nValutazioni);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
@@ -431,6 +432,7 @@ public class HomeActivity extends AppCompatActivity {
         phoneNumbers = new String[ratings.size()];
         ratingDouble = new double[ratings.size()];
         ratingAVGDouble = new double[ratings.size()];
+        nValutazioni = new int[ratings.size()];
 
         int i = 0;
         for(Rating r : ratings){
@@ -450,6 +452,7 @@ public class HomeActivity extends AppCompatActivity {
         phoneNumbers = new String[ratingList.size()];
         ratingDouble = new double[ratingList.size()];
         ratingAVGDouble = new double[ratingList.size()];
+        nValutazioni = new int[ratings.size()];
 
         int i = 0;
         for(Rating r : ratingList){
@@ -458,6 +461,8 @@ public class HomeActivity extends AppCompatActivity {
             ratingDouble[i] = r.getVoto();
 
             ratingAVGDouble[i] = r.getVoto_medio();
+
+            nValutazioni[i] = r.getnValutazioni();
 
             if(r.getVoto() > 0 || r.getVoto_medio() > 0){
                 logos[i] = R.drawable.logo_red;

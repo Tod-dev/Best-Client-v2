@@ -16,6 +16,7 @@ public class Rating implements Voto{
     private double voto;
     private double voto_medio;
     private boolean pubblica;
+    private int nValutazioni;
     private String commentList;
     // double voto;
     //private long id;
@@ -24,7 +25,7 @@ public class Rating implements Voto{
     //uso lo stesso format in tutta l'app!
     public static final SimpleDateFormat formatter  = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ITALIAN); //formatter.format(date);
 
-    public Rating(String numero, Date date, double voto, String commento, double voto_medio, String nome, boolean pubblica){
+    public Rating(String numero, Date date, double voto, String commento, double voto_medio, String nome, boolean pubblica, int nValutazioni){
         this.voto = voto;
         //rating con voto e commento, data sotto forma di date
         this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
@@ -33,6 +34,7 @@ public class Rating implements Voto{
         this.nome = nome;
         this.pubblica = pubblica;
         this.voto_medio = voto_medio;
+        this.nValutazioni = nValutazioni;
         // this.id = ID_GENERATOR.getAndIncrement();
     }
 
@@ -45,6 +47,7 @@ public class Rating implements Voto{
         this.pubblica = false;
         this.commentList = "";
         this.voto_medio = -1;
+        this.nValutazioni = 0;
     }
 
     public Rating(String numero){
@@ -57,6 +60,7 @@ public class Rating implements Voto{
         this.pubblica = false;
         this.commentList = "";
         this.voto_medio = -1;
+        this.nValutazioni = 0;
         //  this.id = ID_GENERATOR.getAndIncrement();
     }
 
@@ -70,6 +74,7 @@ public class Rating implements Voto{
         this.pubblica = false;
         this.commentList = "";
         this.voto_medio = -1;
+        this.nValutazioni = 0;
         //  this.id = ID_GENERATOR.getAndIncrement();
     }
 
@@ -105,6 +110,10 @@ public class Rating implements Voto{
         return voto_medio;
     }
 
+    public int getnValutazioni(){
+        return this.nValutazioni;
+    }
+
     public void setNumero(String numero) {
         this.numero = numero;
     }
@@ -133,9 +142,12 @@ public class Rating implements Voto{
         this.commentList = commentList;
     }
 
-
     public void setCommento(String commento){
         this.commento = commento;
+    }
+
+    public void setnValutazioni(int nValutazioni){
+        this.nValutazioni = nValutazioni;
     }
 
     @Override
@@ -148,6 +160,7 @@ public class Rating implements Voto{
                 ", voto_medio=" + voto_medio +
                 ", nome='" + nome +
                 "', pubblica=" + pubblica +
+                "', nValutazioni=" + nValutazioni +
                 '}';
     }
 }

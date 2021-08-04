@@ -164,6 +164,7 @@ public class Utils {
 
                 if(dataSnapshot.getValue() == null){
                     HomeActivity.ratingAVGDouble[index] = 0;
+                    r.setnValutazioni(0);
                     r.setCommentList("");
                     r.setVoto_medio(0);
                 }
@@ -174,16 +175,18 @@ public class Utils {
                     val = Math.round(val*100.0)/100.0;  //arrotondo il rating a due cifre decimali
 
                     HomeActivity.ratingAVGDouble[index] = val;
+                    HomeActivity.nValutazioni[index] = ratingAVGOnDB.getnValutazioni();
 
                     r.setVoto_medio(val);
                     r.setCommentList(ratingAVGOnDB.getCommentList());
+                    r.setnValutazioni(ratingAVGOnDB.getnValutazioni());
                 }
 
                 if(r.getVoto() > 0 || r.getVoto_medio() > 0){
                     HomeActivity.logos[index] = R.drawable.logo_red;
                 }
 
-                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.logos, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble);
+                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.logos, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble, HomeActivity.nValutazioni);
                 HomeActivity.recyclerView.setAdapter(arrayAdapter);
             }
 

@@ -34,10 +34,11 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     String[] field1;    //Phone number / Contact name
     double[] field2;    //Rating assegnato
     double[] field3;    //Rating medio
+    int[] field4;    //Numero di valutazioni
 
     List<Rating> filteredRatings;
 
-    public RowAdapter(Activity myActivity, Context context, int[] logos, String[] field1, double[] field2, double[] field3){
+    public RowAdapter(Activity myActivity, Context context, int[] logos, String[] field1, double[] field2, double[] field3, int[] field4){
         //super(context, R.layout.rows,R.id.field1, field1);
         this.myActivity = myActivity;
         this.context = context;
@@ -45,6 +46,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         this.field1 = field1;
         this.field2 = field2;
         this.field3 = field3;
+        this.field4 = field4;
         this.filteredRatings = new ArrayList<>();
     }
 
@@ -101,7 +103,8 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         }
         else holder.votoMedio.setRating(0);
 
-
+        String text = "("+field4[position]+")";
+        holder.nValutazioni.setText(text);
 
         holder.mainLayout.setOnClickListener(v -> {
 
@@ -160,6 +163,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         RatingBar votoMedio;
         ImageView logoView;
         TextView field1View;
+        TextView nValutazioni;
         LinearLayout mainLayout;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -168,6 +172,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
             votoMedio = itemView.findViewById(R.id.ratingBarMedio);
             logoView = itemView.findViewById(R.id.logoRating);
             field1View = itemView.findViewById(R.id.field1);
+            nValutazioni = itemView.findViewById(R.id.nValutazioni);
             mainLayout = itemView.findViewById(R.id.mainLayout);
         }
     }
