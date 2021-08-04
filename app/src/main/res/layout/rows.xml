@@ -18,7 +18,7 @@
         android:visibility="visible"/>
 
     <LinearLayout
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -92,6 +92,21 @@
                     android:layout_marginLeft="5dp"
                     android:layout_gravity="center_vertical"
                     style="@android:style/Widget.DeviceDefault.RatingBar.Small"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/Nvalutazioni"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Nvalutazioni"
+                    android:textColor="@color/txtColor"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     />
 
             </LinearLayout>

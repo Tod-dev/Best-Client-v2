@@ -53,6 +53,8 @@ public class HomeActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     //static ListView listView;
 
+    public static ActionBar actionBar;
+
     public static final int CHIAMATE_ENTRATA = 0;
     public static final int CHIAMATE_USCITA = 1;
     //public static final int ULTIME_24H = 2;
@@ -103,10 +105,9 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /*ActionBar set title*/
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
 
         if (actionBar != null) {
-            actionBar.setTitle(R.string.app_name);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_account_circle_24_white);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -504,13 +505,19 @@ public class HomeActivity extends AppCompatActivity {
                     contacts = fetchContacts(contentResolver, activityWeakReference.get().context);
                 }else if(type == 1){
                     activityWeakReference.get();
+                    int scelta = Integer.parseInt(sp.getString("scelta", String.valueOf(CHIAMATE_ENTRATA)));
+                    if(scelta == CHIAMATE_ENTRATA) actionBar.setTitle(R.string.entrata);
+                    else actionBar.setTitle(R.string.uscita);
+
                     ratings = getCallLog(activityWeakReference.get().context);
                     showRatings(activityWeakReference.get().context);
                 }else if(type == 2){
+                    actionBar.setTitle(R.string.contatti);
                     ratings = getRatingContacts();
                     showRatings(activityWeakReference.get().context);
                 }
                 else if(type == 3){
+                    actionBar.setTitle(R.string.mieiFeedback);
                     ratings = new ArrayList<>(ratingsOnDb.values());
                     //ratings = (List<Rating>) ratingsOnDb.values();
                     showRatings(activityWeakReference.get().context);

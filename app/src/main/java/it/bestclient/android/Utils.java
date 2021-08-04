@@ -221,20 +221,29 @@ public class Utils {
                 int scelta = Integer.parseInt(HomeActivity.sp.getString("scelta", String.valueOf(HomeActivity.CHIAMATE_ENTRATA)));
 
                 switch (scelta) {
-                    case HomeActivity.CHIAMATE_ENTRATA:
+                    case HomeActivity.CHIAMATE_ENTRATA:{
+                        HomeActivity.actionBar.setTitle(R.string.entrata);
+                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                            HomeActivity.ratings = HomeActivity.getCallLog(context);
+                        }
+                        break;
+                    }
                     case HomeActivity.CHIAMATE_USCITA: {
+                        HomeActivity.actionBar.setTitle(R.string.uscita);
                         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
                             HomeActivity.ratings = HomeActivity.getCallLog(context);
                         }
                         break;
                     }
                     case HomeActivity.CONTATTI: {
+                        HomeActivity.actionBar.setTitle(R.string.contatti);
                         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                             HomeActivity.ratings = HomeActivity.getRatingContacts();
                         }
                         break;
                     }
                     case HomeActivity.MIEI_FEEDBACK: {
+                        HomeActivity.actionBar.setTitle(R.string.mieiFeedback);
                         HomeActivity.ratings = new ArrayList<>(HomeActivity.ratingsOnDb.values());
                         break;
                     }
