@@ -167,6 +167,12 @@ public class Utils {
                     r.setnValutazioni(0);
                     r.setCommentList("");
                     r.setVoto_medio(0);
+
+                    if(HomeActivity.ratingsOnDb.containsKey(r.getNumero())){
+                        HomeActivity.ratingsOnDb.get(r.getNumero()).setVoto_medio(0);
+                        HomeActivity.ratingsOnDb.get(r.getNumero()).setCommentList("");
+                        HomeActivity.ratingsOnDb.get(r.getNumero()).setnValutazioni(0);
+                    }
                 }
                 else{
                     RatingAVGOnDB ratingAVGOnDB = dataSnapshot.getValue(RatingAVGOnDB.class);
@@ -180,6 +186,12 @@ public class Utils {
                     r.setVoto_medio(val);
                     r.setCommentList(ratingAVGOnDB.getCommentList());
                     r.setnValutazioni(ratingAVGOnDB.getnValutazioni());
+
+                    if(HomeActivity.ratingsOnDb.containsKey(r.getNumero())){
+                        HomeActivity.ratingsOnDb.get(r.getNumero()).setVoto_medio(r.getVoto_medio());
+                        HomeActivity.ratingsOnDb.get(r.getNumero()).setCommentList(r.getCommentList());
+                        HomeActivity.ratingsOnDb.get(r.getNumero()).setnValutazioni(r.getnValutazioni());
+                    }
                 }
 
                 if(r.getVoto() > 0 || r.getVoto_medio() > 0){

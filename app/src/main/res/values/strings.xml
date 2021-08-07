@@ -5,7 +5,7 @@
     <string name="dialogMessage">Set Rating</string>
     <string name="positiveButton">Conferma</string>
     <string name="negativeButton">Annulla</string>
-    <string name="settings">Settings</string>
+    <string name="settings">Impostazioni Profilo</string>
     <string name="toastMessage">Toast Message</string>
     <string name="toastMessageValue">toast_message</string>
     <string name="popupValue">popup</string>
@@ -43,12 +43,12 @@
     <string name="modalitaNotifica">Scegli la modalità di notifica</string>
     <string name="delete_the_item_from_the_list">Delete the item from the list?</string>
     <string name="title_activity_login">Login</string>
-    <string name="title_activity_register">Register</string>
+    <string name="title_activity_register">Registrati</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
-    <string name="action_register">Register and login</string>
-    <string name="noAccount">You don\'t have an account? Click here to register</string>
+    <string name="action_register">Registrati ed entra</string>
+    <string name="noAccount">Non hai un account? Clicca qui per registrarti</string>
     <string name="sign_google">Sign in with Google</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="logout">Logout</string>
