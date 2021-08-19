@@ -1,9 +1,18 @@
 package it.bestclient.android.components;
 
+import static it.bestclient.android.HomeActivity.CHIAMATE_ENTRATA;
+import static it.bestclient.android.HomeActivity.CHIAMATE_USCITA;
+import static it.bestclient.android.HomeActivity.CONTATTI;
+import static it.bestclient.android.HomeActivity.MIEI_FEEDBACK;
+import static it.bestclient.android.HomeActivity.lastRatings;
+
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,16 +25,21 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import it.bestclient.android.HomeActivity;
 import it.bestclient.android.R;
 import it.bestclient.android.RatingActivity;
 import it.bestclient.android.RatingModel.Rating;
+import it.bestclient.android.RatingModel.RatingCallLog;
+import it.bestclient.android.Utils;
 
 public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     private static final String TAG = "RowAdapter";
@@ -36,8 +50,11 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     double[] field2;    //Rating assegnato
     double[] field3;    //Rating medio
     int[] field4;    //Numero di valutazioni
+    public static SharedPreferences sp;
+    int time = 1;
 
-    List<Rating> filteredRatings;
+
+    public static Map<String,Rating> filteredRatings=new HashMap<>();//chiave numero -> Rating
 
     public RowAdapter(Activity myActivity, Context context, int[] logos, String[] field1, double[] field2, double[] field3, int[] field4){
         //super(context, R.layout.rows,R.id.field1, field1);
@@ -48,7 +65,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         this.field2 = field2;
         this.field3 = field3;
         this.field4 = field4;
-        this.filteredRatings = new ArrayList<>();
+        filteredRatings=new HashMap<>();
     }
 
     @NonNull
@@ -64,7 +81,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        Log.d(TAG, logos[position]+"; "+field1[position]+"; "+field2[position]+"; "+field3[position]);
+        //Log.d(TAG, logos[position]+"; "+field1[position]+"; "+field2[position]+"; "+field3[position]);
 
         String actualNumber = field1[position];
 
@@ -147,20 +164,74 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void filter(String text){
-        filteredRatings = new ArrayList<>();
-        for(Rating r: HomeActivity.ratings){
-            String caseUnsensitiveName = r.getNome().toUpperCase(Locale.ROOT);
-            String caseUnsensitiveText = text.toUpperCase(Locale.ROOT);
+        if(text.isEmpty()){
+            HomeActivity.showRatings(context,lastRatings);
+            return;
+        }
+        /*  String  text da cercare localmente ovunque:
+        *   registro chiamate (solo numeri), numeri e nomi e cognomi della rubrica della rubrica
+        * */
+        Rating k;
+        String caseUnsensitiveText = text.toUpperCase(Locale.ROOT);
 
-            Log.d(TAG, "filter: "+ r.toString());
-            if(r.getNumero().contains(text) || caseUnsensitiveName.contains(caseUnsensitiveText)){
-                filteredRatings.add(r);
+        filteredRatings = new HashMap<>();
+        for(RatingCallLog r: HomeActivity.callLogNumbers){
+
+            //Log.d(TAG, "filter: "+ r.toString());
+            if(r.getNumero().contains(text)){
+
+                //se il numero è nella lista contatti salvo il nome
+                if(HomeActivity.contactMap.containsKey(r.getNumero())) k = new Rating(r.getNumero(), HomeActivity.contactMap.get(r.getNumero()));
+                else k = new Rating(r.getNumero());
+
+                //se il numero è stato valutato imposto il suo voto
+                if(HomeActivity.ratingsOnDb.containsKey(r.getNumero())) k.setVoto(HomeActivity.ratingsOnDb.get(r.getNumero()).getVoto());
+
+                filteredRatings.put(k.getNumero(),k);
+                if(HomeActivity.ratingsOnDb.containsKey(k.getNumero())){
+                    filteredRatings.get(k.getNumero()).setCommentList(HomeActivity.ratingsOnDb.get(k.getNumero()).getCommentList());
+                    filteredRatings.get(k.getNumero()).setnValutazioni(HomeActivity.ratingsOnDb.get(k.getNumero()).getnValutazioni());
+                    filteredRatings.get(k.getNumero()).setVoto_medio(HomeActivity.ratingsOnDb.get(k.getNumero()).getVoto_medio());
+                }
+                //Utils.getRatingAVGFromFilter(context,k);
+
             }
         }
+        for(Contact c: HomeActivity.contacts){
+            String caseUnsensitiveName = c.getName().toUpperCase(Locale.ROOT);
 
+            //Log.d(TAG, "filter: "+ r.toString());
+            if(c.getPhone().contains(text) || caseUnsensitiveName.contains(caseUnsensitiveText)){
+                k = new Rating(c.getPhone(), c.getName());
+                if(HomeActivity.ratingsOnDb.containsKey(c.getPhone())) k.setVoto(HomeActivity.ratingsOnDb.get(c.getPhone()).getVoto());
+
+                filteredRatings.put(k.getNumero(),k);
+                if(HomeActivity.ratingsOnDb.containsKey(k.getNumero())){
+                    filteredRatings.get(k.getNumero()).setCommentList(HomeActivity.ratingsOnDb.get(k.getNumero()).getCommentList());
+                    filteredRatings.get(k.getNumero()).setnValutazioni(HomeActivity.ratingsOnDb.get(k.getNumero()).getnValutazioni());
+                    filteredRatings.get(k.getNumero()).setVoto_medio(HomeActivity.ratingsOnDb.get(k.getNumero()).getVoto_medio());
+                }
+                //Utils.getRatingAVGFromFilter(context,k);
+            }
+        }
+        for(Rating c: HomeActivity.ratingsOnDb.values()){
+
+            //Log.d(TAG, "filter: "+ r.toString());
+            if(c.getNumero().contains(text) ){
+
+                filteredRatings.put(c.getNumero(),c);
+                //Utils.getRatingAVGFromFilter(context,k);
+            }
+        }
+        List <Rating> values = new ArrayList<>(filteredRatings.values());
+        if(values.isEmpty()){
+           values =new ArrayList<>();
+           values.add(new Rating("add new"));
+        }
         /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-        HomeActivity.showRatings(context, filteredRatings);
+        HomeActivity.showRatings(context, values);
     }
+
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         RatingBar votoAssegnato;

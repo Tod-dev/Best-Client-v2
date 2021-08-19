@@ -33,8 +33,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import it.bestclient.android.RatingModel.Rating;
 import it.bestclient.android.RatingModel.RatingCallLog;
@@ -73,10 +75,12 @@ public class HomeActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static RowAdapter arrayAdapter;
     public static List<Contact> contacts = new ArrayList<>();
+    public static Set<RatingCallLog> callLogNumbers = new HashSet<>();
     public static Map<String, String> contactMap = new HashMap<>();
     public static Map<String, Rating> ratingsOnDb = new HashMap<>(); //mappa di rating presenti sul db (presi con un'unica richiesta)
     //static final int MAX_ITEMS = 100;
     public static List<Rating> ratings = new ArrayList<>();
+    public static List<Rating> lastRatings;
     private ProgressBar progressBar;
     //private final Handler mainHandler = new Handler();
     SwipeRefreshLayout swipeRefreshLayout;
@@ -190,6 +194,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public static void showRatings(Context context){
         if (ratings != null && checkDataOnDB) {
+            Log.d(TAG,"listRating:  "+"HELLO");
             ratingToString(context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
             arrayAdapter = new RowAdapter((Activity)context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble, nValutazioni);
@@ -200,11 +205,13 @@ public class HomeActivity extends AppCompatActivity {
 
     public static void showRatings(Context context, List<Rating> listRating){
         if (listRating != null) {
+            Log.d(TAG,"listRating:  "+listRating.toString());
             ratingToString(listRating);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
             arrayAdapter = new RowAdapter((Activity)context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble, nValutazioni);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            ratings = listRating;
         }
     }
 
@@ -229,12 +236,12 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(ratings != null && ratings.size() > 0){
-                    arrayAdapter.filter(newText);
-                    return true;
-                }
-                return false;
+
+                arrayAdapter.filter(newText);
+                return true;
+
             }
+
         });
 
         return super.onCreateOptionsMenu(menu);
@@ -355,14 +362,19 @@ public class HomeActivity extends AppCompatActivity {
             String type = c.getString(c.getColumnIndex(CallLog.Calls.TYPE));
             int typeNumber = Integer.parseInt(type);
 
-            if((scelta == CHIAMATE_ENTRATA && typeNumber == CallLog.Calls.OUTGOING_TYPE) ||
-                    (scelta == CHIAMATE_USCITA && typeNumber != CallLog.Calls.OUTGOING_TYPE)) continue;
-
             /*NEW RATING*/
             String number = c.getString(colNumber);
             Date date = new Date(Long.parseLong(c.getString(colDate)));
 
             RatingCallLog check = new RatingCallLog(number,date);
+
+            /*aggiungo indistintamente il numero al set*/
+            callLogNumbers.add(check);
+
+            if((scelta == CHIAMATE_ENTRATA && typeNumber == CallLog.Calls.OUTGOING_TYPE) ||
+                    (scelta == CHIAMATE_USCITA && typeNumber != CallLog.Calls.OUTGOING_TYPE)) continue;
+
+
 
             //long diffInMillies = Math.abs(date.getTime() - curDate.getTime());
             //long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
@@ -388,7 +400,7 @@ public class HomeActivity extends AppCompatActivity {
             /*ADD A NEW RATING TO THE LIST*/
             if(!checkIfExist){
                 ratingCallLogs.add(check);
-                Log.d(TAG, "getCallLogCHECK:  number: "+number+" -> contacts: " + contactMap.toString());
+                //.d(TAG, "getCallLogCHECK:  number: "+number+" -> contacts: " + contactMap.toString());
 
                 Rating r;
 
@@ -452,7 +464,7 @@ public class HomeActivity extends AppCompatActivity {
         phoneNumbers = new String[ratingList.size()];
         ratingDouble = new double[ratingList.size()];
         ratingAVGDouble = new double[ratingList.size()];
-        nValutazioni = new int[ratings.size()];
+        nValutazioni = new int[ratingList.size()];
 
         int i = 0;
         for(Rating r : ratingList){
@@ -530,6 +542,7 @@ public class HomeActivity extends AppCompatActivity {
                 else if(type == 4){
                     Utils.getDataFromDB(activityWeakReference.get().context);
                 }
+                lastRatings = ratings;
             });
             return null;
         }
