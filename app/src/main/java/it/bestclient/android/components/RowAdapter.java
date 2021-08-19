@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import it.bestclient.android.HomeActivity;
 import it.bestclient.android.R;
@@ -148,8 +149,11 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     public void filter(String text){
         filteredRatings = new ArrayList<>();
         for(Rating r: HomeActivity.ratings){
+            String caseUnsensitiveName = r.getNome().toUpperCase(Locale.ROOT);
+            String caseUnsensitiveText = text.toUpperCase(Locale.ROOT);
+
             Log.d(TAG, "filter: "+ r.toString());
-            if(r.getNumero().contains(text) || r.getNome().contains(text)){
+            if(r.getNumero().contains(text) || caseUnsensitiveName.contains(caseUnsensitiveText)){
                 filteredRatings.add(r);
             }
         }
