@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -232,6 +233,10 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    private Drawable getDrawableResource(int resID) {
+        return ContextCompat.getDrawable(this, resID);
+    }
+
 
     /*Menu creation -> add button refresh*/
     @SuppressLint({"ResourceAsColor", "UseCompatLoadingForDrawables"})
@@ -242,9 +247,8 @@ public class HomeActivity extends AppCompatActivity {
         MenuItem search = menu.findItem(R.id.searchBtn);
         SearchView searchView = (SearchView) search.getActionView();
         searchView.setBackgroundColor(R.color.white);
-        searchView.setBackground(this.getDrawable(R.drawable.sfondo_trasparente));
+        searchView.setBackground(getDrawableResource(R.drawable.sfondo_trasparente));
         searchView.setQueryHint("Cerca...");
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
