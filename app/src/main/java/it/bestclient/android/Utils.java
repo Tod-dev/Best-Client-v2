@@ -1,5 +1,9 @@
 package it.bestclient.android;
 
+import static android.content.ContentValues.TAG;
+
+import static it.bestclient.android.HomeActivity.lastRatings;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -307,6 +311,8 @@ public class Utils {
                     default:
                         break;
                 }
+                lastRatings=HomeActivity.ratings;
+                //Log.d("Utils","LAST RATINGS: "+lastRatings.toString());
                 HomeActivity.showRatings(context);
             }
 

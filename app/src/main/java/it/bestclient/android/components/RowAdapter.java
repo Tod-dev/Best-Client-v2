@@ -51,7 +51,6 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     double[] field3;    //Rating medio
     int[] field4;    //Numero di valutazioni
     public static SharedPreferences sp;
-    int time = 1;
 
 
     public static Map<String,Rating> filteredRatings=new HashMap<>();//chiave numero -> Rating

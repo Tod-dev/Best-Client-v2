@@ -115,6 +115,7 @@ public class HomeActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_account_circle_24_white);
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("");
         }
 
         context = this;
@@ -528,22 +529,28 @@ public class HomeActivity extends AppCompatActivity {
 
                     ratings = getCallLog(activityWeakReference.get().context);
                     showRatings(activityWeakReference.get().context);
+
                 }else if(type == 2){
                     actionBar.setTitle(R.string.contatti);
                     ratings = getRatingContacts();
                     showRatings(activityWeakReference.get().context);
+
                 }
                 else if(type == 3){
                     actionBar.setTitle(R.string.mieiFeedback);
                     ratings = new ArrayList<>(ratingsOnDb.values());
                     //ratings = (List<Rating>) ratingsOnDb.values();
                     showRatings(activityWeakReference.get().context);
+                    lastRatings = ratings;
+
                 }
                 else if(type == 4){
                     Utils.getDataFromDB(activityWeakReference.get().context);
                 }
-                lastRatings = ratings;
+
             });
+            lastRatings = ratings;
+            //Log.d(TAG,"LAST RATINGS: "+lastRatings.toString());
             return null;
         }
 
