@@ -46,6 +46,7 @@ import it.bestclient.android.components.Contact;
 import it.bestclient.android.components.RowAdapter;
 
 import static it.bestclient.android.Utils.fetchContacts;
+import static it.bestclient.android.Utils.toastMessage;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -544,15 +545,14 @@ public class HomeActivity extends AppCompatActivity {
                     int scelta = Integer.parseInt(sp.getString("scelta", String.valueOf(CHIAMATE_ENTRATA)));
                     if(scelta == CHIAMATE_ENTRATA) actionBar.setTitle(R.string.entrata);
                     else actionBar.setTitle(R.string.uscita);
-
                     ratings = getCallLog(activityWeakReference.get().context);
                     showRatings(activityWeakReference.get().context);
-
+                    lastRatings = ratings;
                 }else if(type == 2){
                     actionBar.setTitle(R.string.contatti);
                     ratings = getRatingContacts();
                     showRatings(activityWeakReference.get().context);
-
+                    lastRatings = ratings;
                 }
                 else if(type == 3){
                     actionBar.setTitle(R.string.mieiFeedback);
@@ -562,14 +562,12 @@ public class HomeActivity extends AppCompatActivity {
                     Collections.reverse(ratings);
                     showRatings(activityWeakReference.get().context);
                     lastRatings = ratings;
-
                 }
                 else if(type == 4){
                     Utils.getDataFromDB(activityWeakReference.get().context);
+                    lastRatings = ratings;
                 }
-
             });
-            lastRatings = ratings;
             //Log.d(TAG,"LAST RATINGS: "+lastRatings.toString());
             return null;
         }
