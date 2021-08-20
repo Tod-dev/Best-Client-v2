@@ -50,7 +50,8 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     double[] field2;    //Rating assegnato
     double[] field3;    //Rating medio
     int[] field4;    //Numero di valutazioni
-    public static SharedPreferences sp;
+    TextView noResult;
+
 
 
     public static Map<String,Rating> filteredRatings=new HashMap<>();//chiave numero -> Rating
@@ -156,13 +157,25 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
     }
 
+
+    public boolean isAValidNumber(String text){
+        if(text.length()>10 || text.length()<=2) return false;
+        for(int i=0;i<text.length();i++){
+            if(!(text.charAt(i) >='0' && text.charAt(i) <= '9')){
+                /*CONTIENE UNA LETTERA CHE NON e un numero -> NON UN VALID PHONE NUMBER*/
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public int getItemCount() {
         return field1.length;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void filter(String text){
+    public void filter(String text ){
         if(text.isEmpty()){
             HomeActivity.showRatings(context,lastRatings);
             return;
@@ -172,6 +185,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         * */
         Rating k;
         String caseUnsensitiveText = text.toUpperCase(Locale.ROOT);
+        noResult = myActivity.findViewById(R.id.noResults);
 
         filteredRatings = new HashMap<>();
         for(RatingCallLog r: HomeActivity.callLogNumbers){
@@ -224,8 +238,22 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         }
         List <Rating> values = new ArrayList<>(filteredRatings.values());
         if(values.isEmpty()){
-           values =new ArrayList<>();
-           values.add(new Rating("add new"));
+            /*LIST IS EMPTY -> 2 cases:*/
+            values =new ArrayList<>();
+            /*WE INPUT A REAL NUMBER*/
+            if(isAValidNumber(text)){
+                /*we can add a new feedback to it*/
+                Rating newR = new Rating(text);
+                Utils.getRatingAVG(context, newR, 0); //prendo il rating AVG del numero corrente
+                newR.setAdder(true);
+                values.add(newR);
+                noResult.setVisibility(View.GONE);
+            }else{
+                /*we can say, nothing found, input a valid number to edit*/
+                noResult.setVisibility(View.VISIBLE);
+            }
+        }else{
+            noResult.setVisibility(View.GONE);
         }
         /* INSERT ALL THE RATINGS IN THE LISTVIEW */
         HomeActivity.showRatings(context, values);

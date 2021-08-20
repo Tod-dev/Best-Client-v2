@@ -18,6 +18,7 @@ public class Rating implements Voto{
     private boolean pubblica;
     private int nValutazioni;
     private String commentList;
+    private boolean adder=false;
     // double voto;
     //private long id;
 
@@ -148,6 +149,14 @@ public class Rating implements Voto{
 
     public void setnValutazioni(int nValutazioni){
         this.nValutazioni = nValutazioni;
+    }
+
+    public boolean isAdder() {
+        return adder;
+    }
+
+    public void setAdder(boolean adder) {
+        this.adder = adder;
     }
 
     @Override

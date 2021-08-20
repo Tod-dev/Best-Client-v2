@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
@@ -201,6 +202,12 @@ public class HomeActivity extends AppCompatActivity {
             arrayAdapter = new RowAdapter((Activity)context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble, nValutazioni);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            TextView t = ((Activity) context).findViewById(R.id.noResults);
+            if(ratings.isEmpty()){
+                t.setVisibility(View.VISIBLE);
+            }else{
+                t.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -213,7 +220,14 @@ public class HomeActivity extends AppCompatActivity {
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             ratings = listRating;
+            TextView t = ((Activity) context).findViewById(R.id.noResults);
+            if(ratings.isEmpty()){
+                t.setVisibility(View.VISIBLE);
+            }else{
+                t.setVisibility(View.GONE);
+            }
         }
+
     }
 
 
@@ -479,6 +493,9 @@ public class HomeActivity extends AppCompatActivity {
 
             if(r.getVoto() > 0 || r.getVoto_medio() > 0){
                 logos[i] = R.drawable.logo_red;
+            }
+            if(r.isAdder()){
+                logos[i] = R.drawable.adder;
             }
             i++;
         }

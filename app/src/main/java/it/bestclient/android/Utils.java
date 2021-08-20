@@ -214,52 +214,6 @@ public class Utils {
         });
     }
 
-    public static void getRatingAVGFromFilter(Context context, Rating k){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ratingsRef = database.getReference("ratingAVG").child(k.getNumero());
-
-        ratingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                if(dataSnapshot.getValue() == null){
-                    //HomeActivity.ratingAVGDouble[index] = 0;
-                        k.setVoto_medio(0);
-                        k.setCommentList("");
-                        k.setnValutazioni(0);
-                }
-                else{
-                    RatingAVGOnDB ratingAVGOnDB = dataSnapshot.getValue(RatingAVGOnDB.class);
-
-                    double val = ratingAVGOnDB.getVotoMedio();
-                    val = Math.round(val*100.0)/100.0;  //arrotondo il rating a due cifre decimali
-
-                    /*
-                    HomeActivity.ratingAVGDouble[index] = val;
-                    HomeActivity.nValutazioni[index] = ratingAVGOnDB.getnValutazioni();
-                     */
-                    k.setVoto_medio(val);
-                    k.setCommentList(ratingAVGOnDB.getCommentList());
-                    k.setnValutazioni(ratingAVGOnDB.getnValutazioni());
-                }
-
-                RowAdapter.filteredRatings.put(k.getNumero(),k);
-
-
-                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.logos, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble, HomeActivity.nValutazioni);
-                HomeActivity.recyclerView.setAdapter(arrayAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Log.w("Main", "Failed to read value.", error.toException());
-            }
-        });
-    }
-
     //Funzione che scarica la lista di valutazioni dell'utente collegato e le inserisce in ratingsOnDb
     public static void getDataFromDB(Context context){
 
