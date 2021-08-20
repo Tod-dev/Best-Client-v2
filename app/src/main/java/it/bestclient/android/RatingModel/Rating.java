@@ -6,11 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Rating implements Voto{
+public class Rating implements Voto,Comparable<Rating>{
 
     //ATTRIBUTES common to ratingLocal and RatingBIGONDB
     private String numero;
-    private long date;
+    private Long date;
     private String commento;//optional
     private String nome;//optional
     private double voto;
@@ -95,7 +95,7 @@ public class Rating implements Voto{
         return numero;
     }
 
-    public long getDate(){
+    public Long getDate(){
         return this.date;
     }
 
@@ -171,5 +171,10 @@ public class Rating implements Voto{
                 "', pubblica=" + pubblica +
                 "', nValutazioni=" + nValutazioni +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Rating o) {
+        return getDate().compareTo(o.getDate());
     }
 }

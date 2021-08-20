@@ -32,6 +32,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -557,6 +558,8 @@ public class HomeActivity extends AppCompatActivity {
                     actionBar.setTitle(R.string.mieiFeedback);
                     ratings = new ArrayList<>(ratingsOnDb.values());
                     //ratings = (List<Rating>) ratingsOnDb.values();
+                    Collections.sort(ratings);
+                    Collections.reverse(ratings);
                     showRatings(activityWeakReference.get().context);
                     lastRatings = ratings;
 
