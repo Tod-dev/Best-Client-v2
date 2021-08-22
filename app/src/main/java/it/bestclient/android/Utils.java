@@ -268,7 +268,6 @@ public class Utils {
                         HomeActivity.ratings = new ArrayList<>(HomeActivity.ratingsOnDb.values());
                         //ratings = (List<Rating>) ratingsOnDb.values();
                         Collections.sort( HomeActivity.ratings);
-                        Collections.reverse( HomeActivity.ratings);
                         break;
                     }
                     default:
