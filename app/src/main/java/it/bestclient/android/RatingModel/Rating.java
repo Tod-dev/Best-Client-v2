@@ -175,6 +175,17 @@ public class Rating implements Voto,Comparable<Rating>{
 
     @Override
     public int compareTo(Rating o) {
-        return getDate().compareTo(o.getDate());
+        String firstField = getNumero();
+        String secondField = o.getNumero();
+
+        if(!getNome().isEmpty()){
+            firstField = getNome();
+        }
+
+        if(!o.getNome().isEmpty()){
+            secondField = o.getNome();
+        }
+
+        return firstField.compareTo(secondField);
     }
 }

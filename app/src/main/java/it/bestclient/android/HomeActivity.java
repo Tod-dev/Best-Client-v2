@@ -563,7 +563,7 @@ public class HomeActivity extends AppCompatActivity {
                     ratings = new ArrayList<>(ratingsOnDb.values());
                     //ratings = (List<Rating>) ratingsOnDb.values();
                     Collections.sort(ratings);
-                    Collections.reverse(ratings);
+                    //Collections.reverse(ratings);
                     showRatings(activityWeakReference.get().context);
                     lastRatings = ratings;
                 }
