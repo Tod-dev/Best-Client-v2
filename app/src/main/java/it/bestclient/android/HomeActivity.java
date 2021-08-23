@@ -648,7 +648,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 //lastRatings=HomeActivity.ratings;
                 //Log.d("Utils","LAST RATINGS: "+lastRatings.toString());
-                HomeActivity.showRatings(context);
+                //HomeActivity.showRatings(context);
             }
 
             @Override
