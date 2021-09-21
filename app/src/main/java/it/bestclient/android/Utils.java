@@ -203,7 +203,7 @@ public class Utils {
                     HomeActivity.logos[index] = R.drawable.logo_red;
                 }
 
-                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.logos, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble, HomeActivity.nValutazioni);
+                RowAdapter arrayAdapter = new RowAdapter((Activity)context, context, HomeActivity.logos, HomeActivity.phoneNumbers, HomeActivity.ratingDouble, HomeActivity.ratingAVGDouble, HomeActivity.nValutazioni, HomeActivity.dates);
                 HomeActivity.recyclerView.setAdapter(arrayAdapter);
             }
 

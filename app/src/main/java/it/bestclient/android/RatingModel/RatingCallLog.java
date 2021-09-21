@@ -4,18 +4,18 @@ import java.util.Date;
 
 public class RatingCallLog {
     String numero;
-    String date;
+    Long date;
 
     public RatingCallLog(String numero, Date date){
         this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
-        this.date = Rating.formatter.format(date);
+        this.date = date.getTime();
     }
 
     public String getNumero() {
         return numero;
     }
 
-    public String getDate() {
+    public Long getDate() {
         return date;
     }
 
@@ -23,7 +23,7 @@ public class RatingCallLog {
         this.numero = numero;
     }
 
-    public void setDate(String date) {
+    public void setDate(Long date) {
         this.date = date;
     }
 

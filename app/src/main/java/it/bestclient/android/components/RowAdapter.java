@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -50,13 +51,14 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     double[] field2;    //Rating assegnato
     double[] field3;    //Rating medio
     int[] field4;    //Numero di valutazioni
+    String[] field5;    //Data
     TextView noResult;
 
 
 
     public static Map<String,Rating> filteredRatings=new HashMap<>();//chiave numero -> Rating
 
-    public RowAdapter(Activity myActivity, Context context, int[] logos, String[] field1, double[] field2, double[] field3, int[] field4){
+    public RowAdapter(Activity myActivity, Context context, int[] logos, String[] field1, double[] field2, double[] field3, int[] field4, String[] field5){
         //super(context, R.layout.rows,R.id.field1, field1);
         this.myActivity = myActivity;
         this.context = context;
@@ -65,6 +67,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         this.field2 = field2;
         this.field3 = field3;
         this.field4 = field4;
+        this.field5 = field5;
         filteredRatings=new HashMap<>();
     }
 
@@ -123,6 +126,8 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
         String text = "("+field4[position]+")";
         holder.nValutazioni.setText(text);
+
+        holder.date.setText(field5[position]);
 
         holder.mainLayout.setOnClickListener(v -> {
 
@@ -197,6 +202,8 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
                 if(HomeActivity.contactMap.containsKey(r.getNumero())) k = new Rating(r.getNumero(), HomeActivity.contactMap.get(r.getNumero()));
                 else k = new Rating(r.getNumero());
 
+                k.setDate(new Date(r.getDate()).getTime()); //setto la data
+
                 //se il numero è stato valutato imposto il suo voto
                 if(HomeActivity.ratingsOnDb.containsKey(r.getNumero())) k.setVoto(HomeActivity.ratingsOnDb.get(r.getNumero()).getVoto());
 
@@ -216,7 +223,10 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
             //Log.d(TAG, "filter: "+ r.toString());
             if(c.getPhone().contains(text) || caseUnsensitiveName.contains(caseUnsensitiveText)){
                 k = new Rating(c.getPhone(), c.getName());
-                if(HomeActivity.ratingsOnDb.containsKey(c.getPhone())) k.setVoto(HomeActivity.ratingsOnDb.get(c.getPhone()).getVoto());
+                if(HomeActivity.ratingsOnDb.containsKey(c.getPhone())){
+                    k.setVoto(HomeActivity.ratingsOnDb.get(c.getPhone()).getVoto());
+                    k.setDate(HomeActivity.ratingsOnDb.get(c.getPhone()).getDate());
+                }
 
                 filteredRatings.put(k.getNumero(),k);
                 if(HomeActivity.ratingsOnDb.containsKey(k.getNumero())){
@@ -266,6 +276,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         ImageView logoView;
         TextView field1View;
         TextView nValutazioni;
+        TextView date;
         LinearLayout mainLayout;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -275,6 +286,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
             logoView = itemView.findViewById(R.id.logoRating);
             field1View = itemView.findViewById(R.id.field1);
             nValutazioni = itemView.findViewById(R.id.nValutazioni);
+            date = itemView.findViewById(R.id.date);
             mainLayout = itemView.findViewById(R.id.mainLayout);
         }
     }

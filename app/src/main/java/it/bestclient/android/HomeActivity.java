@@ -49,7 +49,6 @@ import it.bestclient.android.components.Contact;
 import it.bestclient.android.components.RowAdapter;
 
 import static it.bestclient.android.Utils.fetchContacts;
-import static it.bestclient.android.Utils.toastMessage;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -84,6 +83,7 @@ public class HomeActivity extends AppCompatActivity {
     public static double[] ratingDouble;
     public static double[] ratingAVGDouble;
     public static int[] nValutazioni;
+    public static String[] dates;
     @SuppressLint("StaticFieldLeak")
     public static RowAdapter arrayAdapter;
     public static List<Contact> contacts = new ArrayList<>();
@@ -210,7 +210,7 @@ public class HomeActivity extends AppCompatActivity {
             Log.d(TAG, "listRating:  " + "HELLO");
             ratingToString(context);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-            arrayAdapter = new RowAdapter((Activity) context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble, nValutazioni);
+            arrayAdapter = new RowAdapter((Activity) context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble, nValutazioni, dates);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             TextView t = ((Activity) context).findViewById(R.id.noResults);
@@ -227,7 +227,7 @@ public class HomeActivity extends AppCompatActivity {
             Log.d(TAG, "listRating:  " + listRating.toString());
             ratingToString(listRating);
             /* INSERT ALL THE RATINGS IN THE LISTVIEW */
-            arrayAdapter = new RowAdapter((Activity) context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble, nValutazioni);
+            arrayAdapter = new RowAdapter((Activity) context, context, logos, phoneNumbers, ratingDouble, ratingAVGDouble, nValutazioni, dates);
             recyclerView.setAdapter(arrayAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             ratings = listRating;
@@ -435,6 +435,9 @@ public class HomeActivity extends AppCompatActivity {
                     r = new Rating(check.getNumero(), contactMap.get(check.getNumero()));
                 else r = new Rating(check.getNumero());
 
+                Date last = new Date(check.getDate());
+                r.setDate(last.getTime());
+
                 //se il numero è stato valutato imposto il suo voto
                 if (ratingsOnDb.containsKey(r.getNumero()))
                     r.setVoto(ratingsOnDb.get(r.getNumero()).getVoto());
@@ -472,12 +475,19 @@ public class HomeActivity extends AppCompatActivity {
         ratingDouble = new double[ratings.size()];
         ratingAVGDouble = new double[ratings.size()];
         nValutazioni = new int[ratings.size()];
+        dates = new String[ratings.size()];
 
         int i = 0;
         for (Rating r : ratings) {
             phoneNumbers[i] = r.getNumero();
 
             ratingDouble[i] = r.getVoto();
+
+            if(r.getDate() != 0L){
+                Date d = new Date(r.getDate());
+                dates[i] = Rating.formatter.format(d);
+            }
+            else dates[i] = "";
 
             Utils.getRatingAVG(context, r, i); //prendo il rating AVG del numero corrente
             i++;
@@ -492,6 +502,7 @@ public class HomeActivity extends AppCompatActivity {
         ratingDouble = new double[ratingList.size()];
         ratingAVGDouble = new double[ratingList.size()];
         nValutazioni = new int[ratingList.size()];
+        dates = new String[ratingList.size()];
 
         int i = 0;
         for (Rating r : ratingList) {
@@ -502,6 +513,12 @@ public class HomeActivity extends AppCompatActivity {
             ratingAVGDouble[i] = r.getVoto_medio();
 
             nValutazioni[i] = r.getnValutazioni();
+
+            if(r.getDate() != 0L){
+                Date d = new Date(r.getDate());
+                dates[i] = Rating.formatter.format(d);
+            }
+            else dates[i] = "";
 
             if (r.getVoto() > 0 || r.getVoto_medio() > 0) {
                 logos[i] = R.drawable.logo_red;

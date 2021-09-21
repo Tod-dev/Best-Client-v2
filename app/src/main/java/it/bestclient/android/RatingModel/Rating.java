@@ -43,7 +43,7 @@ public class Rating implements Voto,Comparable<Rating>{
         this.numero = "";
         this.voto = -1;
         this.commento ="";
-        this.date = new Date().getTime();
+        this.date = 0L;
         this.nome = "";
         this.pubblica = false;
         this.commentList = "";
@@ -56,7 +56,7 @@ public class Rating implements Voto,Comparable<Rating>{
         this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
         this.voto = -1;
         this.commento ="";
-        this.date = new Date().getTime();
+        this.date = 0L;
         this.nome = "";
         this.pubblica = false;
         this.commentList = "";
@@ -70,7 +70,7 @@ public class Rating implements Voto,Comparable<Rating>{
         this.numero = numero.length() <= 10 ? numero :  numero.substring(numero.length()-10);
         this.voto = -1;
         this.commento ="";
-        this.date = new Date().getTime();
+        this.date = 0L;
         this.nome = nome;
         this.pubblica = false;
         this.commentList = "";
